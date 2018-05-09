@@ -8,7 +8,7 @@ from . import site
 
 @site.route('/')
 def index():
-    return "hello"
+    return render_template('site/base.html')
 
 
 @site.route('/login', methods=['GET', 'POST'])

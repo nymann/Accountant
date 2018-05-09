@@ -31,7 +31,6 @@ drinks = db.Table(
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True)
     admin = db.Column(db.Boolean)
     subscribed_to_dinner_club = db.Column(db.Boolean, nullable=False)

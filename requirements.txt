@@ -1,2 +1,5 @@
+flask
+werkzeug
+wtforms
 flask_bootstrap
 flask_login

@@ -20,9 +20,10 @@
             </ul>
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item"><a href="#" class="nav-link">{{ current_user.name }}</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Logout</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">{{ current_user.email }}</a></li>
+                    <li class="nav-item"><a href="{{ url_for('site.logout') }}" class="nav-link">Logout</a></li>
                 {% else %}
+                    <li class="nav-item"><a href="{{ url_for('site.register') }}" class="nav-link">Register</a></li>
                     <li class="nav-item"><a href="{{ url_for('site.login') }}" class="nav-link">Login</a></li>
                 {% endif %}
             </ul>

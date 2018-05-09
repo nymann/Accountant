@@ -24,16 +24,17 @@ items = db.Table(
 drinks = db.Table(
     'drinks',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('beverage_club.id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('beverage_club.id', db.Integer, db.ForeignKey('beverage_club.id')),
 )
 
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    email = db.Column(db.String(50), unique=True)
+    name = db.Column(db.String)
+    email = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String, nullable=False)
     admin = db.Column(db.Boolean)
-    subscribed_to_dinner_club = db.Column(db.Boolean, nullable=False)
+    subscribed_to_dinner_club = db.Column(db.Boolean)
 
 
 class Dinner(db.Model):

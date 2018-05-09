@@ -10,6 +10,27 @@
 <body>
 {% include 'site/nav.html' %}
 
+{% block jumbotron %}
+    <div class="jumbotron">
+        <div class="container">
+            {% block jumbocontent %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul class="flashes {{ messages[0][0] }} list-unstyled">
+                {% for message in messages %}
+                    <li>{{ message[1] }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+
 {% block content %}{% endblock %}
 
 </body>

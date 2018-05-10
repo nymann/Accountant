@@ -62,5 +62,7 @@ def new():
 
 @dinner_club.route('/meals')
 def index():
-    dinners = Dinner.query.all()
+    dinners = Dinner.query.filter(
+        Dinner.accounted.is_(False)
+    ).all()
     return render_template('dinner_club/index.html', dinners=dinners)

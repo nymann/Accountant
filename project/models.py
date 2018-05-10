@@ -61,6 +61,7 @@ class Dinner(db.Model):
     guests = db.relationship('User', secondary=guests, backref=db.backref('dinner_guests', lazy='dynamic'))
     chefs = db.relationship('User', secondary=chefs, backref=db.backref('dinners_where_cooked', lazy='dynamic'))
     dish_name = db.Column(db.String)
+    accounted = db.Column(db.Boolean, default=False)
 
 
 class Shopping(db.Model):

@@ -14,36 +14,28 @@
         <div class="row">
             <div class="col-lg-3"></div>
             <div class="offset-lg-1 col-lg-8">
-                <table class="table table-hover table-bordered" id="dinnerTable">
-                    <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>No. of Chefs</th>
-                        <th>Payee</th>
-                        <th>No. of Guests</th>
-                        <th>Participants</th>
-                        <th>Dish</th>
-                        <th>Price</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for dinner in dinners %}
-                        <tr>
-                            <td>{{ dinner.date }}</td>
-                            <td>{{ dinner.chefs|length }}</td>
-                            <td>{{ dinner.payee.name }}</td>
-                            <td>{{ dinner.guests|length }}</td>
-                            <td>
-                                {% for participant in dinner.participants %}
-                                    {{ participant.name }}{{ ", " if not loop.last }}
-                                {% endfor %}
-                            </td>
-                            <td>{{ dinner.dish_name }}</td>
-                            <td>{{ dinner.price }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="card bg-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Dinners</h5>
+                        <table class="table" id="dinnerTable">
+                            <tbody>
+                            {% for dinner in dinners %}
+                                <tr>
+                                    <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                    <td class="text-muted"><a
+                                            href="{{ url_for('site.profile', user_id=dinner.payee_id) }}">{{ dinner.payee.name|truncate(15, True) }}</a>
+                                    </td>
+                                    <td class="text-muted">{{ dinner.guests|length + dinner.participants|length }}
+                                        attended
+                                    </td>
+                                    <td class="text-muted">{{ dinner.dish_name }}</td>
+                                    <td class="text-muted">{{ dinner.price }} kr.</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

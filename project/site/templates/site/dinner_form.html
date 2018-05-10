@@ -1,0 +1,141 @@
+<form action="{{ url_for('site.dinner') }}" method="post">
+
+    {#CSRF token#}
+    <div class="form-group row">
+        {{ form.hidden_tag() }}
+    </div>
+
+    {#Price#}
+    <div class="form-group row">
+        <label for="price" class="col-lg-3 col-form-label">Price</label>
+        <div class="col-lg-9">
+            <input type="text" name="price" placeholder="price" class="form-control" id="price"
+                   value="">
+            <span id="priceHelpBlock" class="form-text text-muted">Dinner total costs.</span>
+        </div>
+    </div>
+
+    {#Date#}
+    <div class="form-group row">
+        <label for="date" class="col-lg-3 col-form-label">Date</label>
+        <div class="col-lg-9">
+            <input type="text" name="date" placeholder="date" class="form-control" id="date"
+                   value="">
+            <span id="dateHelpBlock" class="form-text text-muted">The date that the dinner took place.</span>
+        </div>
+    </div>
+
+    {#Participants#}
+    <div class="form-group row">
+        <label for="participants" class="col-lg-3 col-form-label">Participants</label>
+        <div class="col-lg-9">
+            <div class="form-group">
+                <select multiple class="form-control" id="participants" name="participants">
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    {#Guests#}
+    {#Dropdown of all Users#}
+    <div class="form-group row">
+        <label for="dropdown" class="col-lg-3 col-form-label">Add Guests</label>
+        <div class="col-lg-9">
+            <div class="form-group">
+                <select class="form-control" id="dropdown" title="" onchange="appendToGuests()">
+                    <option></option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    {# Textarea that gets appended with the name of the user selected in the dropdown list. #}
+    <div class="form-group row">
+        <div class="offset-lg-3 col-lg-9">
+            <div class="form-group">
+                <textarea name="guests" id="guests" cols="30" rows="10" class="form-control" title="">
+                </textarea>
+            </div>
+        </div>
+    </div>
+
+    {#Chefs#}
+    <div class="form-group row">
+        <label for="chefs" class="col-lg-3 col-form-label">Chefs</label>
+        <div class="col-lg-9">
+            <div class="form-group">
+                <select multiple class="form-control" id="chefs" name="chefs">
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    {#Dish Name#}
+    <div class="form-group row">
+        <label for="dish_name" class="col-lg-3 col-form-label">Dish Name</label>
+        <div class="col-lg-9">
+            <input type="text" name="dish_name" placeholder="dish name" class="form-control" id="dish_name"
+                   value="">
+            <span id="dish_nameHelpBlock" class="form-text text-muted">The name of the dish.</span>
+        </div>
+    </div>
+
+    {#Admin Menu#}
+    {% if current_user.admin %}
+        {#Payee#}
+        <div class="form-group row">
+            <label for="payee" class="col-lg-3 col-form-label">Payee</label>
+            <div class="col-lg-9">
+                <select class="form-control" id="payee">
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+                <span id="payeeHelpBlock" class="form-text text-muted">The person who paid for the dinner.</span>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Submit #}
+    <div class="form-group row">
+        <div class="offset-lg-3 col-lg-9">
+            <button class="btn btn-lg btn-block btn-info" type="submit">Create</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    function appendToGuests() {
+        let selected = $("#dropdown option:selected");
+        let text = selected.text();
+        if (text === "") {
+            return;
+        }
+        let guests = $('#guests');
+        let currentText = guests.val();
+        if (currentText.trim() === "") {
+            guests.val(text);
+        } else {
+            guests.val(currentText + '\n' + text);
+        }
+        $('#dropdown').val("");
+    }
+
+    $('#date').datepicker({
+        uiLibrary: 'bootstrap4',
+        format: "dd/mm/yyyy",
+        todayBtn: "linked",
+        language: "da",
+        calendarWeeks: true,
+        autoclose: true
+    });
+</script>
+

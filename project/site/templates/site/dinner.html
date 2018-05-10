@@ -1,0 +1,16 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Dinner
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-3">Dinner</h1>
+    <p>Here you can add a dinner club meal entry.</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% include 'site/dinner_form.html' %}
+    </div>
+{% endblock %}

@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from project.site import site
 from project.models import db
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy import or_
 
 
 @site.route('/')
@@ -73,6 +74,7 @@ def profile(user_id):
         if current_user.admin:
             user.admin = form.admin.data
             user.room_number = form.room_number.data
+            user.active = form.active.data
         try:
             db.session.commit()
             flash("Updated", "alert alert-info")
@@ -81,3 +83,17 @@ def profile(user_id):
             flash(str(e), "alert alert-danger")
 
     return render_template('site/profile.html', user=user, form=form)
+
+
+@site.route('/residents')
+def residents():
+    active_residents = User.query.filter(
+        User.active
+    ).all()
+
+    inactive_residents = User.query.filter(
+        or_(User.active.is_(None), User.active.is_(False))
+    ).all()
+
+    return render_template('site/residents.html', active_residents=active_residents,
+                           inactive_residents=inactive_residents)

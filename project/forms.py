@@ -25,3 +25,4 @@ class UserForm(FlaskForm):
     subscribed_to_dinner_club = BooleanField('subscribed_to_dinner_club')
     room_number = StringField('room_number')
     phone_number = StringField('phone_number')
+    active = BooleanField('active')

@@ -21,7 +21,7 @@ def new():
     form = DinnerForm(participants=users)
 
     if form.validate_on_submit():
-        payee = form.payee.data if form.payee.data else current_user.id
+        payee_id = form.payee.data if form.payee.data else current_user.id
         dish_name = form.dish_name.data
         price = float(form.price.data)
         date = datetime.strptime(form.date.data, "%d/%m/%Y").date()
@@ -32,6 +32,8 @@ def new():
 
         guests = list()
         for guest in form.guests.data.splitlines():
+            if guest.isspace():
+                break
             user = User.query.filter(
                 User.name == guest
             ).first()
@@ -46,8 +48,8 @@ def new():
             chefs.append(User.query.get(int(user_id)))
 
         try:
-            dinner = Dinner(payee=payee, price=price, date=date, participants=participants, guests=guests, chefs=chefs,
-                            dish_name=dish_name)
+            dinner = Dinner(payee_id=payee_id, price=price, date=date, participants=participants, guests=guests,
+                            chefs=chefs, dish_name=dish_name)
             db.session.add(dinner)
             db.session.commit()
             flash("Success", "alert alert-info")

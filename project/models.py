@@ -49,11 +49,12 @@ class User(UserMixin, db.Model):
     active = db.Column(db.Boolean)
     dinner_balance = db.Column(db.Float, default=0)
     picture_url = db.Column(db.String())
+    dinners_paid = db.relationship('Dinner', backref='payee', lazy=True)
 
 
 class Dinner(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    payee = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    payee_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     price = db.Column(db.Float, nullable=False)
     date = db.Column(db.Date, nullable=False)
     participants = db.relationship('User', secondary=participants, backref=db.backref('dinners', lazy='dynamic'))

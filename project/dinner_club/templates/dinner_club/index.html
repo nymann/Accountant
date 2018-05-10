@@ -21,7 +21,7 @@
                         <th>No. of Chefs</th>
                         <th>Payee</th>
                         <th>No. of Guests</th>
-                        <th>No. of Participants</th>
+                        <th>Participants</th>
                         <th>Dish</th>
                         <th>Price</th>
                     </tr>
@@ -31,9 +31,13 @@
                         <tr>
                             <td>{{ dinner.date }}</td>
                             <td>{{ dinner.chefs|length }}</td>
-                            <td>{{ dinner.payee }}</td>
+                            <td>{{ dinner.payee.name }}</td>
                             <td>{{ dinner.guests|length }}</td>
-                            <td>{{ dinner.participants|length }}</td>
+                            <td>
+                                {% for participant in dinner.participants %}
+                                    {{ participant.name }}{{ ", " if not loop.last }}
+                                {% endfor %}
+                            </td>
                             <td>{{ dinner.dish_name }}</td>
                             <td>{{ dinner.price }}</td>
                         </tr>

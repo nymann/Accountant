@@ -22,7 +22,7 @@
             <a href="mailto:nymannjakobsen@gmail.com" class="btn btn-info">Contact admin</a>
         {% endif %}
         <hr/>
-        <h5>Past members</h5>
+        <h5>In-active residents</h5>
         <ul class="list-unstyled">
             {% for user in inactive_residents %}
                 <li><a href="{{ url_for('site.profile', user_id=user.id) }}">{{ user.name }}</a></li>

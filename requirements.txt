@@ -8,3 +8,4 @@ flask_sqlalchemy
 flask_wtf
 gunicorn
 Pillow
+flask_uploads

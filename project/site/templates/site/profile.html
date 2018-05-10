@@ -1,0 +1,103 @@
+{% extends 'site/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block jumbotron %}
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row h-100">
+                <div class="col-lg-2">
+                    <div>
+                        <img src="http://via.placeholder.com/350x350" class="img-thumbnail">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h4>{{ user.name }}</h4>
+                </div>
+                <div class="offset-3 col-lg-2">
+                    {# What should be here? #}
+                </div>
+                <div class="col-lg-2">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#updateSettingsForm">
+                        Update information
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="updateSettingsForm" tabindex="-1" role="dialog"
+         aria-labelledby="updateSettingsFormTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateSettingsFormLongTitle">Editing user information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="offset-lg-2 col-lg-10">
+                        <form action="{{ url_for('site.profile', user_id=user.id) }}" method="post" id="userForm">
+                            <div class="form-group row">
+                                {{ form.hidden_tag() }}
+                            </div>
+                            <div class="form-group row">
+                                <input type="text" name="email" required placeholder="email" class="form-control"
+                                       id="email" value="{{ user.email }}">
+                            </div>
+                            <div class="form-group row">
+                                <input type="text" name="name" required placeholder="name" value="{{ user.name }}"
+                                       class="form-control" id="password">
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="subscribed_to_dinner_club"
+                                       name="subscribed_to_dinner_club"
+                                       {% if user.subscribed_to_dinner_club %}checked="checked"{% endif %}>
+                                <label class="form-check-label" for="subscribed_to_dinner_club">Subscribed to Dinner
+                                    Club?</label>
+                            </div>
+                            {% if current_user.admin %}
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="admin" name="admin"
+                                           {% if user.admin %}checked="checked"{% endif %}>
+                                    <label class="form-check-label" for="admin">Admin?</label>
+                                </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Introduction</h5>
+                        <p class="card-text">{{ user.email }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="mailto:{{ user.email }}" class="btn btn-info">Send Mail</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $('#save').click(function () {
+            $('#userForm').submit();
+        });
+    </script>
+{% endblock %}

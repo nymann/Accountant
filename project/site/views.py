@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from project.models import User
-from project.forms import LoginForm, RegisterForm
+from project.forms import LoginForm, RegisterForm, UserForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from project.site import site
 from project.models import db
@@ -57,3 +57,25 @@ def register():
             flash(str(e), "alert alert-danger")
             return redirect(url_for('site.register'))
     return render_template('site/register.html', form=form)
+
+
+@site.route('/profile/<user_id>', methods=['GET', 'POST'])
+def profile(user_id):
+    user = User.query.get(user_id)
+    form = UserForm()
+
+    if form.validate_on_submit():
+        user.email = form.email.data
+        user.name = form.name.data
+        user.subscribed_to_dinner_club = form.subscribed_to_dinner_club.data
+        if current_user.admin:
+            user.admin = form.admin.data
+
+        try:
+            db.session.commit()
+            flash("Updated", "alert alert-info")
+            return redirect(url_for('site.profile', user_id=user_id))
+        except DBAPIError as e:
+            flash(str(e), "alert alert-danger")
+
+    return render_template('site/profile.html', user=user, form=form)

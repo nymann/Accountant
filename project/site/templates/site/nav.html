@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand" href="#">KK24</a>
+        <a class="navbar-brand" href="{{ url_for('site.index') }}">KK24</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -20,7 +20,7 @@
             </ul>
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item"><a href="#" class="nav-link">{{ current_user.email }}</a></li>
+                    <li class="nav-item"><a href="{{ url_for('site.profile', user_id=current_user.id) }}" class="nav-link">{{ current_user.email }}</a></li>
                     <li class="nav-item"><a href="{{ url_for('site.logout') }}" class="nav-link">Logout</a></li>
                 {% else %}
                     <li class="nav-item"><a href="{{ url_for('site.register') }}" class="nav-link">Register</a></li>

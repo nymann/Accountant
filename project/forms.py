@@ -14,3 +14,10 @@ class RegisterForm(FlaskForm):
     email = StringField('email')
     password = PasswordField('password')
     password_again = PasswordField('password_again')
+
+
+class UserForm(FlaskForm):
+    name = StringField('name')
+    email = StringField('name')
+    admin = BooleanField('admin')
+    subscribed_to_dinner_club = BooleanField('subscribed_to_dinner_club')

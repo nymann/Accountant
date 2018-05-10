@@ -1,14 +1,14 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, login_required, logout_user, current_user
-from project.models import User, Dinner
-from project.forms import LoginForm, RegisterForm, UserForm, DinnerForm
-from werkzeug.security import generate_password_hash, check_password_hash
-from project.site import site
-from project.models import db
-from sqlalchemy.exc import DBAPIError
 from sqlalchemy import or_
+from sqlalchemy.exc import DBAPIError
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from project.forms import LoginForm, RegisterForm, UserForm
+from project.models import User
+from project.models import db
+from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
-from datetime import date, datetime
 
 
 @site.route('/')
@@ -105,51 +105,3 @@ def residents():
 
     return render_template('site/residents.html', active_residents=active_residents,
                            inactive_residents=inactive_residents)
-
-
-@site.route('/dinner', methods=['GET', 'POST'])
-def dinner():
-    # active_dinner_club_participants
-    users = User.query.filter(
-        User.subscribed_to_dinner_club,
-        User.active
-    ).all()
-
-    form = DinnerForm(participants=users)
-
-    if form.validate_on_submit():
-        payee = form.payee.data if form.payee.data else current_user.id
-        dish_name = form.dish_name.data
-        price = float(form.price.data)
-        date = datetime.strptime(form.date.data, "%d/%m/%Y").date()
-
-        participants = list()
-        for user_id in request.form.getlist('participants'):
-            participants.append(User.query.get(int(user_id)))
-
-        guests = list()
-        for guest in form.guests.data.splitlines():
-            user = User.query.filter(
-                User.name == guest
-            ).first()
-            if user:
-                guests.append(user)
-            else:
-                flash("Couldn't find guest with name {0}. Are you sure it's correct?".format(guest))
-                return redirect(url_for('site.dinner'))
-
-        chefs = list()
-        for user_id in request.form.getlist('chefs'):
-            chefs.append(User.query.get(int(user_id)))
-
-        try:
-            dinner = Dinner(payee=payee, price=price, date=date, participants=participants, guests=guests, chefs=chefs,
-                            dish_name=dish_name)
-            db.session.add(dinner)
-            db.session.commit()
-            flash("Success", "alert alert-info")
-            return redirect(url_for('site.index'))
-        except DBAPIError as e:
-            flash(str(e), "alert alert-danger")
-
-    return render_template('site/dinner.html', form=form, users=users)

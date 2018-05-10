@@ -45,7 +45,8 @@ def register():
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         # noinspection PyArgumentList
-        new_user = User(email=form.email.data, password=hashed_password)
+        new_user = User(name=form.name.data, email=form.email.data, password=hashed_password,
+                        room_number=form.room_number.data)
         try:
             db.session.add(new_user)
             db.session.commit()
@@ -68,9 +69,10 @@ def profile(user_id):
         user.email = form.email.data
         user.name = form.name.data
         user.subscribed_to_dinner_club = form.subscribed_to_dinner_club.data
+        user.phone_number = form.phone_number.data
         if current_user.admin:
             user.admin = form.admin.data
-
+            user.room_number = form.room_number.data
         try:
             db.session.commit()
             flash("Updated", "alert alert-info")

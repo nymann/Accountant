@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
+from datetime import date
 
 db = SQLAlchemy()
 
@@ -32,9 +33,14 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     email = db.Column(db.String, unique=True, nullable=False)
+    room_number = db.Column(db.Integer, nullable=False)
     password = db.Column(db.String, nullable=False)
-    admin = db.Column(db.Boolean)
+    admin = db.Column(db.Boolean, default=False)
     subscribed_to_dinner_club = db.Column(db.Boolean)
+    move_in_date = db.Column(db.Date, default=date.today(), nullable=False)
+    move_out_date = db.Column(db.Date)
+    phone_number = db.Column(db.String)
+    active = db.Column(db.Boolean)
 
 
 class Dinner(db.Model):

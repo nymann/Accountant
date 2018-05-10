@@ -4,4 +4,6 @@ werkzeug
 wtforms
 flask_bootstrap
 flask_login
+flask_sqlalchemy
+flask_wtf
 gunicorn

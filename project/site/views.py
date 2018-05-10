@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, login_required, logout_user, current_user
 from project.models import User
 from project.forms import LoginForm, RegisterForm, UserForm
@@ -7,6 +7,7 @@ from project.site import site
 from project.models import db
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy import or_
+from project.utils.uploadsets import avatars, process_user_avatar
 
 
 @site.route('/')
@@ -65,20 +66,26 @@ def register():
 def profile(user_id):
     user = User.query.get(user_id)
     form = UserForm()
-
     if form.validate_on_submit():
-        user.email = form.email.data
-        user.name = form.name.data
-        user.subscribed_to_dinner_club = form.subscribed_to_dinner_club.data
-        user.phone_number = form.phone_number.data
-        if current_user.admin:
-            user.admin = form.admin.data
-            user.room_number = form.room_number.data
-            user.active = form.active.data
         try:
+            user.email = form.email.data
+            user.name = form.name.data
+            user.subscribed_to_dinner_club = form.subscribed_to_dinner_club.data
+            user.phone_number = form.phone_number.data
+
+            if 'picture' in request.files:
+                filename = process_user_avatar(request.files['picture'], avatars)
+                user.picture_url = filename
+
+            if current_user.admin:
+                user.admin = form.admin.data
+                user.room_number = form.room_number.data
+                user.active = form.active.data
+
             db.session.commit()
             flash("Updated", "alert alert-info")
             return redirect(url_for('site.profile', user_id=user_id))
+
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")
 

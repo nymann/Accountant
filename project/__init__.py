@@ -1,9 +1,11 @@
 from flask import Flask
-
+from flask_uploads import configure_uploads
 from flask_login import LoginManager
 from project.models import db, User
 from project.site import site
 from project.api import api
+from project.utils.uploadsets import avatars
+
 
 app = Flask(__name__)
 
@@ -17,6 +19,8 @@ login_manager.init_app(app)
 login_manager.blueprint_login_views = {
     'site': '/site/login'
 }
+
+configure_uploads(app, avatars)
 
 db.app = app
 db.init_app(app)

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, BooleanField, FileField
 from wtforms.validators import InputRequired, Email, Length, EqualTo
 
 
@@ -26,3 +26,4 @@ class UserForm(FlaskForm):
     room_number = StringField('room_number')
     phone_number = StringField('phone_number')
     active = BooleanField('active')
+    picture = FileField('picture')

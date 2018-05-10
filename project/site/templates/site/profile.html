@@ -8,7 +8,12 @@
             <div class="row">
                 <div class="col-lg-2">
                     <div>
-                        <img src="http://via.placeholder.com/350x350" class="img-thumbnail">
+                        {% if user.picture_url %}
+                            <img src="{{ url_for('static', filename='avatars/' + user.picture_url) }}"
+                                 alt="Profile picture for {{ user.name }}" class="img-thumbnail">
+                        {% else %}
+                            <img src="http://via.placeholder.com/350x350" class="img-thumbnail">
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -45,49 +50,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="offset-lg-2 col-lg-10">
-                        <form action="{{ url_for('site.profile', user_id=user.id) }}" method="post" id="userForm">
-                            <div class="form-group row">
-                                {{ form.hidden_tag() }}
-                            </div>
-                            <div class="form-group row">
-                                <input type="text" name="email" required placeholder="email" class="form-control"
-                                       id="email" value="{{ user.email }}">
-                            </div>
-                            <div class="form-group row">
-                                <input type="text" name="name" required placeholder="name" value="{{ user.name }}"
-                                       class="form-control" id="name">
-                            </div>
-                            <div class="form-group row">
-                                <input type="text" name="phone_number" required placeholder="Phone number"
-                                       value="{{ user.phone_number }}"
-                                       class="form-control" id="phone_number">
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="subscribed_to_dinner_club"
-                                       name="subscribed_to_dinner_club"
-                                       {% if user.subscribed_to_dinner_club %}checked="checked"{% endif %}>
-                                <label class="form-check-label" for="subscribed_to_dinner_club">Subscribed to Dinner
-                                    Club?</label>
-                            </div>
-                            {% if current_user.admin %}
-                                <div class="form-group row">
-                                    <input type="text" name="room_number" required placeholder="Room number"
-                                           value="{{ user.room_number }}"
-                                           class="form-control" id="room_number">
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="admin" name="admin"
-                                           {% if user.admin %}checked="checked"{% endif %}>
-                                    <label class="form-check-label" for="admin">Admin?</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="active" name="active"
-                                           {% if user.active %}checked="checked"{% endif %}>
-                                    <label class="form-check-label" for="active">Active?</label>
-                                </div>
-                            {% endif %}
-                        </form>
+                    <div class="col-lg-12">
+                        {% include 'site/user_form.html' %}
                     </div>
                 </div>
                 <div class="modal-footer">

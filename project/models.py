@@ -47,6 +47,7 @@ class User(UserMixin, db.Model):
     move_out_date = db.Column(db.Date)
     phone_number = db.Column(db.String)
     active = db.Column(db.Boolean)
+    picture_url = db.Column(db.String())
 
 
 class Dinner(db.Model):

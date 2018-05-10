@@ -1,0 +1,75 @@
+<form action="{{ url_for('site.profile', user_id=user.id) }}" method="post" id="userForm"
+      enctype="multipart/form-data">
+    <div class="form-group row">
+        {{ form.hidden_tag() }}
+    </div>
+    {#Email#}
+    <div class="form-group row">
+        <label for="email" class="col-lg-3 col-form-label">Email</label>
+        <div class="col-lg-9">
+            <input type="text" name="email" placeholder="email" class="form-control" id="email"
+                   value="{{ user.email }}">
+            <span id="emailHelpBlock" class="form-text text-muted">Your email address.</span>
+        </div>
+    </div>
+
+    {#Name#}
+    <div class="form-group row">
+        <label for="name" class="col-lg-3 col-form-label">Name</label>
+        <div class="col-lg-9">
+            <input type="text" name="name" placeholder="name" class="form-control" id="name"
+                   value="{% if user.name %}{{ user.name }}{% endif %}">
+            <span id="nameHelpBlock" class="form-text text-muted">Your full name.</span>
+        </div>
+    </div>
+
+    {#Phone Number#}
+    <div class="form-group row">
+        <label for="phone_number" class="col-lg-3 col-form-label">Phone number</label>
+        <div class="col-lg-9">
+            <input type="text" name="phone_number" placeholder="phone number" class="form-control" id="name"
+                   value="{% if user.phone_number %}{{ user.phone_number }}{% endif %}">
+            <span id="phone_numberHelpBlock" class="form-text text-muted">Your phone number.</span>
+        </div>
+    </div>
+
+    {#Pictur#}
+    <div class="form-group row">
+        <div class="offset-3 col-lg-9">
+            <label class="btn btn-primary">Choose File
+                <input id="picture" name="picture" type="file" hidden accept="image/*">
+            </label>
+            <span id="pictureHelpBlock" class="form-text text-muted">Your profile picture.</span>
+        </div>
+    </div>
+
+    {#Dinner Club#}
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="subscribed_to_dinner_club" name="subscribed_to_dinner_club"
+               {% if user.subscribed_to_dinner_club %}checked="checked"{% endif %}>
+        <label class="form-check-label" for="subscribed_to_dinner_club">Subscribed to Dinner Club?</label>
+    </div>
+
+    {#Admin Menu#}
+    {% if current_user.admin %}
+        {#Room Number#}
+        <div class="form-group row">
+            <input type="text" name="room_number" placeholder="Room number" value="{{ user.room_number }}"
+                   class="form-control" id="room_number">
+        </div>
+
+        {#Admin#}
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="admin" name="admin"
+                   {% if user.admin %}checked="checked"{% endif %}>
+            <label class="form-check-label" for="admin">Admin?</label>
+        </div>
+
+        {#Active#}
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="active" name="active"
+                   {% if user.active %}checked="checked"{% endif %}>
+            <label class="form-check-label" for="active">Active?</label>
+        </div>
+    {% endif %}
+</form>

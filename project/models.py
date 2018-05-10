@@ -10,6 +10,12 @@ participants = db.Table(
     db.Column('dinner_id', db.Integer, db.ForeignKey('dinner.id'))
 )
 
+guests = db.Table(
+    'guests',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('dinner_id', db.Integer, db.ForeignKey('dinner.id'))
+)
+
 chefs = db.Table(
     'chefs',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -48,8 +54,9 @@ class Dinner(db.Model):
     payee = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     price = db.Column(db.Float, nullable=False)
     date = db.Column(db.Float, nullable=False)
-    participants = db.relationship('User', secondary=participants, backref=db.backref('participants', lazy='dynamic'))
-    chefs = db.relationship('User', secondary=chefs, backref=db.backref('chefs', lazy='dynamic'))
+    participants = db.relationship('User', secondary=participants, backref=db.backref('dinners', lazy='dynamic'))
+    guests = db.relationship('User', secondary=guests, backref=db.backref('dinner_guests', lazy='dynamic'))
+    chefs = db.relationship('User', secondary=chefs, backref=db.backref('dinners_where_cooked', lazy='dynamic'))
 
 
 class Shopping(db.Model):
@@ -57,7 +64,7 @@ class Shopping(db.Model):
     payee = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     price = db.Column(db.Float, nullable=False)
     date = db.Column(db.Date, nullable=False)
-    items = db.relationship('User', secondary=items, backref=db.backref('items', lazy='dynamic'))
+    items = db.relationship('User', secondary=items, backref=db.backref('bought_items', lazy='dynamic'))
 
 
 class BeverageClub(db.Model):
@@ -65,4 +72,4 @@ class BeverageClub(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    drinks = db.relationship('User', secondary=drinks, backref=db.backref('drinks', lazy='dynamic'))
+    drinks = db.relationship('User', secondary=drinks, backref=db.backref('drinks_consumed', lazy='dynamic'))

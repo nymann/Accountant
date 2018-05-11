@@ -6,17 +6,32 @@
 
 {% block jumbocontent %}
     <h1 class="display-3">Dinner meals</h1>
+    <p>List of dinner meals that haven't been accounted yet.</p>
     <a href="{{ url_for('dinner_club.new') }}" class="btn btn-info">New meal</a>
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-lg-3"></div>
-            <div class="offset-lg-1 col-lg-8">
+            <div class="col-lg-4">
                 <div class="card bg-white">
                     <div class="card-body">
-                        <h5 class="card-title">Dinners</h5>
+                        <h5 class="card-title">Most recent meal</h5>
+                        <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
+                        <p class="card-text">On {{ latest_dinner.date.strftime('%A the %d. of %b') }}, we had
+                            <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
+                        <p class="card-text">{{ latest_dinner.guests|length + latest_dinner.participants|length }}
+                            attended ({{ latest_dinner.guests|length }} guests).</p>
+                        <p class="card-text">{{ latest_dinner.price }} kr.
+                            ({{ latest_dinner.price/(latest_dinner.guests|length + latest_dinner.participants|length) }}
+                            kr. pr. person)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card bg-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Meals</h5>
                         <table class="table" id="dinnerTable">
                             <tbody>
                             {% for dinner in dinners %}

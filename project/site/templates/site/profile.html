@@ -81,6 +81,32 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-9">
+                <div class="card bg-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Dinners</h5>
+                        <p class="card-subtitle">Non-accounted meals that {{ user.name }} took part of.</p>
+                        <table class="table" id="dinnerTable">
+                            <tbody>
+                            {% for dinner in user.dinners %}
+                                {% if not dinner.accounted %}
+                                    <tr class="clickable-row"
+                                        data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
+                                        <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                        <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
+                                        <td class="text-muted">{{ dinner.guests|length + dinner.participants|length }}
+                                            attended
+                                        </td>
+                                        <td class="text-muted">{{ dinner.dish_name }}</td>
+                                        <td class="text-muted">{{ dinner.price }} kr.</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -89,6 +115,13 @@
     <script type="text/javascript">
         $('#save').click(function () {
             $('#userForm').submit();
+        });
+    </script>
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
         });
     </script>
 {% endblock %}

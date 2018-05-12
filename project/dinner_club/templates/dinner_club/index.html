@@ -35,11 +35,10 @@
                         <table class="table" id="dinnerTable">
                             <tbody>
                             {% for dinner in dinners %}
-                                <tr>
+                                <tr class="clickable-row"
+                                    data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
                                     <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
-                                    <td class="text-muted"><a
-                                            href="{{ url_for('site.profile', user_id=dinner.payee_id) }}">{{ dinner.payee.name|truncate(15, True) }}</a>
-                                    </td>
+                                    <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
                                     <td class="text-muted">{{ dinner.guests|length + dinner.participants|length }}
                                         attended
                                     </td>
@@ -54,4 +53,14 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
 {% endblock %}

@@ -2,7 +2,6 @@ from datetime import datetime
 
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user
-from sqlalchemy.sql import label, func
 from sqlalchemy.exc import DBAPIError
 
 from project.dinner_club import dinner_club
@@ -71,3 +70,9 @@ def index():
     dinners = query.all()
 
     return render_template('dinner_club/index.html', dinners=dinners, latest_dinner=latest_dinner)
+
+
+@dinner_club.route('/meal/<dinner_id>')
+def meal(dinner_id):
+    dinner = Dinner.query.get_or_404(int(dinner_id))
+    return render_template('dinner_club/meal.html', dinner=dinner)

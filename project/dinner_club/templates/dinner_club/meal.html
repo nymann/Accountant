@@ -6,8 +6,15 @@
 
 {% block jumbocontent %}
     <h1 class="display-3">{{ dinner.dish_name }}</h1>
-    <p>{{ dinner.date.strftime("%d/%m/%Y") }}, {{ dinner.payee.name }}</p>
-    <p>{{ dinner.price }} kr.</p>
+
+    <h5 class="text-muted">Chefs</h5>
+    <ul class="list-unstyled">
+        {% for chef in dinner.chefs %}
+            <li class="text">{{ chef.name }}</li>
+        {% endfor %}
+    </ul>
+    <h5 class="text-muted">Payee</h5>
+    <p>{{ dinner.payee.name }}</p>
 {% endblock %}
 
 {% block content %}

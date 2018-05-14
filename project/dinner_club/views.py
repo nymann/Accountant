@@ -23,7 +23,13 @@ def new():
     if form.validate_on_submit():
         payee_id = form.payee.data if form.payee.data else current_user.id
         dish_name = form.dish_name.data
-        price = float(form.price.data)
+        # value checker
+        try:
+            price = float(form.price.data)
+        except ValueError as e:
+            flash(str(e), 'alert alert-danger')
+            return redirect(url_for('dinner_club.new'))
+        # price = float(form.price.data)
         date = datetime.strptime(form.date.data, "%d/%m/%Y").date()
 
         participants = list()

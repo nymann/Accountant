@@ -12,21 +12,31 @@
 
 {% block content %}
     <div class="container">
+        <p>
+
+        </p>
         <div class="row">
             <div class="col-lg-4">
-                <div class="card bg-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Most recent meal</h5>
-                        <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
-                        <p class="card-text">On {{ latest_dinner.date.strftime('%A the %d. of %b') }}, we had
-                            <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
-                        <p class="card-text">{{ latest_dinner.guests|length + latest_dinner.participants|length }}
-                            attended ({{ latest_dinner.guests|length }} guests).</p>
-                        <p class="card-text">{{ latest_dinner.price }} kr.
-                            ({{ latest_dinner.price/(latest_dinner.guests|length + latest_dinner.participants|length) }}
-                            kr. pr. person)</p>
+                {% if latest_dinner %}
+                    <div class="card bg-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Most recent meal</h5>
+                            <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
+                            <p class="card-text">On {{ latest_dinner.date.strftime('%A the %d. of %b') }}, we had
+                                <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
+                            <p class="card-text">{{ latest_dinner.guests|length + latest_dinner.participants|length }}
+                                attended ({{ latest_dinner.guests|length }} guests).</p>
+                            {% for guest in latest_dinner.guests %}
+                                <p>{{ guest.user.name }} brought {{ guest.number_of_guests }} guests</p>
+                            {% endfor %}
+                            <p class="card-text">{{ latest_dinner.price }} kr.
+                                ({{ latest_dinner.price/(latest_dinner.guests|length + latest_dinner.participants|length) }}
+                                kr. pr. person)</p>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <h5>No dinners registered yet.</h5>
+                {% endif %}
             </div>
             <div class="col-lg-8">
                 <div class="card bg-white">

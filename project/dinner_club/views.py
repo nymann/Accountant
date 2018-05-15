@@ -1,12 +1,14 @@
+from collections import Counter
 from datetime import datetime
 
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.sql import label
 
 from project.dinner_club import dinner_club
 from project.forms import DinnerForm
-from project.models import User, Dinner
+from project.models import User, Dinner, GuestAssociation
 from project.models import db
 
 
@@ -30,28 +32,35 @@ def new():
         for user_id in request.form.getlist('participants'):
             participants.append(User.query.get(int(user_id)))
 
-        guests = list()
-        for guest in form.guests.data.splitlines():
-            if guest.isspace():
-                break
-            user = User.query.filter(
-                User.name == guest
-            ).first()
-            if user:
-                guests.append(user)
-            else:
-                flash("Couldn't find guest with name {0}. Are you sure it's correct?".format(guest))
-                return redirect(url_for('dinner_club.new'))
-
         chefs = list()
         for user_id in request.form.getlist('chefs'):
             chefs.append(User.query.get(int(user_id)))
 
         try:
-            dinner = Dinner(payee_id=payee_id, price=price, date=date, participants=participants, guests=guests,
-                            chefs=chefs, dish_name=dish_name)
-            db.session.add(dinner)
-            db.session.commit()
+            d = Dinner(payee_id=payee_id, price=price, date=date, participants=participants, chefs=chefs,
+                       dish_name=dish_name)
+            g = Counter(form.guests.data.splitlines())
+            with db.session.no_autoflush:
+                for key in g:
+                    if key.isspace():
+                        break
+                    user = User.query.filter(
+                        User.name == key
+                    ).first()
+                    if user:
+                        numbers = g[key]
+                        try:
+                            ga = GuestAssociation(number_of_guests=numbers)
+                            ga.user = user
+                            d.guests.append(ga)
+                            db.session.add(d)
+                            db.session.commit()
+                        except DBAPIError as e:
+                            print(str(e))
+                            db.session.rollback()
+                    else:
+                        flash("Couldn't find guest with name {0}. Are you sure it's correct?".format(key))
+                        return redirect(url_for('dinner_club.new'))
             flash("Success", "alert alert-info")
             return redirect(url_for('dinner_club.index'))
         except DBAPIError as e:
@@ -62,12 +71,17 @@ def new():
 
 @dinner_club.route('/')
 def index():
-    query = Dinner.query.filter(
+    latest_dinner = Dinner.query.filter(
         Dinner.accounted.is_(False)
-    )
+    ).order_by(
+        Dinner.date.desc()
+    ).first()
 
-    latest_dinner = query.first()
-    dinners = query.all()
+    dinners = Dinner.query.filter(
+        Dinner.accounted.is_(False)
+    ).order_by(
+        Dinner.date.desc()
+    ).all()
 
     return render_template('dinner_club/index.html', dinners=dinners, latest_dinner=latest_dinner)
 

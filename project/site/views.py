@@ -5,7 +5,7 @@ from sqlalchemy.exc import DBAPIError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from project.forms import LoginForm, RegisterForm, UserForm
-from project.models import User, Dinner
+from project.models import User
 from project.models import db
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar

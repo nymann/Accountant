@@ -32,7 +32,7 @@
             <div class="form-group">
                 <select multiple class="form-control" id="participants" name="participants">
                     {% for user in users %}
-                        <option value="{{ user.id }}">{{ user.name }}</option>
+                        <option value="{{ user.id }}" selected="selected">{{ user.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -137,5 +137,13 @@
         calendarWeeks: true,
         autoclose: true
     });
+</script>
+
+<script>
+    $(function() {
+	$("#chefs, #participants").popSelect({
+		showTitle: false
+	});
+});
 </script>
 

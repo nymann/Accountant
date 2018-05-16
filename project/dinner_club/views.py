@@ -46,6 +46,11 @@ def new():
             d = Dinner(payee_id=payee_id, price=price, date=date, participants=participants, chefs=chefs,
                        dish_name=dish_name)
             g = Counter(form.guests.data.splitlines())
+            if form.guests.data is None or str(form.guests.data).isspace() or str(form.guests.data) is "":
+                db.session.add(d)
+                db.session.commit()
+                flash("Success", "alert alert-info")
+                return redirect(url_for('dinner_club.index'))
             with db.session.no_autoflush:
                 for key in g:
                     if key.isspace():

@@ -1,6 +1,6 @@
 from flask import render_template, flash
 from sqlalchemy.exc import DBAPIError
-from flask_login import current_user, login_required
+from flask_login import login_required, current_user
 
 from project.forms import MeetingForm
 from project.kitchen_meeting import kitchen_meeting
@@ -13,7 +13,7 @@ def index():
     form = MeetingForm()
 
     if form.validate_on_submit():
-        meeting_topic = MeetingTopic(topic=form.topic.data)
+        meeting_topic = MeetingTopic(topic=form.topic.data, user_id=current_user.id)
         try:
             db.session.add(meeting_topic)
             db.session.commit()

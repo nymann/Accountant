@@ -45,6 +45,7 @@ class User(UserMixin, db.Model):
     picture_url = db.Column(db.String())
     dinners_paid = db.relationship("Dinner", backref="payee", lazy=True)
     guests = db.relationship("GuestAssociation", back_populates="user")
+    meeting_topics = db.relationship("MeetingTopic", backref="user", lazy=True)
 
 
 class Dinner(db.Model):
@@ -89,3 +90,4 @@ class MeetingTopic(db.Model):
     topic = db.Column(db.String, nullable=False)
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
     talked_about = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

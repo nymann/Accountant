@@ -23,14 +23,15 @@
             <div class="col-lg-4">
                 <div class="card bg-white">
                     <div class="card-body">
+                        {% set g = dinner.guests | sum(attribute='number_of_guests') %}
                         <h5 class="card-title">Most recent meal</h5>
                         <h6 class="card-subtitle text-muted">{{ dinner.date.strftime('%d/%m/%Y') }}, {{ dinner.payee.name|truncate(20, True) }}</h6>
                         <p class="card-text">On {{ dinner.date.strftime('%A the %d. of %b') }}, we had
                             <b>{{ dinner.dish_name }}</b> for dinner.</p>
-                        <p class="card-text">{{ dinner.guests|length + dinner.participants|length }}
-                            attended ({{ dinner.guests|length }} guests).</p>
+                        <p class="card-text">{{ g + dinner.participants|length }}
+                            attended ({{ g }} guests).</p>
                         <p class="card-text">{{ dinner.price }} kr.
-                            ({{ dinner.price/(dinner.guests|length + dinner.participants|length) }}
+                            ({{ (dinner.price/(g + dinner.participants|length))|round(2) }}
                             kr. pr. person)</p>
                     </div>
                 </div>
@@ -61,7 +62,8 @@
                             {% for guest in dinner.guests %}
                                 <tr class="clickable-row"
                                     data-href="{{ url_for('site.profile', user_id=guest.id) }}">
-                                    <td class="text-muted">{{ guest.name }}</td>
+                                    <td class="text-muted">{{ guest.user.name }}</td>
+                                    <td class="text-muted">{{ guest.number_of_guests }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

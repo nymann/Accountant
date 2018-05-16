@@ -20,17 +20,16 @@
                 {% if latest_dinner %}
                     <div class="card bg-white">
                         <div class="card-body">
+                            {% set g = latest_dinner.guests | sum(attribute='number_of_guests') %}
                             <h5 class="card-title">Most recent meal</h5>
                             <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
                             <p class="card-text">On {{ latest_dinner.date.strftime('%A the %d. of %b') }}, we had
                                 <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
-                            <p class="card-text">{{ latest_dinner.guests|length + latest_dinner.participants|length }}
-                                attended ({{ latest_dinner.guests|length }} guests).</p>
-                            {% for guest in latest_dinner.guests %}
-                                <p>{{ guest.user.name }} brought {{ guest.number_of_guests }} guests</p>
-                            {% endfor %}
+                            <p class="card-text">{{ g + latest_dinner.participants|length }}
+                                attended ({{ g }} guests).</p>
+
                             <p class="card-text">{{ latest_dinner.price }} kr.
-                                ({{ latest_dinner.price/(latest_dinner.guests|length + latest_dinner.participants|length) }}
+                                ({{ (latest_dinner.price/(g + latest_dinner.participants|length))|round(2) }}
                                 kr. pr. person)</p>
                         </div>
                     </div>
@@ -45,11 +44,12 @@
                         <table class="table" id="dinnerTable">
                             <tbody>
                             {% for dinner in dinners %}
+                                {% set g = dinner.guests | sum(attribute='number_of_guests') %}
                                 <tr class="clickable-row"
                                     data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
                                     <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
                                     <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
-                                    <td class="text-muted">{{ dinner.guests|length + dinner.participants|length }}
+                                    <td class="text-muted">{{ g + dinner.participants|length }}
                                         attended
                                     </td>
                                     <td class="text-muted">{{ dinner.dish_name }}</td>

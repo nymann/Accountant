@@ -5,6 +5,7 @@ from project.models import db, User
 from project.site import site
 from project.api import api
 from project.dinner_club import dinner_club
+from project.kitchen_meeting import kitchen_meeting
 from project.utils.uploadsets import avatars
 
 
@@ -15,6 +16,7 @@ app.config.from_pyfile('../config.cfg', silent=False)
 app.register_blueprint(site, url_prefix='')
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(dinner_club, url_prefix='/dinner_club')
+app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 
 login_manager = LoginManager()
 login_manager.init_app(app)

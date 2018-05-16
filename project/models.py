@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
-from datetime import date
+from datetime import date, datetime
 
 db = SQLAlchemy()
 
@@ -81,3 +81,11 @@ class BeverageClub(db.Model):
     name = db.Column(db.String(20), nullable=False)
     price = db.Column(db.Float, nullable=False)
     drinks = db.relationship("User", secondary=drinks, backref=db.backref("drinks_consumed", lazy="dynamic"))
+
+
+class MeetingTopics(db.Model):
+    __table_name__ = "kitchen_meeting_topics"
+    id = db.Column(db.Integer, primary_key=True)
+    topic = db.Column(db.String, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+    talked_about = db.Column(db.Boolean, default=False)

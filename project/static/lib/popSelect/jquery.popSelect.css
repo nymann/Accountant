@@ -276,13 +276,14 @@ textarea.popover-select-textarea {
   background-color: #17a2b8;
   border-color: #17a2b8;
   margin: 5px;
+  color: white;
   -webkit-transition: 0.5s all;
 }
 
 .popover-select-list li:hover {
   color: white;
-  background-color: #17a2b8;
-  border-color: #17a2b8;
+  background-color: #138496;
+  border-color: #117a8b;
 }
 
 /* Disable Tags inside a Popover */

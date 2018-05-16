@@ -83,8 +83,8 @@ class BeverageClub(db.Model):
     drinks = db.relationship("User", secondary=drinks, backref=db.backref("drinks_consumed", lazy="dynamic"))
 
 
-class MeetingTopics(db.Model):
-    __table_name__ = "kitchen_meeting_topics"
+class MeetingTopic(db.Model):
+    __table_name__ = "kitchen_meeting_topic"
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String, nullable=False)
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)

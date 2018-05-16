@@ -21,8 +21,9 @@ app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.blueprint_login_views = {
-    'site': '/site/login',
-    'dinner_club': '/site/login'
+    'site': '/login',
+    'dinner_club': '/login',
+    'kitchen_meeting': '/login'
 }
 
 configure_uploads(app, avatars)

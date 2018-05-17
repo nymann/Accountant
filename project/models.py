@@ -91,8 +91,6 @@ class MeetingTopic(db.Model):
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
     talked_about = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-'''
     meeting_id = db.Column(db.Integer, db.ForeignKey('meeting.id'))
 
 
@@ -100,4 +98,3 @@ class MeetingEvent(db.Model):
     __table_name__ = "meeting"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, default=date.today(), nullable=False)
-'''

@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group row">
                         <textarea placeholder="Insert topic here" id="topic" name="topic"
-                                  cols="40" rows="5" class="form-control" title="Topic"></textarea>
+                                  cols="40" rows="3" class="form-control" title="Topic"></textarea>
                     </div>
                     <div class="form-group row">
                         <button class="btn btn-block btn-info" type="submit">Add topic</button>
@@ -34,6 +34,11 @@
                 <div class="card bg-white">
                     <div class="card-body">
                         <h5 class="card-title">Next meeting</h5>
+                        {% if event %}
+                            <h3>{{ event.date }}</h3>
+                        {% else %}
+                            <h3>There no date yet, go make one</h3>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -74,7 +79,8 @@
 
                 <!-- Content of modal -->
                 <div class="modal-body">
-                    <form class="form-group" action="#" method="POST">
+                    <form class="form-group" action="{{ url_for('kitchen_meeting.new_meeting') }}" id="new_meeting"
+                          method="POST">
                         <div class="form-group row">
                             {{ form.hidden_tag() }}
                         </div>
@@ -96,6 +102,15 @@
         </div>
     </div>
 
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $('#save').click(function () {
+            $('#new_meeting').submit();
+        });
+    </script>
     <script type="text/javascript">
         $('#date').datepicker({
             uiLibrary: 'bootstrap4',

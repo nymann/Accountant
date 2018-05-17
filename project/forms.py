@@ -37,5 +37,9 @@ class DinnerForm(FlaskForm):
     payee = StringField('payee')
 
 
-class MeetingForm(FlaskForm):
+class MeetingTopicForm(FlaskForm):
     topic = StringField('topic')
+
+
+class MeetingEventForm(FlaskForm):
+    date = StringField('date')

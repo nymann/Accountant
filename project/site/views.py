@@ -13,7 +13,7 @@ from project.utils.uploadsets import avatars, process_user_avatar
 
 @site.route('/')
 def index():
-    return render_template('site/base.html')
+    return render_template('site/homepage.html')
 
 
 @site.route('/login', methods=['GET', 'POST'])

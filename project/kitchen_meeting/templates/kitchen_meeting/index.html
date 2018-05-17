@@ -7,7 +7,7 @@
 {% block jumbocontent %}
     <h1 class="display-3">Kitchen meeting</h1>
     <p>Here all topics will be listed</p>
-    <a href="#" class="btn btn-info">New kitchen meeting</a>
+    <button class="btn btn-info btn-md" data-toggle="modal" data-target="#createnewmeeting">New kitchen meeting</button>
 {% endblock %}
 
 {% block content %}
@@ -59,5 +59,28 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal for creating new kitchen meeting -->
+    <div class="modal fade" id="createnewmeeting" tabindex="-1" role="dialog"
+         aria-labelledby="updateSettingsFormTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateSettingsFormLongTitle">Create new kitchen meeting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Empty
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
 

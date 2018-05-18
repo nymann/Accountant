@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block jumbocontent %}
-    <h1 class="display-3">{{ dinner.date }}</h1>
-    <p>Editing a dinner club meal entry.</p>
+    <h1 class="display-4">{{ dinner.dish_name }}</h1>
+    <p class="lead">{{ dinner.date.strftime("%A the %d. of %b %Y") }}</p>
 {% endblock %}
 
 {% block content %}

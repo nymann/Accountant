@@ -70,18 +70,25 @@ def new_meeting():
 @kitchen_meeting.route('/meeting', methods=['GET', 'POST'])
 @login_required
 def execute_meeting():
-    # Some kind of logic, to assign all topics, to the active meeting.
-
     event = MeetingEvent.query.filter(
         MeetingEvent.completed.is_(False)
     ).order_by(
         MeetingEvent.id.desc()
     ).first()
 
-    # This should only return the topics, which links
-    # tot his meeting.
     topics = MeetingTopic.query.filter(
         MeetingTopic.talked_about.is_(False)
     ).all()
 
     return render_template('kitchen_meeting/meeting.html', event=event, topics=topics)
+
+
+#   @kitchen_meeting.route('/done', methods=['GET', 'POST'])
+#@login_required
+#def finishing_meeting():
+    # When the meeting is done, every topics marked with
+    # the checkbox, should be added to the respective
+    # meeting and changed to talked_about true.
+    # This should be done here...
+
+    # Use the werkzeug getlist method

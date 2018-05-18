@@ -42,7 +42,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Next meeting</h5>
                         {% if event %}
-                            <h3>{{ event.date.strftime('%d/%m/%Y') }}</h3>
+                            <h3>{{ event.date | datetime() }}</h3>
                         {% else %}
                             <h3>There no date yet, go make one</h3>
                         {% endif %}

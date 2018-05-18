@@ -1,0 +1,16 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Editing Dinner
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-3">{{ dinner.date }}</h1>
+    <p>Editing a dinner club meal entry.</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% include 'dinner_club/edit_form.html' %}
+    </div>
+{% endblock %}

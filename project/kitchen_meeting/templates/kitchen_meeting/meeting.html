@@ -1,0 +1,39 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Dinner
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-3">Meeting | {{ event.date }}</h1>
+    <button class="btn btn-info">Meeting done</button>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card bg-white">
+            <div class="card-body">
+                <h5 class="card-title">Topics for this meeting</h5>
+                <table class="table table-striped table-hover">
+                    <tbody>
+                    <tr>
+                        <th>Discussed</th>
+                        <th>Topics</th>
+                        <th>Author</th>
+                    </tr>
+                    {% for topic in topics %}
+                        <tr>
+                            <td class="text-muted"  align="center"> <input type="checkbox"> </td>
+                            <td class="text-muted">{{ topic.topic }}</td>
+                            <td class="text-muted"><a
+                                    href="{{ url_for('site.profile', user_id=topic.user.id) }}">{{ topic.user.name }}
+                            </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

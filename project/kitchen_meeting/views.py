@@ -64,3 +64,23 @@ def new_meeting():
     ).first()
 
     return render_template('kitchen_meeting/index.html', topics=topics, form=form, event=event)
+
+
+@kitchen_meeting.route('/meeting', methods=['GET', 'POST'])
+@login_required
+def execute_meeting():
+    # Some kind of logic, to assign all topics, to the active meeting.
+
+    event = MeetingEvent.query.filter(
+        MeetingEvent.completed.is_(False)
+    ).order_by(
+        MeetingEvent.id.desc()
+    ).first()
+
+    # This should only return the topics, which links
+    # tot his meeting.
+    topics = MeetingTopic.query.filter(
+        MeetingTopic.talked_about.is_(False)
+    ).all()
+
+    return render_template('kitchen_meeting/meeting.html', event=event, topics=topics)

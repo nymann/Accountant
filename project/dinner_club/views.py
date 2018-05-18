@@ -167,3 +167,23 @@ def edit(dinner_id):
     ).all()
 
     return render_template("dinner_club/edit.html", users=users, dinner=dinner, form=form)
+
+
+@dinner_club.route('/meal/delete/<dinner_id>')
+def delete(dinner_id):
+    dinner = Dinner.query.get_or_404(int(dinner_id))
+    if not current_user.admin and current_user.id is not dinner.payee_id:
+        flash("You can't delete the event because you didn't pay and you are not admin.", "alert alert-danger")
+        return redirect(url_for('dinner_club.meal', dinner_id=dinner_id))
+    try:
+        GuestAssociation.query.filter(
+            GuestAssociation.dinner_id == dinner_id
+        ).delete()
+        db.session.delete(dinner)
+        db.session.commit()
+        flash("Deletion successful", "alert alert-info ")
+    except DBAPIError as e:
+        db.session.rollback()
+        flash(str(e), "alert alert-danger")
+        return redirect(url_for('dinner_club.meal', dinner_id=dinner_id))
+    return redirect(url_for('dinner_club.index'))

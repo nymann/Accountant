@@ -15,7 +15,10 @@
     </ul>
     <h5 class="text-muted">Payee</h5>
     <p>{{ dinner.payee.name }}</p>
-    <a href="{{ url_for('dinner_club.edit', dinner_id=dinner.id) }}" class="btn btn-info btn-lg">Edit</a>
+    {% if current_user == dinner.payee or current_user.admin %}
+        <a href="{{ url_for('dinner_club.edit', dinner_id=dinner.id) }}" class="btn btn-info">Edit</a>
+        <a href="{{ url_for('dinner_club.delete', dinner_id=dinner.id) }}" class="btn btn-danger">Delete</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}

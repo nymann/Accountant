@@ -32,12 +32,11 @@ db.init_app(app)
 db.create_all()
 
 
-@app.template_filter('strftime')
-def _jinja2_filter_datetime(date, fmt=None):
-    date = dateutil.parser.parse(date)
-    native = date.replace(tzinfo=None)
-    format='%b %d, %Y'
-    return native.strftime(format)
+def format_datetime(value):
+    return value.strftime("%d/%m/%Y")
+
+
+app.jinja_env.filters['datetime'] = format_datetime
 
 
 @login_manager.user_loader

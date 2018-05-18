@@ -8,7 +8,6 @@ from project.dinner_club import dinner_club
 from project.kitchen_meeting import kitchen_meeting
 from project.utils.uploadsets import avatars
 
-
 app = Flask(__name__)
 
 app.config.from_pyfile('../config.cfg', silent=False)
@@ -31,6 +30,14 @@ configure_uploads(app, avatars)
 db.app = app
 db.init_app(app)
 db.create_all()
+
+
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date, fmt=None):
+    date = dateutil.parser.parse(date)
+    native = date.replace(tzinfo=None)
+    format='%b %d, %Y'
+    return native.strftime(format)
 
 
 @login_manager.user_loader

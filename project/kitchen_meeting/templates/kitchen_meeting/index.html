@@ -7,7 +7,14 @@
 {% block jumbocontent %}
     <h1 class="display-3">Kitchen meeting</h1>
     <p>Here all topics will be listed</p>
-    <button class="btn btn-info btn-md" data-toggle="modal" data-target="#createnewmeeting">New kitchen meeting</button>
+    {% if event %}
+        <a class="btn btn-info btn-md" href="{{ url_for('kitchen_meeting.execute_meeting')}}">Execute meeting
+        </a>
+    {% else %}
+        <button class="btn btn-info btn-md" data-toggle="modal" data-target="#createnewmeeting">New kitchen meeting
+        </button>
+
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -35,7 +42,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Next meeting</h5>
                         {% if event %}
-                            <h3>{{ event.date }}</h3>
+                            <h3>{{ event.date.strftime('%d/%m/%Y') }}</h3>
                         {% else %}
                             <h3>There no date yet, go make one</h3>
                         {% endif %}
@@ -66,51 +73,14 @@
     </div>
 
     <!-- Modal for creating new kitchen meeting -->
-    <div class="modal fade" id="createnewmeeting" tabindex="-1" role="dialog"
-         aria-labelledby="updateSettingsFormTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateSettingsFormLongTitle">Create new kitchen meeting</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <!-- Content of modal -->
-                <div class="modal-body">
-                    <form class="form-group" action="{{ url_for('kitchen_meeting.new_meeting') }}" id="new_meeting"
-                          method="POST">
-                        <div class="form-group row">
-                            {{ form.hidden_tag() }}
-                        </div>
-                        <div class="form-group row">
-                            <label for="date" class="col-lg-3 col-form-label">Date</label>
-                            <div class="col-lg-9">
-                                <input type="text" name="date" placeholder="date" class="form-control" id="date"
-                                       value="">
-                                <span id="dateHelpBlock" class="form-text text-muted">The date of the meeting.</span>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% if not event %}
+        {% include 'kitchen_meeting/new_meeting.html' %}
+    {% endif %}
 
 
 {% endblock %}
 
 {% block scripts %}
-    <script type="text/javascript">
-        $('#save').click(function () {
-            $('#new_meeting').submit();
-        });
-    </script>
     <script type="text/javascript">
         $('#date').datepicker({
             uiLibrary: 'bootstrap4',

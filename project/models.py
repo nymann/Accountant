@@ -97,5 +97,5 @@ class MeetingTopic(db.Model):
 class MeetingEvent(db.Model):
     __table_name__ = "meeting"
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.String, nullable=False)
+    date = db.Column(db.Date, nullable=False)
     completed = db.Column(db.Boolean, default=False)

@@ -119,7 +119,6 @@ def edit(dinner_id):
         dinner.date = datetime.strptime(form.date.data, "%d/%m/%Y")
         dinner.payee_id = form.payee.data if current_user.admin else dinner.payee_id
 
-
         # Participants
         dinner.participants = []
         for user_id in request.form.getlist('participants'):
@@ -132,10 +131,10 @@ def edit(dinner_id):
 
         # Guests
         g = Counter(form.guests.data.splitlines())
-        guest_associations = GuestAssociation.query.filter(
+
+        GuestAssociation.query.filter(
             GuestAssociation.dinner_id == dinner.id
-        ).all()
-        #guest_associations.clear()
+        ).delete()
 
         if form.guests.data is None or str(form.guests.data).isspace() or str(form.guests.data) is "":
             db.session.commit()
@@ -154,14 +153,13 @@ def edit(dinner_id):
                         ga = GuestAssociation(number_of_guests=numbers)
                         ga.user = user
                         dinner.guests.append(ga)
-
                         db.session.commit()
                     except DBAPIError as e:
                         print(str(e))
                         db.session.rollback()
                 else:
                     flash("Couldn't find guest with name {0}. Are you sure it's correct?".format(key))
-                    return redirect(url_for('dinner_club.edit', dinner_id))
+                    return redirect(url_for('dinner_club.edit', dinner_id=dinner_id))
 
     users = User.query.filter(
         User.subscribed_to_dinner_club,

@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block jumbocontent %}
-    <h1 class="display-3">Kitchen meeting</h1>
-    <p>Here all topics will be listed</p>
+    <h1 class="display-4">Kitchen meeting</h1>
+    <p class="lead">Here all topics will be listed</p>
     {% if event %}
         <a class="btn btn-info btn-md" href="{{ url_for('kitchen_meeting.execute_meeting')}}">Execute meeting
         </a>

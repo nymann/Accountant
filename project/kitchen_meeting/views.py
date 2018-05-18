@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from project.forms import MeetingTopicForm, MeetingEventForm
 from project.kitchen_meeting import kitchen_meeting
 from project.models import MeetingTopic, MeetingEvent, db
+from datetime import datetime
 
 
 @kitchen_meeting.route('/', methods=['GET', 'POST'])
@@ -43,7 +44,7 @@ def index():
 def new_meeting():
     form = MeetingEventForm()
     if form.validate_on_submit():
-        meeting_event = MeetingEvent(date=form.date.data);
+        meeting_event = MeetingEvent(date=datetime.strptime(form.date.data, "%d/%m/%Y").date())
         print(form.date.data)
         try:
             db.session.add(meeting_event)

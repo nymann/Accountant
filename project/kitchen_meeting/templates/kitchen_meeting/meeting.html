@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block jumbocontent %}
-    <h1 class="display-3">Meeting | {{ event.date }}</h1>
+    <h1 class="display-3">Meeting</h1>
+    <p> {{ myVar | date_format()}}</p>
     <button class="btn btn-info">Meeting done</button>
 {% endblock %}
 

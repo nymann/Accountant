@@ -27,7 +27,7 @@ def index():
         MeetingEvent.id.desc()
     ).first()
 
-    return render_template('site/homepage.html', latest_dinner=latest_dinner, event=event)
+    return render_template('site/index.html', latest_dinner=latest_dinner, event=event)
 
 
 @site.route('/login', methods=['GET', 'POST'])

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block jumbocontent %}
-    <h1 class="display-3">{{ dinner.dish_name }}</h1>
+    <h1 class="display-4">{{ dinner.dish_name }}</h1>
 
     <h5 class="text-muted">Chefs</h5>
     <ul class="list-unstyled">
@@ -15,6 +15,10 @@
     </ul>
     <h5 class="text-muted">Payee</h5>
     <p>{{ dinner.payee.name }}</p>
+    {% if current_user == dinner.payee or current_user.admin %}
+        <a href="{{ url_for('dinner_club.edit', dinner_id=dinner.id) }}" class="btn btn-info">Edit</a>
+        <a href="{{ url_for('dinner_club.delete', dinner_id=dinner.id) }}" class="btn btn-danger">Delete</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}

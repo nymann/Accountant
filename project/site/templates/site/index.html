@@ -1,0 +1,63 @@
+{% extends 'site/base.html' %}
+
+{% block title %}Index{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">This is happening</h1>
+    <p class="lead">Need an quick overview?</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Next meeting</h5>
+                        <h6 class="card-subtitle">
+                            {% if event %}
+                                {{ event.date }}
+                            {% else %}
+                                Nothing scheduled
+                            {% endif %}
+                        </h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Most recent meal</h5>
+                        {% if latest_dinner %}
+                            {% set g = latest_dinner.guests | sum(attribute='number_of_guests') %}
+                            <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
+                            <p class="card-text">On {{ latest_dinner.date.strftime('%A the %d. of %b') }}, we had
+                                <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
+                            <p class="card-text">{{ g + latest_dinner.participants|length }}
+                                attended ({{ g }} guests).</p>
+                            <p class="card-text">{{ latest_dinner.price }} kr.
+                                ({{ (latest_dinner.price/(g + latest_dinner.participants|length))|round(2) }}
+                                kr. pr. person)</p>
+                        {% else %}
+                            <h6 class="card-title">No meals registered</h6>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Empty</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Empty</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

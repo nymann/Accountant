@@ -1,4 +1,4 @@
-<form action="{{ url_for('dinner_club.new') }}" method="post">
+<form action="{{ url_for('dinner_club.edit', dinner_id=dinner.id) }}" method="POST">
 
     {#CSRF token#}
     <div class="form-group row">
@@ -10,7 +10,7 @@
         <label for="price" class="col-lg-3 col-form-label">Price</label>
         <div class="col-lg-9">
             <input type="number" name="price" placeholder="price" class="form-control" id="price"
-                   value="" min="0" max="2000" required="required">
+                   value="{{ dinner.price }}" min="0" max="2000">
             <span id="priceHelpBlock" class="form-text text-muted">Dinner total costs.</span>
         </div>
     </div>
@@ -20,7 +20,7 @@
         <label for="date" class="col-lg-3 col-form-label">Date</label>
         <div class="col-lg-9">
             <input type="text" name="date" placeholder="date" class="form-control" id="date"
-                   value="" required="required">
+                   value="{{ dinner.date.strftime("%d/%m/%Y") }}">
             <span id="dateHelpBlock" class="form-text text-muted">The date that the dinner took place.</span>
         </div>
     </div>
@@ -32,7 +32,11 @@
             <div class="form-group">
                 <select multiple class="form-control" id="participants" name="participants">
                     {% for user in users %}
-                        <option value="{{ user.id }}" selected="selected">{{ user.name }}</option>
+                        {% if user in dinner.participants %}
+                            <option value="{{ user.id }}" selected="selected">{{ user.name }}</option>
+                        {% else %}
+                            <option value="{{ user.id }}">{{ user.name }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
@@ -58,8 +62,8 @@
     <div class="form-group row">
         <div class="offset-lg-3 col-lg-9">
             <div class="form-group">
-                <textarea name="guests" id="guests" cols="30" rows="10" class="form-control" title="">
-                </textarea>
+                <textarea name="guests" id="guests" cols="30" rows="10" class="form-control"
+                          title="">{% for user in dinner.guests %}{{ user.name }}{% endfor %}</textarea>
             </div>
         </div>
     </div>
@@ -71,7 +75,11 @@
             <div class="form-group">
                 <select multiple class="form-control" id="chefs" name="chefs">
                     {% for user in users %}
-                        <option value="{{ user.id }}">{{ user.name }}</option>
+                        {% if user in dinner.chefs %}
+                            <option value="{{ user.id }}" selected="selected">{{ user.name }}</option>
+                        {% else %}
+                            <option value="{{ user.id }}">{{ user.name }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
@@ -83,7 +91,7 @@
         <label for="dish_name" class="col-lg-3 col-form-label">Dish Name</label>
         <div class="col-lg-9">
             <input type="text" name="dish_name" placeholder="dish name" class="form-control" id="dish_name"
-                   value="" required="required">
+                   value="{{ dinner.dish_name }}">
             <span id="dish_nameHelpBlock" class="form-text text-muted">The name of the dish.</span>
         </div>
     </div>
@@ -96,7 +104,11 @@
             <div class="col-lg-9">
                 <select class="form-control" id="payee">
                     {% for user in users %}
-                        <option value="{{ user.id }}">{{ user.name }}</option>
+                        {% if user == dinner.payee %}
+                            <option value="{{ user.id }}" selected="selected">{{ user.name }}</option>
+                        {% else %}
+                            <option value="{{ user.id }}">{{ user.name }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
                 <span id="payeeHelpBlock" class="form-text text-muted">The person who paid for the dinner.</span>
@@ -107,7 +119,7 @@
     {# Submit #}
     <div class="form-group row">
         <div class="offset-lg-3 col-lg-9">
-            <button class="btn btn-lg btn-block btn-info" type="submit">Create</button>
+            <button class="btn btn-lg btn-block btn-info" type="submit">Update</button>
         </div>
     </div>
 </form>
@@ -140,10 +152,9 @@
 </script>
 
 <script>
-    $(function() {
-	$("#chefs, #participants").popSelect({
-		showTitle: false
-	});
-});
+    $(function () {
+        $("#chefs, #participants").popSelect({
+            showTitle: false
+        });
+    });
 </script>
-

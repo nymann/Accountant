@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block jumbocontent %}
-    <h1 class="display-3">Meeting</h1>
-    <p>{{ event.date | datetime() }}</p>
+    <h1 class="display-4">Meeting</h1>
+    <p class="lead">{{ event.date | datetime() }}</p>
     <button class="btn btn-info" id="meeting_done" type="submit" form="meeting_completed">Meeting resolved</button>
 {% endblock %}
 

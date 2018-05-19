@@ -4,7 +4,6 @@ from datetime import datetime
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user
 from sqlalchemy.exc import DBAPIError
-from sqlalchemy.sql import label
 
 from project.dinner_club import dinner_club
 from project.forms import DinnerForm
@@ -187,3 +186,4 @@ def delete(dinner_id):
         flash(str(e), "alert alert-danger")
         return redirect(url_for('dinner_club.meal', dinner_id=dinner_id))
     return redirect(url_for('dinner_club.index'))
+

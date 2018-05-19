@@ -5,7 +5,7 @@ from sqlalchemy.exc import DBAPIError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from project.forms import LoginForm, RegisterForm, UserForm
-from project.models import User
+from project.models import User, Dinner, MeetingEvent
 from project.models import db
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
@@ -13,7 +13,21 @@ from project.utils.uploadsets import avatars, process_user_avatar
 
 @site.route('/')
 def index():
-    return render_template('site/base.html')
+    # latest meal
+    latest_dinner = Dinner.query.filter(
+        Dinner.accounted.is_(False)
+    ).order_by(
+        Dinner.date.desc()
+    ).first()
+
+    # next meeting
+    event = MeetingEvent.query.filter(
+        MeetingEvent.completed.is_(False)
+    ).order_by(
+        MeetingEvent.id.desc()
+    ).first()
+
+    return render_template('site/homepage.html', latest_dinner=latest_dinner, event=event)
 
 
 @site.route('/login', methods=['GET', 'POST'])

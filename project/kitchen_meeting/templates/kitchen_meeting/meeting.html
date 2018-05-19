@@ -6,8 +6,8 @@
 
 {% block jumbocontent %}
     <h1 class="display-4">Meeting</h1>
-    <p class="lead">{{ myVar | date_format()}}</p>
-    <button class="btn btn-info">Meeting done</button>
+    <p class="lead">{{ event.date | datetime() }}</p>
+    <button class="btn btn-info" id="meeting_done" type="submit" form="meeting_completed">Meeting resolved</button>
 {% endblock %}
 
 {% block content %}
@@ -15,26 +15,34 @@
         <div class="card bg-white">
             <div class="card-body">
                 <h5 class="card-title">Topics for this meeting</h5>
-                <table class="table table-striped table-hover">
-                    <tbody>
-                    <tr>
-                        <th>Discussed</th>
-                        <th>Topics</th>
-                        <th>Author</th>
-                    </tr>
-                    {% for topic in topics %}
+
+                <!-- Form cannot be in a table element -->
+                <form class="form-group" action="{{ url_for('kitchen_meeting.finishing_meeting') }}"
+                      id="meeting_completed" method="POST">
+                    <table class="table table-striped table-hover">
+                        <tbody>
                         <tr>
-                            <td class="text-muted"  align="center"> <input type="checkbox"> </td>
-                            <td class="text-muted">{{ topic.topic }}</td>
-                            <td class="text-muted"><a
-                                    href="{{ url_for('site.profile', user_id=topic.user.id) }}">{{ topic.user.name }}
-                            </a>
-                            </td>
+                            <th>Discussed</th>
+                            <th>Topics</th>
+                            <th>Author</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        {% for topic in topics %}
+                            <tr>
+                                <td class="text-muted" align="center"><input type="checkbox" name="mark_topics"
+                                                                             value="{{ topic.id }}"></td>
+                                <td class="text-muted">{{ topic.topic }}</td>
+                                <td class="text-muted"><a
+                                        href="{{ url_for('site.profile', user_id=topic.user.id) }}">{{ topic.user.name }}
+                                </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+
             </div>
         </div>
     </div>
 {% endblock %}
+

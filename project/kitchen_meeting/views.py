@@ -1,4 +1,4 @@
-from flask import render_template, flash
+from flask import render_template, flash, request
 from sqlalchemy.exc import DBAPIError
 from flask_login import login_required, current_user
 
@@ -11,6 +11,24 @@ from datetime import datetime
 @kitchen_meeting.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    form = MeetingTopicForm()
+
+    topics = MeetingTopic.query.filter(
+        MeetingTopic.talked_about.is_(False)
+    ).all()
+
+    event = MeetingEvent.query.filter(
+        MeetingEvent.completed.is_(False)
+    ).order_by(
+        MeetingEvent.id.desc()
+    ).first()
+
+    return render_template('kitchen_meeting/index.html', topics=topics, form=form, event=event)
+
+
+@kitchen_meeting.route('/new_topic', methods=['GET', 'POST'])
+@login_required
+def new_topic():
     form = MeetingTopicForm()
 
     if form.validate_on_submit():
@@ -26,17 +44,7 @@ def index():
                 db.session.rollback()
                 flash(str(e), "alert alert-danger")
 
-    topics = MeetingTopic.query.filter(
-        MeetingTopic.talked_about.is_(False)
-    ).all()
-
-    event = MeetingEvent.query.filter(
-        MeetingEvent.completed.is_(False)
-    ).order_by(
-        MeetingEvent.id.desc()
-    ).first()
-
-    return render_template('kitchen_meeting/index.html', topics=topics, form=form, event=event)
+    return index()
 
 
 @kitchen_meeting.route('/new', methods=['GET', 'POST'])
@@ -54,23 +62,29 @@ def new_meeting():
             db.session.rollback()
             flash(str(e), "alert alert-danger")
 
-    topics = MeetingTopic.query.filter(
-        MeetingTopic.talked_about.is_(False)
-    ).all()
-
-    event = MeetingEvent.query.filter(
-        MeetingEvent.completed.is_(False)
-    ).order_by(
-        MeetingEvent.id.desc()
-    ).first()
-
-    return render_template('kitchen_meeting/index.html', topics=topics, form=form, event=event)
+    return index()
 
 
 @kitchen_meeting.route('/meeting', methods=['GET', 'POST'])
 @login_required
 def execute_meeting():
-    # Some kind of logic, to assign all topics, to the active meeting.
+    event = MeetingEvent.query.filter(
+        MeetingEvent.completed.is_(False)
+    ).order_by(
+        MeetingEvent.id.desc()
+    ).first()
+
+    topics = MeetingTopic.query.filter(
+        MeetingTopic.talked_about.is_(False)
+    ).all()
+
+    return render_template('kitchen_meeting/meeting.html', event=event, topics=topics)
+
+
+@kitchen_meeting.route('/done', methods=['GET', 'POST'])
+@login_required
+def finishing_meeting():
+    topic_ids = request.form.getlist("mark_topics")
 
     event = MeetingEvent.query.filter(
         MeetingEvent.completed.is_(False)
@@ -78,10 +92,20 @@ def execute_meeting():
         MeetingEvent.id.desc()
     ).first()
 
-    # This should only return the topics, which links
-    # tot his meeting.
-    topics = MeetingTopic.query.filter(
-        MeetingTopic.talked_about.is_(False)
-    ).all()
+    try:
+        # Topic get closed and assigned to Meeting event
+        for topic_id in topic_ids:
+            topic = MeetingTopic.query.filter_by(id=topic_id).first()
+            topic.talked_about = True
+            topic.meeting_id = event.id
+            db.session.commit()
 
-    return render_template('kitchen_meeting/meeting.html', event=event, topics=topics)
+        # Event get closed
+        event.completed = True
+        db.session.commit()
+
+    except DBAPIError as e:
+        db.session.rollback()
+        flash(str(e), "alert alert-danger")
+
+    return index()

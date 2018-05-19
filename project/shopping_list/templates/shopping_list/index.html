@@ -1,0 +1,58 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Shopping List
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">Shopping List</h1>
+    <p class="lead">Items bought since last accounting.</p>
+    {% if current_user.active or current_user.admin %}
+        <a href="#" class="btn btn-info">New Shopping Entry</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="card col-lg-12">
+                <div class="card-body">
+                    <h5 class="card-title">Bought Items</h5>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Payee</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+{#                        {% for shopping_list_entry in shopping_list_entries %}#}
+{#                            <tr>#}
+{#                                <td>{{ shopping_list_entry.date }}</td>#}
+{#                                <td>{{ shopping_list_entry.payee.name }}</td>#}
+{#                                <td>{% for item in shopping_list_entry.items %}{{ item.name }}{% endfor %}</td>#}
+{#                                <td>0 kr.</td>#}
+{#                            </tr>#}
+{#                        {% endfor %}#}
+                        <tr>
+                            <td>27/05/2018</td>
+                            <td>Jonathan</td>
+                            <td>Kost</td>
+                            <td>120 kr.</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Is</td>
+                            <td>20 kr.</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

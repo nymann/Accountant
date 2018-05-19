@@ -7,6 +7,7 @@ from project.api import api
 from project.dinner_club import dinner_club
 from project.kitchen_meeting import kitchen_meeting
 from project.utils.uploadsets import avatars
+from project.shopping_list import shopping_list
 
 app = Flask(__name__)
 
@@ -16,6 +17,7 @@ app.register_blueprint(site, url_prefix='')
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(dinner_club, url_prefix='/dinner_club')
 app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
+app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 
 login_manager = LoginManager()
 login_manager.init_app(app)

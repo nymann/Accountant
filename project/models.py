@@ -16,12 +16,6 @@ chefs = db.Table(
     db.Column("dinner_id", db.Integer, db.ForeignKey("dinner.id"))
 )
 
-items = db.Table(
-    "items",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
-    db.Column("shopping_id", db.Integer, db.ForeignKey("shopping.id")),
-)
-
 drinks = db.Table(
     "drinks",
     db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
@@ -46,6 +40,7 @@ class User(UserMixin, db.Model):
     dinners_paid = db.relationship("Dinner", backref="payee", lazy=True)
     guests = db.relationship("GuestAssociation", back_populates="user")
     meeting_topics = db.relationship("MeetingTopic", backref="user", lazy=True)
+    items = db.relationship("Items", back_populates="user")
 
 
 class Dinner(db.Model):
@@ -71,9 +66,18 @@ class GuestAssociation(db.Model):
 class Shopping(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     payee = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    price = db.Column(db.Float, nullable=False)
     date = db.Column(db.Date, nullable=False)
-    items = db.relationship("User", secondary=items, backref=db.backref("bought_items", lazy="dynamic"))
+    items = db.relationship("Items", back_populates="shopping")
+    accounted = db.Column(db.Boolean, default=False)
+
+
+class Items(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    shopping_id = db.Column(db.Integer, db.ForeignKey("shopping.id"), primary_key=True)
+    price = db.Column(db.Float, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    user = db.relationship("User", back_populates="items")
+    shopping = db.relationship("Shopping", back_populates="items")
 
 
 class BeverageClub(db.Model):

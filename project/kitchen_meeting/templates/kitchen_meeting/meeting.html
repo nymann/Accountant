@@ -7,7 +7,7 @@
 {% block jumbocontent %}
     <h1 class="display-3">Meeting</h1>
     <p>{{ event.date | datetime() }}</p>
-    <button class="btn btn-info">Meeting done</button>
+    <button class="btn btn-info" id="meeting_done" type="submit" form="meeting_completed">Meeting resolved</button>
 {% endblock %}
 
 {% block content %}
@@ -17,7 +17,8 @@
                 <h5 class="card-title">Topics for this meeting</h5>
 
                 <!-- Form cannot be in a table element -->
-                <form class="form-group" action="{{ url_for('kitchen_meeting.new_meeting') }}" id="meeting_completed">
+                <form class="form-group" action="{{ url_for('kitchen_meeting.finishing_meeting') }}"
+                      id="meeting_completed" method="POST">
                     <table class="table table-striped table-hover">
                         <tbody>
                         <tr>
@@ -45,10 +46,3 @@
     </div>
 {% endblock %}
 
-{% script %}
-    <script type="text/javascript">
-        $('#save').click(function () {
-            $('#meeting_completed').submit();
-        });
-    </script>
-{% endblock %}

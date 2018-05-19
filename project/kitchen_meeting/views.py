@@ -1,4 +1,4 @@
-from flask import render_template, flash
+from flask import render_template, flash, request
 from sqlalchemy.exc import DBAPIError
 from flask_login import login_required, current_user
 
@@ -11,6 +11,24 @@ from datetime import datetime
 @kitchen_meeting.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    form = MeetingTopicForm()
+
+    topics = MeetingTopic.query.filter(
+        MeetingTopic.talked_about.is_(False)
+    ).all()
+
+    event = MeetingEvent.query.filter(
+        MeetingEvent.completed.is_(False)
+    ).order_by(
+        MeetingEvent.id.desc()
+    ).first()
+
+    return render_template('kitchen_meeting/index.html', topics=topics, form=form, event=event)
+
+
+@kitchen_meeting.route('/new_topic', methods=['GET', 'POST'])
+@login_required
+def new_topic():
     form = MeetingTopicForm()
 
     if form.validate_on_submit():
@@ -26,17 +44,7 @@ def index():
                 db.session.rollback()
                 flash(str(e), "alert alert-danger")
 
-    topics = MeetingTopic.query.filter(
-        MeetingTopic.talked_about.is_(False)
-    ).all()
-
-    event = MeetingEvent.query.filter(
-        MeetingEvent.completed.is_(False)
-    ).order_by(
-        MeetingEvent.id.desc()
-    ).first()
-
-    return render_template('kitchen_meeting/index.html', topics=topics, form=form, event=event)
+    return index()
 
 
 @kitchen_meeting.route('/new', methods=['GET', 'POST'])
@@ -54,17 +62,7 @@ def new_meeting():
             db.session.rollback()
             flash(str(e), "alert alert-danger")
 
-    topics = MeetingTopic.query.filter(
-        MeetingTopic.talked_about.is_(False)
-    ).all()
-
-    event = MeetingEvent.query.filter(
-        MeetingEvent.completed.is_(False)
-    ).order_by(
-        MeetingEvent.id.desc()
-    ).first()
-
-    return render_template('kitchen_meeting/index.html', topics=topics, form=form, event=event)
+    return index()
 
 
 @kitchen_meeting.route('/meeting', methods=['GET', 'POST'])
@@ -83,12 +81,31 @@ def execute_meeting():
     return render_template('kitchen_meeting/meeting.html', event=event, topics=topics)
 
 
-#   @kitchen_meeting.route('/done', methods=['GET', 'POST'])
-#@login_required
-#def finishing_meeting():
-    # When the meeting is done, every topics marked with
-    # the checkbox, should be added to the respective
-    # meeting and changed to talked_about true.
-    # This should be done here...
+@kitchen_meeting.route('/done', methods=['GET', 'POST'])
+@login_required
+def finishing_meeting():
+    topic_ids = request.form.getlist("mark_topics")
 
-    # Use the werkzeug getlist method
+    event = MeetingEvent.query.filter(
+        MeetingEvent.completed.is_(False)
+    ).order_by(
+        MeetingEvent.id.desc()
+    ).first()
+
+    try:
+        # Topic get closed and assigned to Meeting event
+        for topic_id in topic_ids:
+            topic = MeetingTopic.query.filter_by(id=topic_id).first()
+            topic.talked_about = True
+            topic.meeting_id = event.id
+            db.session.commit()
+
+        # Event get closed
+        event.completed = True
+        db.session.commit()
+
+    except DBAPIError as e:
+        db.session.rollback()
+        flash(str(e), "alert alert-danger")
+
+    return index()

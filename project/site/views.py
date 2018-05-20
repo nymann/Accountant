@@ -78,7 +78,7 @@ def register():
     return render_template('site/register.html', form=form)
 
 
-@site.route('/profile/<user_id>', methods=['GET', 'POST'])
+@site.route('/profile/<int:user_id>', methods=['GET', 'POST'])
 def profile(user_id):
     user = User.query.get_or_404(user_id)
 
@@ -110,6 +110,7 @@ def profile(user_id):
         Shopping.payee_id.is_(user_id),
         Shopping.accounted.is_(False)
     ).scalar()
+    shopping_income = shopping_income if shopping_income else 0.0
 
     dinner_income = db.session.query(
         func.sum(Dinner.price)
@@ -117,24 +118,23 @@ def profile(user_id):
         Dinner.payee_id.is_(user_id),
         Dinner.accounted.is_(False)
     ).scalar()
+    dinner_income = dinner_income if dinner_income else 0.0
 
     non_accounted_dinners = Dinner.query.filter(
         Dinner.accounted.is_(False)
     ).all()
     dinner_expenses = 0.0
     for dinner in non_accounted_dinners:
-        if dinner.payee_id is user_id:
-            dinner_expenses -= dinner.price
         # How many participated?
         number_of_guests = 0
         for guest in dinner.guests:
             number_of_guests += guest.number_of_guests
         number_of_participants = len(dinner.participants) + number_of_guests
-        dinner_expenses += dinner.price/number_of_participants
+        dinner_expenses += dinner.price / number_of_participants
         for guest in dinner.guests:
             if guest.user_id is user_id:
                 # It's our guest.
-                dinner_expenses += (dinner.price * guest.number_of_guests)/number_of_participants
+                dinner_expenses += guest.number_of_guests * dinner.price / number_of_participants
 
     form = UserForm()
     if form.validate_on_submit():

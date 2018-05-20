@@ -1,0 +1,40 @@
+<form action="{{ url_for('shopping_list.edit', shopping_id=shopping.id) }}" method="post" id="shopping_list_form">
+    {# CSRF Token #}
+    <div class="form-group row">
+        {{ form.hidden_tag() }}
+    </div>
+
+    {# Date #}
+    <div class="form-group row">
+        <div class="col-lg-9">
+            <input type="text" name="date" placeholder="date" class="form-control" id="date"
+                   value="{{ shopping.date | datetime() }}">
+            <span id="dateHelpBlock" class="form-text text-muted">What date did you buy the items on?</span>
+        </div>
+    </div>
+
+    {#Admin#}
+    {% if current_user.admin %}
+        <div class="form-group row">
+            <div class="col-lg-12">
+                <select class="form-control" id="payee" name="payee" title="Payee">
+                    {% for user in users %}
+                        {% if user == shopping.payee %}
+                            <option selected="selected" value="{{ user.id }}">{{ user.name }}</option>
+                        {% else %}
+                            <option value="{{ user.id }}">{{ user.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <span id="payeeHelpBlock" class="form-text text-muted">Who paid for the items?</span>
+            </div>
+        </div>
+    {% endif %}
+
+    {#Submit#}
+    <div class="form-group row">
+        <div class="col-lg-12">
+            <button class="btn btn-lg btn-info" type="submit">Update</button>
+        </div>
+    </div>
+</form>

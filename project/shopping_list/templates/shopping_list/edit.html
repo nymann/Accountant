@@ -1,0 +1,77 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Edit
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">{{ shopping.date | datetime() }}</h1>
+    <p class="lead">Here you can edit the items you bought, as well as the date.</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        {% include 'shopping_list/shopping_edit_form.html' %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Bought items</h5>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th class="card-text text-muted">Name</th>
+                                <th class="card-text text-muted">Amount</th>
+                                <th class="card-text text-muted">Unit Price</th>
+                                <th class="card-text text-muted"></th>
+                                <th class="card-text text-muted"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in shopping.items %}
+                                <tr>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.amount }}</td>
+                                    <td>{{ item.price }}</td>
+                                    <td>
+                                        <a href="{{ url_for('shopping_list.edit_item', item_id=item.id, shopping_id=shopping.id) }}"
+                                           class="btn btn-info">Edit</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('shopping_list.delete_item', item_id=item.id, shopping_id=shopping.id) }}"
+                                           class="btn btn-danger">Remove</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h5>Forgot to add an item?</h5>
+        <form action="{{ url_for('shopping_list.items_new', shopping_id=shopping.id, edit=True) }}" method="post">
+            {% include 'shopping_list/new_item_form.html' %}
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('#date').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: "dd/mm/yyyy",
+            todayBtn: "linked",
+            language: "da",
+            calendarWeeks: true,
+            autoclose: true
+        });
+    </script>
+{% endblock %}

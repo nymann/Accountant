@@ -1,0 +1,61 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Editing
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">Some text here</h1>
+    <p class="lead">.. and a fancy a paragraph to go with it!</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form action="{{ url_for('shopping_list.edit_item', item_id=item.id, shopping_id=shopping_id) }}" method="post">
+            {#CSRF-token#}
+            <div class="form-group">
+                {{ form.hidden_tag() }}
+            </div>
+
+            {#Name#}
+            <div class="form-group row">
+                <label for="name" class="col-lg-3 col-form-label">Item Name</label>
+                <div class="col-lg-9">
+                    <input type="text" name="name" placeholder="name" class="form-control" id="name"
+                           value="{{ item.name }}" required="required" aria-describedby="nameHelpBlock">
+                    <span id="nameHelpBlock" class="form-text text-muted">The name of the item you bought.</span>
+                </div>
+            </div>
+
+            {#Amount#}
+            <div class="form-group row">
+                <label for="amount" class="col-lg-3 col-form-label">Amount bought</label>
+                <div class="col-lg-9">
+                    <input type="text" name="amount" placeholder="amount" class="form-control" id="amount"
+                           value="{{ item.amount }}" required="required" aria-describedby="amountHelpBlock">
+                    <span id="amountHelpBlock"
+                          class="form-text text-muted">How many did you buy? Or how many kgs.</span>
+                </div>
+            </div>
+
+            {#Price#}
+            <div class="form-group row">
+                <label for="price" class="col-lg-3 col-form-label">Unit Price</label>
+                <div class="col-lg-9">
+                    <input type="number" step="any" min="0" name="price" placeholder="unit price" class="form-control"
+                           id="price" value="{{ item.price }}" required="required" aria-describedby="priceHelpBlock">
+                    <span id="priceHelpBlock" class="form-text text-muted">
+                    The cost pr. amount (unit price), fx. if you bought 2 bottles of soap, and entered amount 2,
+                    then enter the price of 1 bottle..</span>
+                </div>
+            </div>
+
+            {# Submit #}
+            <div class="form-group row">
+                <div class="offset-lg-3 col-lg-9">
+                    <button class="btn btn-lg btn-block btn-info" type="submit">Update Item</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

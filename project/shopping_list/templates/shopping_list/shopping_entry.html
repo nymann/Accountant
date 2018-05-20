@@ -1,12 +1,15 @@
 {% extends 'site/base.html' %}
 
 {% block title %}
-    Add items for the shopping entry on {{ shopping.date | datetime() }}
+    Entry
 {% endblock %}
 
 {% block jumbocontent %}
-    <h1 class="display-4">{{ shopping.date | datetime() }}</h1>
-    <p class="lead">What items did you buy?</p>
+    <h1 class="display-4">{{ entry.payee.name }}, {{ entry.date | datetime() }}</h1>
+    <p class="lead">These are the items bought by {{ entry.payee.name }} on
+        {{ entry.date.strftime("%A the %d. of %B, %Y" ) }}</p>
+    <a href="{{ url_for('shopping_list.edit', shopping_id=entry.id ) }}" class="btn btn-info">Edit</a>
+    <a href="{{ url_for('shopping_list.delete', shopping_id=entry.id) }}" class="btn btn-danger">Delete</a>
 {% endblock %}
 
 {% block content %}
@@ -24,26 +27,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for item in shopping.items %}
+                    {% for item in entry.items %}
                         <tr>
                             <td>{{ item.name }}</td>
                             <td>{{ item.amount }}</td>
                             <td>{{ item.price }}</td>
                         </tr>
                     {% endfor %}
-
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <br>
-    <div class="container">
-        {#New items (form)#}
-        <form action="{{ url_for('shopping_list.items_new', shopping_id=shopping.id) }}" method="post">
-            {% include 'shopping_list/new_item_form.html' %}
-        </form>
-    </div>
-
-
 {% endblock %}

@@ -31,7 +31,8 @@
                         <tbody>
                         {% for shopping_list_entry in shopping_list_entries %}
                             {% for item in shopping_list_entry.items %}
-                                <tr>
+                                <tr class="clickable-row"
+                                    data-href="{{ url_for('shopping_list.entry', shopping_id=shopping_list_entry.id) }}">
                                     <td>{% if loop.first %}{{ shopping_list_entry.date | datetime() }}{% endif %}</td>
                                     <td>{% if loop.first %}{{ shopping_list_entry.payee.name }}{% endif %}</td>
                                     <td>{{ item.name }}</td>
@@ -46,4 +47,14 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
 {% endblock %}

@@ -11,19 +11,30 @@ function calendarInit(defaultView, defaultDate) {
         navLinks: true,
         editable: false,
         eventLimit: true,
-        eventSources: [{
-            url: '/api/dinners',
-            color: 'red',
-            textColor: 'black',
-            error: function (error) {
-                alert("Couldn't get data from URL " + error);
-            },
-        }],
+        events: function (start, end, timezone, callback) {
+            $.ajax({
+                url: '/api/dinners?start=' + start.toISOString(),
+                color: 'red',
+                textColor: 'black',
+                success: function (data) {
+                    var events = [];
+                    data["dinners"].forEach(function (dinner) {
+                        events.push(dinner);
+                    });
+                    callback(events);
+                },
+                error: function (error) {
+                    alert("Couldn't get data from URL " + error);
+                },
+            })
+
+        },
         eventClick: function (event) {
             if (event.url) {
                 window.open('/dinner_club/meal/' + event.url, '_self');
                 return false;
             }
         }
+
     });
 }

@@ -74,7 +74,22 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Dinner Club Balance</h5>
-                        <h6 class="card-subtitle"></h6>
+                        <h6 class="card-subtitle text-muted">Since last accounting-report</h6>
+                        <br>
+                        <p class="card-text green">Income: {{ dinner_income }} DKK</p>
+                        {% if dinner_expenses > 0 %}
+                            <p class="card-text text-danger">Expenses: {{ dinner_expenses }} DKK</p>
+                        {% else %}
+                            <p class="card-text green">Expenses: {{ dinner_expenses }} DKK</p>
+                        {% endif %}
+
+                    </div>
+                    <div class="card-footer">
+                        {% if dinner_expenses > dinner_income %}
+                            <h3 class="card-title text-danger">{{ dinner_income - dinner_expenses }} DKK</h3>
+                        {% else %}
+                            <h3 class="card-title green">{{ dinner_income - dinner_expenses }} DKK</h3>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -111,8 +126,21 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Shopping List Balance</h5>
-                        <h6 class="card-subtitle"></h6>
-                        <p class="card-text"></p>
+                        <h6 class="card-subtitle text-muted">Since the last accounting-report</h6>
+                        <br>
+                        <p class="card-text green">Income: {{ shopping_income }} DKK</p>
+                        {% if dinner_expenses > 0 %}
+                            <p class="card-text text-danger">Expenses: {{ shopping_expenses }} DKK</p>
+                        {% else %}
+                            <p class="card-text green">Expenses: {{ shopping_expenses }} DKK</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        {% if shopping_expenses > shopping_income %}
+                            <h3 class="card-title text-danger">{{ shopping_income - shopping_expenses }} DKK</h3>
+                        {% else %}
+                            <h3 class="card-title green">{{ shopping_income - shopping_expenses }} DKK</h3>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -120,7 +148,7 @@
                 <div class="card bg-white">
                     <div class="card-body">
                         <h5 class="card-title">Shopping List</h5>
-                        <p class="card-subtitle">Items bought by {{ user.name }}.</p>
+                        <p class="card-subtitle text-muted">Items bought by {{ user.name }}.</p>
                         <table class="table" id="shoppingTable">
                             <tbody>
                             {% for shopping_list_entry in shopping_list_entries %}

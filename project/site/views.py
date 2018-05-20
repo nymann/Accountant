@@ -1,11 +1,12 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, login_required, logout_user, current_user
-from sqlalchemy import or_
+from sqlalchemy import or_, func
+from sqlalchemy.sql import label
 from sqlalchemy.exc import DBAPIError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from project.forms import LoginForm, RegisterForm, UserForm
-from project.models import User, Dinner, MeetingEvent, Shopping
+from project.models import User, Dinner, MeetingEvent, Shopping, Items
 from project.models import db
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
@@ -80,10 +81,61 @@ def register():
 @site.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
     user = User.query.get_or_404(user_id)
+
     shopping_list_entries = Shopping.query.filter(
         Shopping.accounted.is_(False),
         Shopping.payee_id.is_(user_id)
     ).all()
+
+    active_members = db.session.query(
+        func.count(User.id)
+    ).filter(
+        User.active
+    ).scalar()
+
+    non_accounted_shopping_entries = Shopping.query.filter(
+        Shopping.accounted.is_(False)
+    ).all()
+
+    shopping_expenses = 0.0
+    for shopping in non_accounted_shopping_entries:
+        for item in shopping.items:
+            if user_id is shopping.payee_id:
+                shopping_expenses -= item.price * item.amount
+            shopping_expenses += (item.price * item.amount) / active_members
+
+    shopping_income = db.session.query(
+        func.sum(Items.price * Items.amount)
+    ).join(Shopping).filter(
+        Shopping.payee_id.is_(user_id),
+        Shopping.accounted.is_(False)
+    ).scalar()
+
+    dinner_income = db.session.query(
+        func.sum(Dinner.price)
+    ).filter(
+        Dinner.payee_id.is_(user_id),
+        Dinner.accounted.is_(False)
+    ).scalar()
+
+    non_accounted_dinners = Dinner.query.filter(
+        Dinner.accounted.is_(False)
+    ).all()
+    dinner_expenses = 0.0
+    for dinner in non_accounted_dinners:
+        if dinner.payee_id is user_id:
+            dinner_expenses -= dinner.price
+        # How many participated?
+        number_of_guests = 0
+        for guest in dinner.guests:
+            number_of_guests += guest.number_of_guests
+        number_of_participants = len(dinner.participants) + number_of_guests
+        dinner_expenses += dinner.price/number_of_participants
+        for guest in dinner.guests:
+            if guest.user_id is user:
+                # It's our guest.
+                dinner_expenses += (dinner.price * guest.number_of_guests)/number_of_participants
+
     form = UserForm()
     if form.validate_on_submit():
         try:
@@ -108,7 +160,9 @@ def profile(user_id):
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")
 
-    return render_template('site/profile.html', user=user, form=form, shopping_list_entries=shopping_list_entries)
+    return render_template('site/profile.html', user=user, form=form, shopping_list_entries=shopping_list_entries,
+                           shopping_income=shopping_income, shopping_expenses=shopping_expenses,
+                           dinner_income=dinner_income, dinner_expenses=dinner_expenses)
 
 
 @site.route('/residents')

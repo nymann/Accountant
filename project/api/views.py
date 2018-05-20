@@ -20,9 +20,9 @@ def dinners():
     end = datetime.strptime(end, "%Y-%m-%d") if end else datetime.strptime("3000-01-01 23:59:59", "%Y-%m-%d %H:%M:%S")
 
     dinners = db.session.query(
+        label("start", Dinner.date),
         label("title", User.name),
-        label("url", Dinner.id),
-        label("start", Dinner.date)
+        label("url", Dinner.id)
     ).filter(
         Dinner.date >= start,
         Dinner.date <= end,

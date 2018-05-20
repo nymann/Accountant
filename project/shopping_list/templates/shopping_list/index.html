@@ -8,7 +8,7 @@
     <h1 class="display-4">Shopping List</h1>
     <p class="lead">Items bought since last accounting.</p>
     {% if current_user.active or current_user.admin %}
-        <a href="#" class="btn btn-info">New Shopping Entry</a>
+        <a href="{{ url_for('shopping_list.new') }}" class="btn btn-info">New Shopping Entry</a>
     {% endif %}
 {% endblock %}
 

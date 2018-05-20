@@ -1,0 +1,29 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    New Shopping List Entry
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">New Shopping List Entry</h1>
+    <p class="lead">Here you can register your bought items for the kitchen.</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% include 'shopping_list/shopping_form.html' %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('#date').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: "dd/mm/yyyy",
+            todayBtn: "linked",
+            language: "da",
+            calendarWeeks: true,
+            autoclose: true
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,40 @@
+<form action="{{ url_for('shopping_list.new') }}" method="post" id="shopping_list_form">
+    {# CSRF Token #}
+    <div class="form-group row">
+        {{ form.hidden_tag() }}
+    </div>
+
+    {# Date #}
+    <div class="form-group row">
+        <label for="date" class="col-lg-3 col-form-label">Date</label>
+        <div class="col-lg-9">
+            <input type="text" name="date" placeholder="date" class="form-control" id="date"
+                   value="{{ today | datetime() }}">
+            <span id="dateHelpBlock" class="form-text text-muted">What date did you buy the items on?</span>
+        </div>
+    </div>
+
+    {#Admin#}
+    {% if current_user.admin %}
+        <div class="form-group row">
+            <label for="payee" class="col-lg-3 col-form-label">Payee</label>
+            <div class="col-lg-9">
+                <select class="form-control" id="payee" name="payee">
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+                <span id="payeeHelpBlock" class="form-text text-muted">Who paid for the items?</span>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Items (Name, Price, Amount) #}
+
+    {#Submit#}
+    <div class="form-group row">
+        <div class="offset-lg-3 col-lg-9">
+            <button class="btn btn-lg btn-info" type="submit">Add</button>
+        </div>
+    </div>
+</form>

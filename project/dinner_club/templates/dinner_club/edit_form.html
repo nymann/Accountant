@@ -102,7 +102,7 @@
         <div class="form-group row">
             <label for="payee" class="col-lg-3 col-form-label">Payee</label>
             <div class="col-lg-9">
-                <select class="form-control" id="payee">
+                <select class="form-control" id="payee" name="payee">
                     {% for user in users %}
                         {% if user == dinner.payee %}
                             <option value="{{ user.id }}" selected="selected">{{ user.name }}</option>

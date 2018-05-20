@@ -19,11 +19,12 @@ chefs = db.Table(
 drinks = db.Table(
     "drinks",
     db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
-    db.Column("beverage_club.id", db.Integer, db.ForeignKey("beverage_club.id")),
+    db.Column("beverage_club_id", db.Integer, db.ForeignKey("beverage_club.id")),
 )
 
 
 class User(UserMixin, db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     email = db.Column(db.String, unique=True, nullable=False)
@@ -44,6 +45,7 @@ class User(UserMixin, db.Model):
 
 
 class Dinner(db.Model):
+    __tablename__ = 'dinner'
     id = db.Column(db.Integer, primary_key=True)
     payee_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -56,6 +58,7 @@ class Dinner(db.Model):
 
 
 class GuestAssociation(db.Model):
+    __tablename__ = 'guest_association'
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     dinner_id = db.Column(db.Integer, db.ForeignKey("dinner.id"), primary_key=True)
     number_of_guests = db.Column(db.Integer, nullable=False)
@@ -64,18 +67,22 @@ class GuestAssociation(db.Model):
 
 
 class Shopping(db.Model):
+    __tablename__ = 'shopping'
     id = db.Column(db.Integer, primary_key=True)
-    payee = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    payee_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     date = db.Column(db.Date, nullable=False)
     items = db.relationship("Items", back_populates="shopping")
     accounted = db.Column(db.Boolean, default=False)
 
 
 class Items(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    shopping_id = db.Column(db.Integer, db.ForeignKey("shopping.id"), primary_key=True)
+    __tablename__ = 'items'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    shopping_id = db.Column(db.Integer, db.ForeignKey("shopping.id"))
     price = db.Column(db.Float, nullable=False)
     name = db.Column(db.String, nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
     user = db.relationship("User", back_populates="items")
     shopping = db.relationship("Shopping", back_populates="items")
 

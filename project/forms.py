@@ -43,3 +43,14 @@ class MeetingTopicForm(FlaskForm):
 
 class MeetingEventForm(FlaskForm):
     date = StringField('date')
+
+
+class ShoppingForm(FlaskForm):
+    date = StringField('date')
+    payee = StringField('payee')
+
+
+class ItemForm(FlaskForm):
+    name = StringField('name')
+    amount = StringField('amount')
+    price = StringField('price')

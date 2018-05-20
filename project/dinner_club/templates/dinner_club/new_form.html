@@ -94,7 +94,7 @@
         <div class="form-group row">
             <label for="payee" class="col-lg-3 col-form-label">Payee</label>
             <div class="col-lg-9">
-                <select class="form-control" id="payee">
+                <select class="form-control" id="payee" name="payee">
                     {% for user in users %}
                         <option value="{{ user.id }}">{{ user.name }}</option>
                     {% endfor %}

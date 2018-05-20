@@ -1,0 +1,92 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Add items for the shopping entry on {{ shopping_entry.date | datetime() }}
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">{{ shopping_entry.date | datetime() }}</h1>
+    <p class="lead">What items did you buy?</p>
+{% endblock %}
+
+{% block content %}
+    {#Existing items bought on that date.#}
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Bought items</h5>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="card-text text-muted">Name</th>
+                        <th class="card-text text-muted">Amount</th>
+                        <th class="card-text text-muted">Unit Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in shopping_entry.items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.amount }}</td>
+                            <td>{{ item.price }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+        {#New items (form)#}
+        <form action="{{ url_for('shopping_list.items_new', shopping_id=shopping_entry.id) }}" method="post">
+            {#CSRF-token#}
+            <div class="form-group">
+                {{ form.hidden_tag() }}
+            </div>
+
+            {#Name#}
+            <div class="form-group row">
+                <label for="name" class="col-lg-3 col-form-label">Item Name</label>
+                <div class="col-lg-9">
+                    <input type="text" name="name" placeholder="name" class="form-control" id="name"
+                           value="" required="required" aria-describedby="nameHelpBlock">
+                    <span id="nameHelpBlock" class="form-text text-muted">The name of the item you bought.</span>
+                </div>
+            </div>
+
+            {#Amount#}
+            <div class="form-group row">
+                <label for="amount" class="col-lg-3 col-form-label">Amount bought</label>
+                <div class="col-lg-9">
+                    <input type="text" name="amount" placeholder="amount" class="form-control" id="amount"
+                           value="" required="required" aria-describedby="amountHelpBlock">
+                    <span id="amountHelpBlock"
+                          class="form-text text-muted">How many did you buy? Or how many kgs.</span>
+                </div>
+            </div>
+
+            {#Price#}
+            <div class="form-group row">
+                <label for="price" class="col-lg-3 col-form-label">Unit Price</label>
+                <div class="col-lg-9">
+                    <input type="number" name="price" placeholder="unit price" class="form-control" id="price"
+                           value="" required="required" aria-describedby="priceHelpBlock">
+                    <span id="priceHelpBlock" class="form-text text-muted">
+                    The cost pr. amount (unit price), fx. if you bought 2 bottles of soap, and entered amount 2,
+                    then enter the price of 1 bottle..</span>
+                </div>
+            </div>
+
+            {# Submit #}
+            <div class="form-group row">
+                <div class="offset-lg-3 col-lg-9">
+                    <button class="btn btn-lg btn-block btn-info" type="submit">Add Item to list.</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+{% endblock %}

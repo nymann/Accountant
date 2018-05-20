@@ -123,6 +123,8 @@ def profile(user_id):
     ).all()
     dinner_expenses = 0.0
     for dinner in non_accounted_dinners:
+        if user not in dinner.participants:
+            continue
         # How many participated?
         number_of_guests = 0
         for guest in dinner.guests:

@@ -100,8 +100,6 @@ def profile(user_id):
     shopping_expenses = 0.0
     for shopping in non_accounted_shopping_entries:
         for item in shopping.items:
-            if user_id is shopping.payee_id:
-                shopping_expenses -= item.price * item.amount
             shopping_expenses += (item.price * item.amount) / active_members
 
     shopping_income = db.session.query(

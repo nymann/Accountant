@@ -19,7 +19,7 @@ function calendarInit(defaultView, defaultDate) {
         },
         eventClick: function (event) {
             if (event.url) {
-                window.open('/dinner_club/meal/' + event.url);
+                window.open('/dinner_club/meal/' + event.url, '_self');
                 return false;
             }
         },

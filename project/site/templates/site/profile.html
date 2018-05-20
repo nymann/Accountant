@@ -19,12 +19,16 @@
                 <div class="col-lg-3">
                     <h4>{{ user.name }}</h4>
                 </div>
-                <div class="offset-3 col-lg-2">
-                    {# What should be here? #}
+                <div class="offset-2 col-lg-3">
+                    <h6 class="card-subtitle">{% if user.phone_number %}{{ user.phone_number }}{% endif %}</h6>
+                    <ul class="list-unstyled">
+                        <li class="card-text">Moved in the {{ user.move_in_date.strftime("%d. of %B %Y") }}</li>
+                        <li class="card-text">Lives in room no. {{ user.room_number }}</li>
+                    </ul>
                 </div>
                 <div class="col-lg-2">
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#updateSettingsForm">
-                        Update information
+                        Update Information
                     </button>
                 </div>
             </div>
@@ -65,26 +69,19 @@
 
 {% block content %}
     <div class="container">
-        <div class="row">
+        <div class="row mb-2">
             <div class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Introduction</h5>
-                        <h6 class="card-subtitle">{% if user.phone_number %}{{ user.phone_number }}{% endif %}</h6>
-                        <ul class="list-unstyled">
-                            <li class="card-text">Moved in the {{ user.move_in_date.strftime("%d. of %B %Y") }}</li>
-                            <li class="card-text">Lives in room no. {{ user.room_number }}</li>
-                        </ul>
-                    </div>
-                    <div class="card-footer">
-                        <a href="mailto:{{ user.email }}" class="btn btn-info">Send email</a>
+                        <h5 class="card-title">Dinner Club Balance</h5>
+                        <h6 class="card-subtitle"></h6>
                     </div>
                 </div>
             </div>
             <div class="col-lg-9">
                 <div class="card bg-white">
                     <div class="card-body">
-                        <h5 class="card-title">Dinners</h5>
+                        <h5 class="card-title">Dinner Club</h5>
                         <p class="card-subtitle">Non-accounted meals that {{ user.name }} took part of.</p>
                         <table class="table" id="dinnerTable">
                             <tbody>
@@ -101,6 +98,42 @@
                                         <td class="text-muted">{{ dinner.price }} kr.</td>
                                     </tr>
                                 {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Shopping List Balance</h5>
+                        <h6 class="card-subtitle"></h6>
+                        <p class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="card bg-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Shopping List</h5>
+                        <p class="card-subtitle">Items bought by {{ user.name }}.</p>
+                        <table class="table" id="shoppingTable">
+                            <tbody>
+                            {% for shopping_list_entry in shopping_list_entries %}
+                                {% for item in shopping_list_entry.items %}
+                                    <tr class="clickable-row"
+                                        data-href="{{ url_for('shopping_list.entry', shopping_id=shopping_list_entry.id) }}">
+                                        <td>{% if loop.first %}
+                                            {{ shopping_list_entry.date | datetime() }}{% endif %}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.amount }}</td>
+                                        <td>{{ item.price }} DKK.</td>
+                                    </tr>
+                                {% endfor %}
                             {% endfor %}
                             </tbody>
                         </table>

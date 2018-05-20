@@ -5,7 +5,7 @@ from sqlalchemy.exc import DBAPIError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from project.forms import LoginForm, RegisterForm, UserForm
-from project.models import User, Dinner, MeetingEvent
+from project.models import User, Dinner, MeetingEvent, Shopping
 from project.models import db
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
@@ -79,7 +79,11 @@ def register():
 
 @site.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
-    user = User.query.get(user_id)
+    user = User.query.get_or_404(user_id)
+    shopping_list_entries = Shopping.query.filter(
+        Shopping.accounted.is_(False),
+        Shopping.payee_id.is_(user_id)
+    ).all()
     form = UserForm()
     if form.validate_on_submit():
         try:
@@ -104,7 +108,7 @@ def profile(user_id):
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")
 
-    return render_template('site/profile.html', user=user, form=form)
+    return render_template('site/profile.html', user=user, form=form, shopping_list_entries=shopping_list_entries)
 
 
 @site.route('/residents')

@@ -65,7 +65,7 @@
                             <tbody>
                             {% for guest in dinner.guests %}
                                 <tr class="clickable-row"
-                                    data-href="{{ url_for('site.profile', user_id=guest.id) }}">
+                                    data-href="{{ url_for('site.profile', user_id=guest.user_id) }}">
                                     <td class="text-muted">{{ guest.user.name }}</td>
                                     <td class="text-muted">{{ guest.number_of_guests }}</td>
                                 </tr>

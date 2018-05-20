@@ -59,12 +59,17 @@
                 </div>
             </div>
         </div>
+        <hr>
+        <div id="calendar"></div>
     </div>
 {% endblock %}
 
 {% block scripts %}
+    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
     <script type="text/javascript">
-        jQuery(document).ready(function ($) {
+        $(document).ready(calendarInit('month'))
+
+        $(document).ready(function ($) {
             $(".clickable-row").click(function () {
                 window.location = $(this).data("href");
             });

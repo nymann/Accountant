@@ -132,7 +132,7 @@ def profile(user_id):
         number_of_participants = len(dinner.participants) + number_of_guests
         dinner_expenses += dinner.price/number_of_participants
         for guest in dinner.guests:
-            if guest.user_id is user:
+            if guest.user_id is user_id:
                 # It's our guest.
                 dinner_expenses += (dinner.price * guest.number_of_guests)/number_of_participants
 

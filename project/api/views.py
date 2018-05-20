@@ -4,6 +4,7 @@ from project.api import api
 from flask import request, jsonify
 from datetime import datetime, date
 from project.models import db, Dinner, User
+import simplejson
 
 
 @api.route('/')
@@ -28,4 +29,4 @@ def dinners():
         Dinner.date <= end,
         Dinner.payee_id.is_(User.id)
     ).group_by(Dinner.id).all()
-    return jsonify(dinners)
+    return jsonify(dinners=dinners)

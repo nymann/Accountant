@@ -11,24 +11,19 @@ function calendarInit(defaultView, defaultDate) {
         navLinks: true,
         editable: false,
         eventLimit: true,
-        events: {
+        eventSources: [{
             url: '/api/dinners',
+            color: 'red',
+            textColor: 'black',
             error: function (error) {
                 alert("Couldn't get data from URL " + error);
-            }
-        },
+            },
+        }],
         eventClick: function (event) {
             if (event.url) {
                 window.open('/dinner_club/meal/' + event.url, '_self');
                 return false;
             }
-        },
-        eventRender: function (event, element) {
-            element.css({
-               'background-color': '#ff1e00',
-                'border-color': '#ff1e00',
-                'color': '#ff1e00'
-            });
         }
     });
 }

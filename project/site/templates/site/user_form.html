@@ -50,6 +50,13 @@
         <label class="form-check-label" for="subscribed_to_dinner_club">Subscribed to Dinner Club?</label>
     </div>
 
+    {#Move in date#}
+    <div class="form-group row">
+        <input type="text" name="move_in_date" placeholder="move in date" class="form-control" id="move_in_date"
+               value="{{ user.move_in_date | datetime() }}" aria-describedby="move_in_dateHelpBlock">
+        <span id="move_in_dateHelpBlock" class="form-text text-muted">What day did you move in?</span>
+    </div>
+
     {#Admin Menu#}
     {% if current_user.admin %}
         {#Room Number#}
@@ -70,6 +77,13 @@
             <input type="checkbox" class="form-check-input" id="active" name="active"
                    {% if user.active %}checked="checked"{% endif %}>
             <label class="form-check-label" for="active">Active?</label>
+        </div>
+
+        {#Move out date#}
+        <div class="form-group row">
+            <input type="text" name="move_out_date" placeholder="move out date" class="form-control" id="move_out_date"
+                   value="{% if user.move_out_date %}{{ user.move_out_date | datetime() }}{% endif %}" aria-describedby="move_out_dateHelpBlock">
+            <span id="move_out_dateHelpBlock" class="form-text text-muted">Set move out date.</span>
         </div>
     {% endif %}
 </form>

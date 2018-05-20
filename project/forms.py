@@ -27,6 +27,8 @@ class UserForm(FlaskForm):
     phone_number = StringField('phone_number')
     active = BooleanField('active')
     picture = FileField('picture')
+    move_in_date = StringField('move_in_date')
+    move_out_date = StringField('move_out_date')
 
 
 class DinnerForm(FlaskForm):

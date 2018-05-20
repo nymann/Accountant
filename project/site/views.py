@@ -10,6 +10,7 @@ from project.models import User, Dinner, MeetingEvent, Shopping, Items
 from project.models import db
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
+from datetime import datetime
 
 
 @site.route('/')
@@ -143,7 +144,7 @@ def profile(user_id):
             user.name = form.name.data
             user.subscribed_to_dinner_club = form.subscribed_to_dinner_club.data
             user.phone_number = form.phone_number.data
-
+            user.move_in_date = datetime.strptime(form.move_in_date.data, "%d/%m/%Y")
             if 'picture' in request.files:
                 filename = process_user_avatar(request.files['picture'], avatars)
                 user.picture_url = filename
@@ -152,6 +153,9 @@ def profile(user_id):
                 user.admin = form.admin.data
                 user.room_number = form.room_number.data
                 user.active = form.active.data
+                move_out_date = str(form.move_out_date)
+                if move_out_date and move_out_date.isspace():
+                    user.move_out_date = datetime.strptime(move_out_date, "%d/%m/%Y")
 
             db.session.commit()
             flash("Updated", "alert alert-info")

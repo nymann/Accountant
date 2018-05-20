@@ -4,7 +4,6 @@ from project.api import api
 from flask import request, jsonify
 from datetime import datetime, date
 from project.models import db, Dinner, User
-import simplejson
 
 
 @api.route('/')

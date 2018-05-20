@@ -41,6 +41,13 @@ def format_datetime(value):
 app.jinja_env.filters['datetime'] = format_datetime
 
 
+@app.after_request
+def add_header(response):
+    response.cache_control.private = True
+    response.cache_control.public = False
+    return response
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))

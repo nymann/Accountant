@@ -103,7 +103,7 @@ def finishing_meeting():
         # Event get closed
         event.completed = True
         db.session.commit()
-
+        flash("Meeting resolved succesfully", "alert alert-info")
     except DBAPIError as e:
         db.session.rollback()
         flash(str(e), "alert alert-danger")

@@ -70,6 +70,7 @@ class Shopping(db.Model):
     __tablename__ = 'shopping'
     id = db.Column(db.Integer, primary_key=True)
     payee_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    payee = db.relationship("User")
     date = db.Column(db.Date, nullable=False)
     items = db.relationship("Items", back_populates="shopping")
     accounted = db.Column(db.Boolean, default=False)

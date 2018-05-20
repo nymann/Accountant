@@ -24,31 +24,22 @@
                             <th>Date</th>
                             <th>Payee</th>
                             <th>Item</th>
+                            <th>Amount</th>
                             <th>Price</th>
                         </tr>
                         </thead>
                         <tbody>
-{#                        {% for shopping_list_entry in shopping_list_entries %}#}
-{#                            <tr>#}
-{#                                <td>{{ shopping_list_entry.date }}</td>#}
-{#                                <td>{{ shopping_list_entry.payee.name }}</td>#}
-{#                                <td>{% for item in shopping_list_entry.items %}{{ item.name }}{% endfor %}</td>#}
-{#                                <td>0 kr.</td>#}
-{#                            </tr>#}
-{#                        {% endfor %}#}
-                        <tr>
-                            <td>27/05/2018</td>
-                            <td>Jonathan</td>
-                            <td>Kost</td>
-                            <td>120 kr.</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td>Is</td>
-                            <td>20 kr.</td>
-                        </tr>
-
+                        {% for shopping_list_entry in shopping_list_entries %}
+                            {% for item in shopping_list_entry.items %}
+                                <tr>
+                                    <td>{% if loop.first %}{{ shopping_list_entry.date | datetime() }}{% endif %}</td>
+                                    <td>{% if loop.first %}{{ shopping_list_entry.payee.name }}{% endif %}</td>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.amount }}</td>
+                                    <td>{{ item.price }} DKK.</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>

@@ -1,4 +1,4 @@
-function calendarInit(defaultView) {
+function calendarInit(defaultView, defaultDate) {
     $('#calendar').fullCalendar({
         header: {
             left: 'prev,next today',
@@ -6,7 +6,7 @@ function calendarInit(defaultView) {
             defaultView: defaultView,
             right: 'month, basicWeek,basicDay'
         },
-        defaultDate: new Date(),
+        defaultDate: defaultDate,
         allDay: true,
         navLinks: true,
         editable: false,

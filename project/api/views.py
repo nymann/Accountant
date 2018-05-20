@@ -25,6 +25,7 @@ def dinners():
         label("start", Dinner.date)
     ).filter(
         Dinner.date >= start,
-        Dinner.date <= end
-    ).all()
+        Dinner.date <= end,
+        Dinner.payee_id.is_(User.id)
+    ).group_by(Dinner.id).all()
     return jsonify(dinners)

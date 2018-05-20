@@ -67,7 +67,7 @@
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
     <script type="text/javascript">
-        $(document).ready(calendarInit('month'))
+        $(document).ready(calendarInit('month', moment().startOf('month').format('YYYY-MM-DD')));
 
         $(document).ready(function ($) {
             $(".clickable-row").click(function () {

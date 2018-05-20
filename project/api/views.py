@@ -28,4 +28,4 @@ def dinners():
         Dinner.date <= end,
         Dinner.payee_id.is_(User.id)
     ).group_by(Dinner.id).all()
-    return jsonify(dinners=dinners)
+    return jsonify(dinners)

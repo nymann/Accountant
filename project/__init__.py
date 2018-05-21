@@ -20,7 +20,7 @@ app.config.from_pyfile('../config.cfg', silent=False)
 
 facebook_blueprint = make_facebook_blueprint(
     backend=SQLAlchemyBackend(OAuth, db.session, user=current_user),
-    redirect_url='https://kk24.dk'
+    redirect_to='https://kk24.dk'
 )
 
 app.register_blueprint(facebook_blueprint, url_prefix='/login')

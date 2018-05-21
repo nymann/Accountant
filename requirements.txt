@@ -9,3 +9,4 @@ flask_wtf
 gunicorn
 Pillow
 flask_uploads
+flask_dance

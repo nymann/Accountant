@@ -10,3 +10,5 @@ gunicorn
 Pillow
 flask_uploads
 flask_dance
+sqlalchemy_utils
+blinker

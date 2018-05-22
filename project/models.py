@@ -111,6 +111,7 @@ class MeetingTopic(db.Model):
     __table_name__ = "kitchen_meeting_topic"
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=True)
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
     talked_about = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))

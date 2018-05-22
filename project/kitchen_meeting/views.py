@@ -33,9 +33,10 @@ def new_topic():
 
     if form.validate_on_submit():
         if form.topic.data.strip() == "":
-            flash("Please don't leave the textfield blank...", "alert alert-danger")
+            flash("Please don't leave the topic field blank...", "alert alert-danger")
         else:
-            meeting_topic = MeetingTopic(topic=form.topic.data, user_id=current_user.id)
+            meeting_topic = MeetingTopic(topic=form.topic.data, description=form.description.data,
+                                         user_id=current_user.id)
             try:
                 db.session.add(meeting_topic)
                 db.session.commit()

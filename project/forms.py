@@ -41,6 +41,7 @@ class DinnerForm(FlaskForm):
 
 class MeetingTopicForm(FlaskForm):
     topic = StringField('topic')
+    description = StringField('description')
 
 
 class MeetingEventForm(FlaskForm):

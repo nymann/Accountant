@@ -27,7 +27,7 @@
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
                     <li class="nav-item"><a href="{{ url_for('site.profile', user_id=current_user.id) }}"
-                                            class="nav-link">{{ current_user.email }}</a></li>
+                                            class="nav-link">{{ current_user.name }}</a></li>
                     <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
                 {% else %}
                     {#                    <li class="nav-item"><a href="{{ url_for('site.register') }}" class="nav-link">Register</a></li>#}

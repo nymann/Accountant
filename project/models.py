@@ -27,12 +27,12 @@ drinks = db.Table(
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    email = db.Column(db.String, unique=True, nullable=False)
-    room_number = db.Column(db.Integer, default=0, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    email = db.Column(db.String)
+    room_number = db.Column(db.Integer)
     admin = db.Column(db.Boolean, default=False)
     subscribed_to_dinner_club = db.Column(db.Boolean)
-    move_in_date = db.Column(db.Date, default=date.today(), nullable=False)
+    move_in_date = db.Column(db.Date, default=datetime.strptime("01/01/2000", "%m/%d/%Y"), nullable=False)
     move_out_date = db.Column(db.Date)
     phone_number = db.Column(db.String)
     active = db.Column(db.Boolean)
@@ -94,7 +94,7 @@ class Items(db.Model):
 
 
 class BeverageClub(db.Model):
-    __table_name__ = "beverage_club"
+    __tablename__ = "beverage_club"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -108,7 +108,7 @@ class MeetingEvent(db.Model):
 
 
 class MeetingTopic(db.Model):
-    __table_name__ = "kitchen_meeting_topic"
+    __tablename__ = "kitchen_meeting_topic"
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)

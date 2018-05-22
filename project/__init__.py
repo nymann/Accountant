@@ -22,7 +22,7 @@ app = Flask(__name__)
 app.config.from_pyfile('../config.cfg', silent=False)
 
 facebook_blueprint = make_facebook_blueprint(
-    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user),
+    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user)
 )
 
 app.register_blueprint(facebook_blueprint, url_prefix='/login')
@@ -46,11 +46,12 @@ def facebook_logged_in(blueprint, token):
         flash("Failed to log in with Facebook.", "alert alert-danger")
         return False
 
-    resp = blueprint.session.get('/me?fields=id,name,email')
+    resp = blueprint.session.get('/me?fields=id,name')
     if not resp.ok:
         flash("Failed to get user from Facebook", "alert alert-danger")
         return False
     facebook_info = resp.json()
+    print("This is what we got '{0}'".format(facebook_info))
     facebook_user_id = facebook_info['id']
 
     query = OAuth.query.filter_by(
@@ -71,8 +72,9 @@ def facebook_logged_in(blueprint, token):
         login_user(oauth.user)
         flash("Successfully signed in via Facebook", "alert alert-info")
     else:
+        mail = facebook_info['email'] if 'email' in facebook_info else None
         user = User(
-            email=facebook_info['email'],
+            email=mail,
             name=facebook_info['name']
         )
 

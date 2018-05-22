@@ -1,16 +1,15 @@
-from flask import render_template, redirect, url_for, flash, request
-from flask_login import login_user, login_required, logout_user, current_user
-from sqlalchemy import or_, func
-from sqlalchemy.sql import label
-from sqlalchemy.exc import DBAPIError
-from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
-from project.forms import LoginForm, RegisterForm, UserForm
+from flask import render_template, redirect, url_for, flash, request
+from flask_login import current_user
+from sqlalchemy import or_, func
+from sqlalchemy.exc import DBAPIError
+
+from project.forms import UserForm
 from project.models import User, Dinner, MeetingEvent, Shopping, Items
 from project.models import db
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
-from datetime import datetime
 
 
 @site.route('/')
@@ -134,3 +133,8 @@ def residents():
 
     return render_template('site/residents.html', active_residents=active_residents,
                            inactive_residents=inactive_residents)
+
+
+@site.route('/private_policy')
+def private_policy():
+    return render_template('site/private_policy.html')

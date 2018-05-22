@@ -32,7 +32,7 @@ class User(UserMixin, db.Model):
     room_number = db.Column(db.Integer)
     admin = db.Column(db.Boolean, default=False)
     subscribed_to_dinner_club = db.Column(db.Boolean)
-    move_in_date = db.Column(db.Date, default=date.today(), nullable=False)
+    move_in_date = db.Column(db.Date, default=datetime.strptime("01/01/2000", "%m/%d/%Y"), nullable=False)
     move_out_date = db.Column(db.Date)
     phone_number = db.Column(db.String)
     active = db.Column(db.Boolean)

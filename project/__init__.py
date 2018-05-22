@@ -14,6 +14,9 @@ from project.shopping_list import shopping_list
 from project.site import site
 from project.utils.uploadsets import avatars
 
+import os
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 app = Flask(__name__)
 
 app.config.from_pyfile('../config.cfg', silent=False)

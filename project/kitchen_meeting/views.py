@@ -54,7 +54,6 @@ def new_meeting():
     form = MeetingEventForm()
     if form.validate_on_submit():
         meeting_event = MeetingEvent(date=datetime.strptime(form.date.data, "%d/%m/%Y").date())
-        print(form.date.data)
         try:
             db.session.add(meeting_event)
             db.session.commit()

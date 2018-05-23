@@ -6,8 +6,7 @@ from sqlalchemy import or_, func
 from sqlalchemy.exc import DBAPIError
 
 from project.forms import UserForm
-from project.models import User, Dinner, MeetingEvent, Shopping, Items
-from project.models import db
+from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
 
@@ -28,7 +27,20 @@ def index():
         MeetingEvent.id.desc()
     ).first()
 
-    return render_template('site/index.html', latest_dinner=latest_dinner, event=event)
+    # topics
+    topics = MeetingTopic.query.filter(
+        MeetingTopic.talked_about.is_(False)
+    ).all()
+
+    # most recent purchase
+    purchase = Shopping.query.filter(
+        Shopping.accounted.is_(False)
+    ).order_by(
+        Shopping.date.desc()
+    ).first()
+
+    return render_template('site/index.html', latest_dinner=latest_dinner, event=event, topics=topics,
+                           purchase=purchase)
 
 
 @site.route('/profile/<int:user_id>', methods=['GET', 'POST'])

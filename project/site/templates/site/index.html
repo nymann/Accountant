@@ -10,27 +10,33 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-4 mb-2">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Next meeting</h5>
-                        <h6 class="card-subtitle">
+                        <h6 class="card-subtitle text-muted">
                             {% if event %}
                                 {{ event.date }}
                             {% else %}
                                 Nothing scheduled
                             {% endif %}
                         </h6>
+                        <ul class="list-unstyled">
+                            {% for topic in topics %}
+                                <li class="card-text">{{ topic.topic }}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-4 mb-2">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Most recent meal</h5>
                         {% if latest_dinner %}
                             {% set g = latest_dinner.guests | sum(attribute='number_of_guests') %}
-                            <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
+                            <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }},
+                                {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
                             <p class="card-text">On {{ latest_dinner.date.strftime('%A the %d. of %b') }}, we had
                                 <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
                             <p class="card-text">{{ g + latest_dinner.participants|length }}
@@ -39,22 +45,25 @@
                                 ({{ (latest_dinner.price/(g + latest_dinner.participants|length))|round(2) }}
                                 kr. pr. person)</p>
                         {% else %}
-                            <h6 class="card-title">No meals registered</h6>
+                            <h6 class="card-subtitle text-muted">No meals registered</h6>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-4 mb-2">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Empty</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Empty</h5>
+                        <h5 class="card-title">Latest shopping entry</h5>
+                        {% if purchase %}
+                            <h6 class="card-subtitle text-muted">{{ purchase.payee.name|truncate(length=20, killwords=True) }}, {{ purchase.date | datetime() }}</h6>
+                            <ul class="list-unstyled">
+                                {% for item in purchase.items %}
+                                    <li>{{ item.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <h6 class="card-subtitle text-muted">No items bought</h6>
+                        {% endif %}
                     </div>
                 </div>
             </div>

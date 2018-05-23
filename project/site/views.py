@@ -40,20 +40,22 @@ def profile(user_id):
         Shopping.payee_id.is_(user_id)
     ).all()
 
-    active_members = db.session.query(
-        func.count(User.id)
-    ).filter(
-        User.active
-    ).scalar()
-
     non_accounted_shopping_entries = Shopping.query.filter(
         Shopping.accounted.is_(False)
     ).all()
 
     shopping_expenses = 0.0
     for shopping in non_accounted_shopping_entries:
+        active_members = db.session.query(
+            func.count(User.id)
+        ).filter(
+            User.active,
+            or_(User.move_in_date.is_(None), User.move_in_date <= shopping.date)
+        ).scalar()
         for item in shopping.items:
-            shopping_expenses += (item.price * item.amount) / active_members
+            if (user.move_in_date is None or user.move_in_date <= shopping.date) and (
+                    user.move_out_date is None or user.move_in_date >= shopping.date):
+                shopping_expenses += (item.price * item.amount) / active_members
 
     shopping_income = db.session.query(
         func.sum(Items.price * Items.amount)

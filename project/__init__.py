@@ -29,6 +29,7 @@ facebook_blueprint = make_facebook_blueprint(
 app.register_blueprint(facebook_blueprint, url_prefix='/login')
 app.register_blueprint(site, url_prefix='')
 app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(beverage_club, url_prefix='/beverage_club')
 app.register_blueprint(dinner_club, url_prefix='/dinner_club')
 app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 app.register_blueprint(shopping_list, url_prefix='/shopping_list')

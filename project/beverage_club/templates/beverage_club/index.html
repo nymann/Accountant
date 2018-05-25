@@ -7,14 +7,26 @@
 {% block jumbocontent %}
     <h1 class="display-4">Beverage Club</h1>
     <p class="lead">Here you can add beverage to your tab. Let's GO!</p>
+    <button class="btn btn-info" data-toggle="modal" data-target="#moredrinkers">Add more payees</button>
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="lg-col12">
-                <p>Here we will have some content.</p>
+            <div class="col-lg-3">
+                <button class="btn btn-block btn-info">Tuborg</button>
+            </div>
+            <div class="col-lg-3">
+                <button class="btn btn-block btn-info">Ale no. 16</button>
+            </div>
+            <div class="col-lg-3">
+                <button class="btn btn-block btn-info">Squasch</button>
+            </div>
+            <div class="col-lg-3">
+                <button class="btn btn-block btn-info">Carlsberg</button>
             </div>
         </div>
     </div>
+
+    {% include 'beverage_club/beveragepayees.html' %}
 {% endblock %}

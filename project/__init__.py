@@ -7,6 +7,7 @@ from flask_uploads import configure_uploads
 from sqlalchemy.orm.exc import NoResultFound
 
 from project.api import api
+from project.beverage_club import beverage_club
 from project.dinner_club import dinner_club
 from project.kitchen_meeting import kitchen_meeting
 from project.models import db, User, OAuth

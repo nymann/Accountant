@@ -16,14 +16,14 @@
     <div class="container">
         <div class="row">
             {% if beverages %}
-                {% for beverage in beverages_4 %}
-                    <div class="col-lg-3">
+                {% for beverage in beverages %}
+                    <div class="col-lg-4 col-sm-12">
                         <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}"
                               class="form-group" method="POST">
                             <div class="form-group">
                                 {{ form.hidden_tag() }}
                             </div>
-                            <button class="btn btn-block btn-info" name="beverage_id" id="beverage_id"
+                            <button class="btn btn-block btn-lg btn-info" name="beverage_id" id="beverage_id"
                                     value="{{ beverage.id }}">{{ beverage.name }}</button>
                         </form>
                     </div>
@@ -31,47 +31,6 @@
             {% else %}
                 There are no more beers, go buy some!
             {% endif %}
-        </div>
-        <hr>
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="card bg-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Choose another beverage</h5>
-
-                        <select class="form-control" name="beverage" form="beverage_form">
-                            <option value="-1" disabled selected>Select beverage</option>
-                            {% for beverage in beverages %}
-                                <option id="beverage_id" name="beverage_id"
-                                        value="{{ beverage.id }}">{{ beverage.name }}</option>
-                            {% endfor %}
-                        </select>
-
-                        <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}"
-                              class="form-group" method="POST" id="beverage_form">
-                            <div class="form-group">
-                                {{ form.hidden_tag() }}
-                            </div>
-                            <button class="btn btn-block btn-info">Submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card bg-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Statistics</h5>
-                        <h6 class="card-subtitle">Waow</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="card bg-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Some kind of graph</h5>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

@@ -49,16 +49,22 @@ def general_logged_in(blueprint, token, get_string):
     else:
         mail = info['email'] if 'email' in info else None
         name = info['name'] if 'name' in info else info['screen_name'] if 'screen_name' in info else None
-        if not name:
-            print("Random Name OMEGALUL")
-            name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
         if current_user.is_authenticated:
             user = User.query.get(current_user.id)
         else:
-            user = User.query.filter(
-                or_(User.email == mail, User.name == name)
-            ).one_or_none()
-            if not user:
+            if mail and name:
+                user = User.query.filter(
+                    or_(User.email == mail, User.name == name)
+                ).one_or_none()
+            elif mail:
+                user = User.query.filter(
+                    User.email == mail
+                ).one_or_none()
+            elif name:
+                user = User.query.filter(
+                    User.name == name
+                ).one_or_none()
+            else:
                 user = User(
                     email=mail,
                     name=name

@@ -54,157 +54,17 @@ configure_uploads(app, avatars)
 
 @oauth_authorized.connect_via(twitter_blueprint)
 def twitter_logged_in(blueprint, token):
-    if not token:
-        flash("Failed to log in with Twitter.", "alert alert-danger")
-        return False
-
-    resp = blueprint.session.get('account/settings.json')
-    if not resp.ok:
-        print(str(resp.json()))
-        flash("Failed to get user from Twitter", "alert alert-danger")
-        return False
-    twitter_info = resp.json()
-    twitter_user_id = twitter_info['screen_name']
-    id = hash(twitter_user_id)
-    twitter_user_id = int(id)
-    query = OAuth.query.filter_by(
-        provider=blueprint.name,
-        provider_user_id=twitter_user_id
-    )
-    try:
-        oauth = query.one()
-
-    except NoResultFound:
-        oauth = OAuth(
-            provider=blueprint.name,
-            token=token,
-            provider_user_id=twitter_user_id
-        )
-
-    if oauth and oauth.user:
-        login_user(oauth.user)
-        flash("Successfully signed in via Twitter", "alert alert-info")
-    else:
-        mail = twitter_info['email'] if 'email' in twitter_info else None
-        user = User(
-            email=mail,
-            name=twitter_info['screen_name']
-        )
-
-        oauth.user = user
-        db.session.add_all([user, oauth])
-        db.session.commit()
-        login_user(user)
-        flash("Successfully signed in via Twitter", "alert alert-info")
-    return False
+    return general_logged_in(blueprint, token, 'account/settings.json')
 
 
 @oauth_authorized.connect_via(facebook_blueprint)
 def facebook_logged_in(blueprint, token):
-    # http://flask-dance.readthedocs.io/en/latest/multi-user.html
-    if not token:
-        flash("Failed to log in with Facebook.", "alert alert-danger")
-        return False
-
-    resp = blueprint.session.get('/me?fields=id,name,email')
-    if not resp.ok:
-        flash("Failed to get user from Facebook", "alert alert-danger")
-        return False
-    facebook_info = resp.json()
-    facebook_user_id = facebook_info['id']
-    query = OAuth.query.filter_by(
-        provider=blueprint.name,
-        provider_user_id=facebook_user_id
-    )
-    try:
-        oauth = query.one()
-
-    except NoResultFound:
-        oauth = OAuth(
-            provider=blueprint.name,
-            token=token,
-            provider_user_id=facebook_user_id
-        )
-
-    if oauth.user:
-        login_user(oauth.user)
-        flash("Successfully signed in via %s" % blueprint.name, "alert alert-info")
-    else:
-        mail = facebook_info['email'] if 'email' in facebook_info else None
-        name = facebook_info['name']
-        if current_user.is_authenticated:
-            user = User.query.get(current_user.id)
-        else:
-            user = User.query.filter(
-                or_(User.email == mail, User.name == name)
-            ).one_or_none()
-            if not user:
-                user = User(
-                    email=mail,
-                    name=name
-                )
-
-        oauth.user = user
-        db.session.add_all([user, oauth])
-        db.session.commit()
-        login_user(user)
-        flash("Successfully signed in via Facebook", "alert alert-info")
-
-    return False
+    general_logged_in(blueprint, token, '/me?fields=id,name,email')
 
 
 @oauth_authorized.connect_via(github_blueprint)
 def github_logged_in(blueprint, token):
-    # http://flask-dance.readthedocs.io/en/latest/multi-user.html
-    if not token:
-        flash("Failed to log in with %s." % blueprint.name, "alert alert-danger")
-        return False
-
-    resp = blueprint.session.get('/user')
-    if not resp.ok:
-        flash("Failed to get user from %s" % blueprint.name, "alert alert-danger")
-        return False
-    github_info = resp.json()
-    github_user_id = github_info['id']
-    query = OAuth.query.filter_by(
-        provider=blueprint.name,
-        provider_user_id=github_user_id
-    )
-    try:
-        oauth = query.one()
-
-    except NoResultFound:
-        oauth = OAuth(
-            provider=blueprint.name,
-            token=token,
-            provider_user_id=github_user_id
-        )
-
-    if oauth.user:
-        login_user(oauth.user)
-        flash("Successfully signed in via %s" % blueprint.name, "alert alert-info")
-    else:
-        mail = github_info['email'] if 'email' in github_info else None
-        name = github_info['name']
-        if current_user.is_authenticated:
-            user = User.query.get(current_user.id)
-        else:
-            user = User.query.filter(
-                or_(User.email == mail, User.name == name)
-            ).one_or_none()
-            if not user:
-                user = User(
-                    email=mail,
-                    name=name
-                )
-
-        oauth.user = user
-        db.session.add_all([user, oauth])
-        db.session.commit()
-        login_user(user)
-        flash("Successfully signed in via %s" % blueprint.name, "alert alert-info")
-
-    return False
+    general_logged_in(blueprint, token, '/user')
 
 
 login_manager = LoginManager(app)

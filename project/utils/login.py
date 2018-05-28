@@ -9,7 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from project.models import User, OAuth, db
 
 
-def general_logged_in(blueprint, token, get_string, query_id, ):
+def general_logged_in(blueprint, token, get_string):
     # http://flask-dance.readthedocs.io/en/latest/multi-user.html
     if not token:
         flash("Failed to log in with %s." % blueprint.name, "alert alert-danger")
@@ -25,7 +25,7 @@ def general_logged_in(blueprint, token, get_string, query_id, ):
         user_id = info['id']
     elif 'screen_name' in info:
         # twitter
-        user_id = hash(info['screen_name'])
+        user_id = int(hash(info['screen_name']))
     else:
         flash("Failed to get id of user.", "alert alert-info")
         return False

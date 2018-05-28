@@ -9,24 +9,18 @@
     <p class="lead">Here you can add beverage to your tab. Let's GO!</p>
     <button class="btn btn-info" data-toggle="modal" data-target="#moredrinkers">Add more payees</button>
     <a href="{{ url_for('beverage_club.new_beverage') }}" class="btn btn-info">Add beverage</a>
+    <a href="{{ url_for('beverage_club.new_beverage_batch') }}" class="btn btn-info">Add Beverage Batch</a>
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
 
-            <div class="col-lg-3">
-                <button class="btn btn-block btn-info">Tuborg</button>
-            </div>
-            <div class="col-lg-3">
-                <button class="btn btn-block btn-info">Ale no. 16</button>
-            </div>
-            <div class="col-lg-3">
-                <button class="btn btn-block btn-info">Squasch</button>
-            </div>
-            <div class="col-lg-3">
-                <button class="btn btn-block btn-info">Carlsberg</button>
-            </div>
+            {% for beverage in beverages %}
+                <div class="col-lg-3">
+                    <button class="btn btn-block btn-info" value="{{ beverage.id }}">{{ beverage.name }}</button>
+                </div>
+            {% endfor %}
         </div>
         <hr>
         <div class="row">
@@ -36,7 +30,8 @@
                         <h5 class="card-title">Choose another beverage</h5>
                         <div class="dropdown">
                             <button class="btn btn-block btn-info dropdown-toggle" type="button" id="#"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Main</button>
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Main
+                            </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a href="#" class="dropdown-item">Item 1</a>
                             </div>

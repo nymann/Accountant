@@ -1,0 +1,71 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    New Beverage Batch
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">Beverage</h1>
+    <p>Here you can add new Beverage Batches</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form action="{{ url_for('beverage_club.new_beverage_batch') }}" class="form-group" method="POST">
+
+            {# CSRF TOKEN #}
+            <div class="form-group">
+                {{ form.hidden_tag() }}
+            </div>
+
+            {# NAME #}
+            <div class="form-group row">
+                <label for="beverage_id" class="col-lg-3 col-form-label">Beverage</label>
+                <div class="col-lg-9">
+                    <div class="form-group">
+                        <select multiple class="form-control" id="beverage_id" name="beverage_id">
+                            {% for beverage in beverages %}
+                                <option value="{{ beverage.id }}">{{ beverage.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {# Quantity #}
+            <div class="form-group row">
+                <label for="quantity" class="col-lg-3 col-form-label">Quantity</label>
+                <div class="col-lg-9">
+                    <input class="form-control" type="number" placeholder="Beverage Quantity" id="quantity" name="quantity"
+                           required="required" min="0" max="144">
+                </div>
+            </div>
+
+            {# PRICE #}
+            <div class="form-group row">
+                <label for="price" class="col-lg-3 col-form-label">Total price</label>
+                <div class="col-lg-9">
+                    <input type="number" class="form-control" placeholder="Total price" id="price" name="price"
+                        required="required" min="0">
+                </div>
+            </div>
+
+            {# Submit #}
+            <div class="form-group row">
+                <div class="offset-lg-3 col-lg-9">
+                    <button class="btn btn-lg btn-block btn-info" type="submit">Create</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(function () {
+            $("#beverage_id").popSelect({
+                showTitle: false
+            });
+        });
+    </script>
+{% endblock %}

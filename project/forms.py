@@ -63,3 +63,9 @@ class NewBeverageForm(FlaskForm):
     name = StringField('name')
     type = StringField('type')
     contents = StringField('content')
+
+
+class NewBeverageBatchForm(FlaskForm):
+    beverage_id = StringField('id')
+    quantity = StringField('quantity')
+    price= StringField('price')

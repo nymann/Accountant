@@ -51,21 +51,20 @@ def general_logged_in(blueprint, token, get_string):
     name = info['name'] if 'name' in info else info['screen_name'] if 'screen_name' in info else None
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
+    elif mail and name:
+        user = User.query.filter(
+            or_(User.email == mail, User.name == name)
+        ).one_or_none()
+    elif mail:
+        user = User.query.filter(
+            User.email == mail
+        ).one_or_none()
+    elif name:
+        user = User.query.filter(
+            User.name == name
+        ).one_or_none()
     else:
-        if mail and name:
-            user = User.query.filter(
-                or_(User.email == mail, User.name == name)
-            ).one_or_none()
-        elif mail:
-            user = User.query.filter(
-                User.email == mail
-            ).one_or_none()
-        elif name:
-            user = User.query.filter(
-                User.name == name
-            ).one_or_none()
-        else:
-            user = None
+        user = None
 
     if not user:
         name = info['name'] if 'name' in info else info['screen_name'] if 'screen_name' in info else ''.join(
@@ -82,3 +81,16 @@ def general_logged_in(blueprint, token, get_string):
     flash("Successfully signed in via %s" % blueprint.name, "alert alert-info")
 
     return False
+
+
+def general_error(blueprint, error, error_description=None, error_uri=None):
+    msg = (
+        "OAuth error from {name}! "
+        "error={error} description={description} uri={uri}"
+    ).format(
+        name=blueprint.name,
+        error=error,
+        description=error_description,
+        uri=error_uri,
+    )
+    flash(msg, category="alert alert-danger")

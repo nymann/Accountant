@@ -1,5 +1,5 @@
 from flask import Flask, flash, redirect, url_for
-from flask_dance.consumer import oauth_authorized
+from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 from flask_dance.contrib.facebook import make_facebook_blueprint
 from flask_dance.contrib.twitter import make_twitter_blueprint
@@ -17,7 +17,7 @@ from project.models import db, User, OAuth
 from project.shopping_list import shopping_list
 from project.site import site
 from project.utils.uploadsets import avatars
-from project.utils.login import general_logged_in
+from project.utils.login import general_logged_in, general_error
 
 import os
 
@@ -57,14 +57,29 @@ def twitter_logged_in(blueprint, token):
     return general_logged_in(blueprint, token, 'account/settings.json')
 
 
+@oauth_error.connect_via(twitter_blueprint)
+def twitter_error(blueprint, error, error_description=None, error_uri=None):
+    general_error(blueprint, error, error_description, error_uri)
+
+
 @oauth_authorized.connect_via(facebook_blueprint)
 def facebook_logged_in(blueprint, token):
     general_logged_in(blueprint, token, '/me?fields=id,name,email')
 
 
+@oauth_error.connect_via(facebook_blueprint)
+def facebook_error(blueprint, error, error_description=None, error_uri=None):
+    general_error(blueprint, error, error_description, error_uri)
+
+
 @oauth_authorized.connect_via(github_blueprint)
 def github_logged_in(blueprint, token):
     general_logged_in(blueprint, token, '/user')
+
+
+@oauth_error.connect_via(github_blueprint)
+def github_error(blueprint, error, error_description=None, error_uri=None):
+    general_error(blueprint, error, error_description, error_uri)
 
 
 login_manager = LoginManager(app)

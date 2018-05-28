@@ -4,29 +4,27 @@
     Login
 {% endblock %}
 
+{% block jumbocontent %}
+    <h1 class="display-4">How do you want to login?</h1>
+    <p class="lead">We support major providers, no passwords are stored.</p>
+{% endblock %}
+
 {% block content %}
+    <script>(function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = 'https://connect.facebook.net/da_DK/sdk.js#xfbml=1&version=v3.0&appId=152363728803338';
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
     <div class="container">
         <div class="row">
             <div class="offset-4 col-lg-4">
-                <form action="{{ url_for('site.login') }}" method="post">
-                    <div class="form-group">
-                        {{ form.hidden_tag() }}
-                    </div>
-                    <div class="form-group row">
-                        <input type="text" name="email" required placeholder="email" class="form-control" id="email">
-                    </div>
-                    <div class="form-group row">
-                        <input type="password" name="password" required placeholder="password" class="form-control"
-                               id="password">
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="remember">
-                        <label class="form-check-label" for="remember">Remember me</label>
-                    </div>
-                    <div class="form-group row">
-                        <button class="btn btn-lg btn-info btn-block" type="submit">Login</button>
-                    </div>
-                </form>
+                <div id="fb-root"></div>
+
+                <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with"
+                     data-show-faces="true" data-auto-logout-link="false" data-use-continue-as="true"></div>
             </div>
         </div>
     </div>

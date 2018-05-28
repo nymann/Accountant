@@ -43,6 +43,11 @@ def index():
                            purchase=purchase)
 
 
+@site.route('/login')
+def login():
+    return render_template('site/login.html')
+
+
 @site.route('/profile/<int:user_id>', methods=['GET', 'POST'])
 def profile(user_id):
     user = User.query.get_or_404(user_id)

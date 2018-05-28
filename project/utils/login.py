@@ -51,7 +51,7 @@ def general_logged_in(blueprint, token, get_string):
         name = info['name'] if 'name' in info else info['screen_name'] if 'screen_name' in info else None
         if not name:
             print("Random Name OMEGALUL")
-            name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+            name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
         if current_user.is_authenticated:
             user = User.query.get(current_user.id)
         else:

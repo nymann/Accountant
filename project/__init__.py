@@ -53,9 +53,7 @@ def facebook_logged_in(blueprint, token):
         flash("Failed to get user from Facebook", "alert alert-danger")
         return False
     facebook_info = resp.json()
-    print("This is what we got '{0}'".format(facebook_info))
     facebook_user_id = facebook_info['id']
-
     query = OAuth.query.filter_by(
         provider=blueprint.name,
         provider_user_id=facebook_user_id

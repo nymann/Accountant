@@ -65,6 +65,7 @@ def general_logged_in(blueprint, token, get_string):
                     User.name == name
                 ).one_or_none()
             else:
+                name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
                 user = User(
                     email=mail,
                     name=name

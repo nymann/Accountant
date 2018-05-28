@@ -15,18 +15,19 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            {% if beverage %}
-            {% for beverage in beverages %}
-                <div class="col-lg-3">
-                    <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}" class="form-group" method="POST">
-                        <div class="form-group">
-                            {{ form.hidden_tag() }}
-                        </div>
-                        <button class="btn btn-block btn-info" name="beverage_id" id="beverage_id"
-                                value="{{ beverage.id }}">{{ beverage.name }}</button>
-                    </form>
-                </div>
-            {% endfor %}
+            {% if beverages %}
+                {% for beverage in beverages_4 %}
+                    <div class="col-lg-3">
+                        <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}"
+                              class="form-group" method="POST">
+                            <div class="form-group">
+                                {{ form.hidden_tag() }}
+                            </div>
+                            <button class="btn btn-block btn-info" name="beverage_id" id="beverage_id"
+                                    value="{{ beverage.id }}">{{ beverage.name }}</button>
+                        </form>
+                    </div>
+                {% endfor %}
             {% else %}
                 There are no more beers, go buy some!
             {% endif %}
@@ -37,16 +38,22 @@
                 <div class="card bg-white">
                     <div class="card-body">
                         <h5 class="card-title">Choose another beverage</h5>
-                        <div class="dropdown">
-                            <button class="btn btn-block btn-info dropdown-toggle" type="button" id="#"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Main
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a href="#" class="dropdown-item">Item 1</a>
+
+                        <select class="form-control" name="beverage" form="beverage_form">
+                            <option value="-1" disabled selected>Select beverage</option>
+                            {% for beverage in beverages %}
+                                <option id="beverage_id" name="beverage_id"
+                                        value="{{ beverage.id }}">{{ beverage.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}"
+                              class="form-group" method="POST" id="beverage_form">
+                            <div class="form-group">
+                                {{ form.hidden_tag() }}
                             </div>
-                        </div>
-                        <br>
-                        <button class="btn btn-block btn-info">Submit</button>
+                            <button class="btn btn-block btn-info">Submit</button>
+                        </form>
                     </div>
                 </div>
             </div>

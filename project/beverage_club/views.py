@@ -9,13 +9,13 @@ from project.models import Beverage, BeverageBatch, BeverageUser, db
 @beverage_club.route('/')
 def index():
     form = BuyBeverageForm()
-    beverages = Beverage.query.limit(4).all()
-
+    beverages_4 = Beverage.query.limit(4).all()
+    beverages = Beverage.query.all()
     # Get the three most sold beers.
 
     # If no beers are sold, return the latest beers
 
-    return render_template('beverage_club/index.html', beverages=beverages, form=form)
+    return render_template('beverage_club/index.html', beverages_4=beverages_4, beverages=beverages, form=form)
 
 
 @beverage_club.route('/new', methods=['GET', 'POST'])
@@ -51,8 +51,7 @@ def buy_beverage(user_id):
     form = BuyBeverageForm()
     if form.validate_on_submit():
         beverage_id = form.beverage_id.data
-
-        # Decrement beverage batch.
+        print(beverage_id)
 
         # getting beverage_batch with beverage_id
         beverage_batch = BeverageBatch.query.filter(

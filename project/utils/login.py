@@ -55,8 +55,8 @@ def general_logged_in(blueprint, token, get_string):
 
     mail = info['email'] if 'email' in info else None
     name = info['name'] if 'name' in info else info['screen_name'] if 'screen_name' in info else None
-    print("mail" + str(mail))
-    print("name" + str(name))
+    print("mail: " + str(mail))
+    print("name: " + str(name))
     if current_user.is_authenticated:
         print("You are already authenticated.")
         user = User.query.get(current_user.id)
@@ -80,9 +80,12 @@ def general_logged_in(blueprint, token, get_string):
         user = None
 
     if not user:
-        print("No user found :-(")
-        name = info['name'] if 'name' in info else info['screen_name'] if 'screen_name' in info else ''.join(
-            random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+        print("No user found")
+        name = info['name'] if 'name' in info and info['name'] else \
+            info['screen_name'] if 'screen_name' in info and info['screen_name'] in info else \
+                info['login'] if 'login' in info and info['login'] in info else ''.join(
+                    random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+        print(name)
         user = User(
             email=mail,
             name=name

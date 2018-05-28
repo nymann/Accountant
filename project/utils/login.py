@@ -82,10 +82,9 @@ def general_logged_in(blueprint, token, get_string):
     if not user:
         print("No user found")
         name = info['name'] if 'name' in info and info['name'] else \
-            info['screen_name'] if 'screen_name' in info and info['screen_name'] in info else \
-                info['login'] if 'login' in info and info['login'] in info else ''.join(
+            info['screen_name'] if ('screen_name' in info and info['screen_name']) else \
+                info['login'] if ('login' in info and info['login']) else ''.join(
                     random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
-        print(name)
         user = User(
             email=mail,
             name=name

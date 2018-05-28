@@ -124,6 +124,7 @@ class BeverageID(db.Model):
 
 
 class BeverageUser(db.Model):
-    beverage_batch_id = db.Column(db.Integer, db.ForeignKey(BeverageBatch.id), primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id, primary_key=True))
+    id = db.Column(db.Integer, primary_key=True)
+    beverage_batch_id = db.Column(db.Integer, db.ForeignKey(BeverageBatch.id))
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     timestamp = db.Column(db.DateTime, default=datetime.now(), nullable=False)

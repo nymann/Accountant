@@ -15,12 +15,21 @@
 {% block content %}
     <div class="container">
         <div class="row">
-
+            {% if beverage %}
             {% for beverage in beverages %}
                 <div class="col-lg-3">
-                    <button class="btn btn-block btn-info" value="{{ beverage.id }}">{{ beverage.name }}</button>
+                    <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}" class="form-group" method="POST">
+                        <div class="form-group">
+                            {{ form.hidden_tag() }}
+                        </div>
+                        <button class="btn btn-block btn-info" name="beverage_id" id="beverage_id"
+                                value="{{ beverage.id }}">{{ beverage.name }}</button>
+                    </form>
                 </div>
             {% endfor %}
+            {% else %}
+                There are no more beers, go buy some!
+            {% endif %}
         </div>
         <hr>
         <div class="row">

@@ -2,19 +2,20 @@ from project.beverage_club import beverage_club
 from sqlalchemy.exc import DBAPIError
 
 from flask import render_template, flash, redirect, url_for
-from project.forms import NewBeverageForm, NewBeverageBatchForm
-from project.models import Beverage, BeverageBatch, db
+from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm
+from project.models import Beverage, BeverageBatch, BeverageUser, db
 
 
 @beverage_club.route('/')
 def index():
+    form = BuyBeverageForm()
     beverages = Beverage.query.limit(4).all()
 
     # Get the three most sold beers.
 
     # If no beers are sold, return the latest beers
 
-    return render_template('beverage_club/index.html', beverages=beverages)
+    return render_template('beverage_club/index.html', beverages=beverages, form=form)
 
 
 @beverage_club.route('/new', methods=['GET', 'POST'])
@@ -45,8 +46,34 @@ def new_beverage():
     return render_template('beverage_club/new_beverage.html', form=form)
 
 
-@beverage_club.route('/beverage', methods=['GET', 'POST'])
-def pay_beverage():
+@beverage_club.route('/beverage/<int:user_id>', methods=['GET', 'POST'])
+def buy_beverage(user_id):
+    form = BuyBeverageForm()
+    if form.validate_on_submit():
+        beverage_id = form.beverage_id.data
+
+        # Decrement beverage batch.
+
+        # getting beverage_batch with beverage_id
+        beverage_batch = BeverageBatch.query.filter(
+            BeverageBatch.quantity != 0
+        ).filter_by(
+            beverage_id=beverage_id
+        ).first()
+
+        try:
+            # decrementing quantity
+            beverage_batch.quantity = beverage_batch.quantity - 1
+
+            # assigning beer
+            bought_beverage = BeverageUser(beverage_batch_id=beverage_batch.id, user_id=user_id)
+            db.session.add(bought_beverage)
+            db.session.commit()
+            flash("Successfully bought a beverage")
+        except DBAPIError as e:
+            db.session.rollback()
+            flash(str(e), "alert alert-danger")
+
     return index()
 
 
@@ -59,7 +86,7 @@ def new_beverage_batch():
         try:
             beverage_id = form.beverage_id.data
             quantity = int(form.quantity.data)
-            price_per_can = int(form.price.data) / quantity
+            price_per_can = float(form.price.data) / quantity
 
         except ValueError as e:
             flash(str(e), "alert alert-danger")

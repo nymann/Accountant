@@ -10,6 +10,7 @@ from project.models import Beverage, BeverageBatch, BeverageUser, db
 def index():
     form = BuyBeverageForm()
 
+
     beverages = db.session.query(
         Beverage.name.label('name'), Beverage.id.label('id')
     ).join(BeverageBatch).filter(BeverageBatch.quantity > 0).order_by(Beverage.name).all()

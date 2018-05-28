@@ -62,4 +62,4 @@ class ItemForm(FlaskForm):
 class NewBeverageForm(FlaskForm):
     name = StringField('name')
     type = StringField('type')
-    content = StringField('content')
+    contents = StringField('content')

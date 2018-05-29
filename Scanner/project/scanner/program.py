@@ -4,6 +4,7 @@ from project.log import logger
 print("This program is still in developments phase")
 
 while (1):
+
     print("Enter a user id")
     user_id = input("> ")
     print("Enter beverage id")

@@ -40,6 +40,20 @@
                     {% endif %}
                 </div>
             </div>
+            {% if user == current_user %}
+                <div class="row">
+                    <div class="offset-9 col-lg-3" style="opacity: 0.7;">
+                        <div class="row"><h5>Associated with</h5></div>
+                        <div class="row">
+                            {% for oauth in oauths %}
+                                <div class="mr-3">
+                                    <p>{{ oauth.provider }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
     <!-- Modal -->

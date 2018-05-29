@@ -15,7 +15,7 @@
                     <a class="nav-link" href="{{ url_for('shopping_list.index') }}">Shopping List</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Beer Club</a>
+                    <a class="nav-link" href="{{ url_for('beverage_club.index') }}">Beer Club</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('site.residents') }}">Residents</a>
@@ -31,7 +31,7 @@
                     <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
                 {% else %}
                     {#                    <li class="nav-item"><a href="{{ url_for('site.register') }}" class="nav-link">Register</a></li>#}
-                    <li class="nav-item"><a href="{{ url_for('facebook.login') }}" class="nav-link">Login</a></li>
+                    <li class="nav-item"><a href="{{ url_for('site.login') }}" class="nav-link">Login</a></li>
                 {% endif %}
             </ul>
         </div>

@@ -7,7 +7,7 @@ from sqlalchemy import or_, func
 from sqlalchemy.exc import DBAPIError
 
 from project.forms import UserForm
-from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic
+from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
 
@@ -44,10 +44,18 @@ def index():
                            purchase=purchase)
 
 
+@site.route('/login')
+def login():
+    return render_template('site/login.html')
+
+
 @site.route('/profile/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def profile(user_id):
     user = User.query.get_or_404(user_id)
+    oauths = OAuth.query.filter(
+        OAuth.user_id == user_id
+    ).all()
 
     shopping_list_entries = Shopping.query.filter(
         Shopping.accounted.is_(False),
@@ -134,7 +142,7 @@ def profile(user_id):
 
     return render_template('site/profile.html', user=user, form=form, shopping_list_entries=shopping_list_entries,
                            shopping_income=shopping_income, shopping_expenses=shopping_expenses,
-                           dinner_income=dinner_income, dinner_expenses=dinner_expenses)
+                           dinner_income=dinner_income, dinner_expenses=dinner_expenses, oauths=oauths)
 
 
 @site.route('/residents')

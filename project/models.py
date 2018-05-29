@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_dance.consumer.backend.sqla import OAuthConsumerMixin
-from datetime import date, datetime
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -15,12 +15,6 @@ chefs = db.Table(
     "chefs",
     db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
     db.Column("dinner_id", db.Integer, db.ForeignKey("dinner.id"))
-)
-
-drinks = db.Table(
-    "drinks",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
-    db.Column("beverage_club_id", db.Integer, db.ForeignKey("beverage_club.id")),
 )
 
 
@@ -93,14 +87,6 @@ class Items(db.Model):
     shopping = db.relationship(Shopping, back_populates="items")
 
 
-class BeverageClub(db.Model):
-    __tablename__ = "beverage_club"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    drinks = db.relationship(User, secondary=drinks, backref=db.backref("drinks_consumed", lazy="dynamic"))
-
-
 class MeetingEvent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
@@ -116,3 +102,34 @@ class MeetingTopic(db.Model):
     talked_about = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     meeting_id = db.Column(db.Integer, db.ForeignKey(MeetingEvent.id))
+
+
+class BeverageTypes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String, nullable=False)
+
+
+class Beverage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    contents = db.Column(db.Float, nullable=False)
+    type = db.Column(db.String, db.ForeignKey(BeverageTypes.id))
+
+
+class BeverageBatch(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    beverage_id = db.Column(db.Integer, db.ForeignKey(Beverage.id))
+    quantity = db.Column(db.Integer, nullable=False)
+    price_per_can = db.Column(db.Float, nullable=False)
+
+
+class BeverageID(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    beverage_id = db.Column(db.Integer, db.ForeignKey(Beverage.id))
+
+
+class BeverageUser(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    beverage_batch_id = db.Column(db.Integer, db.ForeignKey(BeverageBatch.id))
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    timestamp = db.Column(db.DateTime, default=datetime.now(), nullable=False)

@@ -1,0 +1,40 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Beverage Club
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">Beverage Club</h1>
+    <p class="lead">Here you can add beverage to your tab. Let's GO!</p>
+    <button class="btn btn-info" data-toggle="modal" data-target="#moredrinkers">Add more payees</button>
+    <a href="{{ url_for('beverage_club.new_beverage_batch') }}" class="btn btn-info">Add Beverage Batch</a>
+    {% if current_user.admin %}
+        <a href="{{ url_for('beverage_club.admin_module') }}" class="btn btn-info">Beverage Admin Page</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% if beverages %}
+                {% for beverage in beverages %}
+                    <div class="col-lg-4 col-sm-12">
+                        <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}"
+                              class="form-group" method="POST">
+                            <div class="form-group">
+                                {{ form.hidden_tag() }}
+                            </div>
+                            <button class="btn btn-block btn-lg btn-info" name="beverage_id" id="beverage_id"
+                                    value="{{ beverage.id }}">{{ beverage.name }}</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                There are no more beers, go buy some!
+            {% endif %}
+        </div>
+    </div>
+
+    {% include 'beverage_club/beveragepayees.html' %}
+{% endblock %}

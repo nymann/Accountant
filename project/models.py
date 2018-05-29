@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_dance.consumer.backend.sqla import OAuthConsumerMixin
-from datetime import date, datetime
+from datetime import datetime
 
 db = SQLAlchemy()
 

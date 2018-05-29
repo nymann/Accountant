@@ -2,14 +2,13 @@ from project.beverage_club import beverage_club
 from sqlalchemy.exc import DBAPIError
 
 from flask import render_template, flash, redirect, url_for
-from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm
-from project.models import Beverage, BeverageBatch, BeverageUser, db
+from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm, NewBeverageTypesForm
+from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes, db
 
 
 @beverage_club.route('/')
 def index():
     form = BuyBeverageForm()
-
 
     beverages = db.session.query(
         Beverage.name.label('name'), Beverage.id.label('id')
@@ -48,6 +47,27 @@ def new_beverage():
             flash(str(e), "alert alert-danger")
 
     return render_template('beverage_club/new_beverage.html', form=form)
+
+
+@beverage_club.route('/new_type', methods=['GET', 'POST'])
+def new_beverage_type():
+    form = NewBeverageTypesForm()
+
+    if form.validate_on_submit():
+        type = form.type.data
+
+        beverage_type = BeverageTypes(type=type)
+
+        try:
+            db.session.add(beverage_type)
+            db.session.commit()
+            flash("Beverage Type added successfully", "alert alert-info")
+            return redirect(url_for('beverage_club.index'))
+        except DBAPIError as e:
+            db.session.rollback()
+            flash(str(e), "alert alert-danger")
+
+    return render_template('beverage_club/new_beverage_type.html', form=form)
 
 
 @beverage_club.route('/beverage/<int:user_id>', methods=['GET', 'POST'])

@@ -8,8 +8,11 @@
     <h1 class="display-4">Beverage Club</h1>
     <p class="lead">Here you can add beverage to your tab. Let's GO!</p>
     <button class="btn btn-info" data-toggle="modal" data-target="#moredrinkers">Add more payees</button>
-    <a href="{{ url_for('beverage_club.new_beverage') }}" class="btn btn-info">Add beverage</a>
     <a href="{{ url_for('beverage_club.new_beverage_batch') }}" class="btn btn-info">Add Beverage Batch</a>
+    {% if current_user.admin %}
+        <a href="{{ url_for('beverage_club.new_beverage') }}" class="btn btn-info">Add beverage</a>
+        <a href="{{ url_for('beverage_club.new_beverage_type') }}" class="btn btn-info">Add beverage Type</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}

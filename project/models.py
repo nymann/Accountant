@@ -104,11 +104,16 @@ class MeetingTopic(db.Model):
     meeting_id = db.Column(db.Integer, db.ForeignKey(MeetingEvent.id))
 
 
+class BeverageTypes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String, nullable=False)
+
+
 class Beverage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     contents = db.Column(db.Float, nullable=False)
-    type = db.Column(db.String)
+    type = db.Column(db.String, db.ForeignKey(BeverageTypes.id))
 
 
 class BeverageBatch(db.Model):

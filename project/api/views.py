@@ -32,8 +32,8 @@ def dinners():
     return jsonify(dinners=dinners)
 
 
-@api.route('/is_user', methods=['GET', 'POST'])
-def is_user():
+@api.route('/buy_beverage', methods=['GET', 'POST'])
+def buy_beverage():
     if 'user_id' and 'beverage_id' in request.args:
         user_id = int(request.args['user_id'])
         beverage_id = int(request.args['beverage_id'])

@@ -34,6 +34,7 @@ app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 
 configure_uploads(app, avatars)
 login_manager = LoginManager(app)
+login_manager.login_view = '/login'
 db.app = app
 db.init_app(app)
 db.create_all()
@@ -60,7 +61,7 @@ def facebook_logged_in(blueprint, token):
         oauth = query.one()
 
     except NoResultFound:
-        oauth = OAuth(
+        oauth = OAuth.__self__(
             provider=blueprint.name,
             token=token,
             provider_user_id=facebook_user_id
@@ -71,7 +72,7 @@ def facebook_logged_in(blueprint, token):
         flash("Successfully signed in via Facebook", "alert alert-info")
     else:
         mail = facebook_info['email'] if 'email' in facebook_info else None
-        user = User(
+        user = User.__self__(
             email=mail,
             name=facebook_info['name']
         )

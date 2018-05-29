@@ -1,7 +1,8 @@
 from datetime import datetime
+from project.utils.decorators import admin, active
 
 from flask import render_template, redirect, url_for, flash, request
-from flask_login import current_user
+from flask_login import current_user, login_required
 from sqlalchemy import or_, func
 from sqlalchemy.exc import DBAPIError
 
@@ -44,6 +45,7 @@ def index():
 
 
 @site.route('/profile/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def profile(user_id):
     user = User.query.get_or_404(user_id)
 
@@ -136,6 +138,7 @@ def profile(user_id):
 
 
 @site.route('/residents')
+@login_required
 def residents():
     active_residents = User.query.filter(
         User.active

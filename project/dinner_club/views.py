@@ -1,17 +1,19 @@
 from collections import Counter
 from datetime import datetime
 
-from flask import render_template, redirect, url_for, flash, request
-from flask_login import current_user
+from flask import render_template, redirect, url_for, flash, request,abort
+from flask_login import current_user, login_required
 from sqlalchemy.exc import DBAPIError
 
 from project.dinner_club import dinner_club
 from project.forms import DinnerForm
-from project.models import User, Dinner, GuestAssociation
-from project.models import db
+from project.models import User, Dinner, GuestAssociation, db
+from project.utils.decorators import *
+from project.utils.helper import *
 
 
 @dinner_club.route('/new', methods=['GET', 'POST'])
+@active
 def new():
     # active_dinner_club_participants
     users = User.query.filter(
@@ -81,6 +83,7 @@ def new():
 
 
 @dinner_club.route('/')
+@login_required
 def index():
     latest_dinner = Dinner.query.filter(
         Dinner.accounted.is_(False)
@@ -98,6 +101,7 @@ def index():
 
 
 @dinner_club.route('/meal/<dinner_id>')
+@login_required
 def meal(dinner_id):
     dinner = Dinner.query.get_or_404(int(dinner_id))
     return render_template('dinner_club/meal.html', dinner=dinner)
@@ -107,6 +111,8 @@ def meal(dinner_id):
 def edit(dinner_id):
     form = DinnerForm()
     dinner = Dinner.query.get(int(dinner_id))
+    if dinner.payee_id is not current_user.id or is_admin():
+        return abort(502)
     if form.validate_on_submit():
         try:
             price = float(form.price.data)

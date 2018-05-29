@@ -1,9 +1,10 @@
 from sqlalchemy.sql import label
+from sqlalchemy.exc import DBAPIError
 
 from project.api import api
 from flask import request, jsonify
 from datetime import datetime, date
-from project.models import db, Dinner, User
+from project.models import db, Dinner, User, Beverage, BeverageBatch, BeverageUser
 
 
 @api.route('/')
@@ -31,13 +32,45 @@ def dinners():
     return jsonify(dinners=dinners)
 
 
-@api.route('/is_user')
+@api.route('/is_user', methods=['GET', 'POST'])
 def is_user():
-    if 'id' in request.args:
-        id = int(request.args['id'])
+    if 'user_id' and 'beverage_id' in request.args:
+        user_id = int(request.args['user_id'])
+        beverage_id = int(request.args['beverage_id'])
     else:
-        return "Error: No id field provided"
+        return "Error: No user_id field provided"
 
-    results = User.queary.get(id)
-    
-    return jsonify(results)
+    # Checks if the user is in our DB
+    results = User.query.get(user_id)
+    if results:
+
+        # Check if beverage exists
+        beverage = Beverage.query.get(beverage_id)
+        if beverage:
+
+            # Check if there are any left
+            beverage_batch = BeverageBatch.query.filter(
+                BeverageBatch.quantity != 0
+            ).filter_by(
+                beverage_id=beverage_id
+            ).first()
+            if beverage_batch:
+                # Handling beverage transaction
+                try:
+                    # decrementing quantity
+                    beverage_batch.quantity = beverage_batch.quantity - 1
+
+                    # assigning beer
+                    bought_beverage = BeverageUser(beverage_batch_id=beverage_batch.id, user_id=user_id)
+                    db.session.add(bought_beverage)
+                    db.session.commit()
+                    return "Success: A beverage was bought"
+                except DBAPIError as e:
+                    db.session.rollback()
+                    return "Error: A beverage could not be bought. Try again or contact an admin"
+            else:
+                return "Error: It appears that there are no more beers left. Contact an admin."
+        else:
+            return "Error: Beverage does not exist."
+    else:
+        return "Error: User does not exist. Try again or contact an admin."

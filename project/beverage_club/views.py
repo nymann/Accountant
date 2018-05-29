@@ -44,6 +44,12 @@ def new_beverage():
         name = form.name.data
         type = form.type.data
 
+        # type cannot be blank
+        if type.lstrip() == "":
+            flash("Beverage type must be selected", "alert alert-danger")
+            return redirect(url_for('beverage_club.admin_module'))
+        print(type)
+
         # checks if beverage already exists
         name_db = Beverage.query.filter(
             Beverage.name == name

@@ -31,7 +31,14 @@
             <div class="form-group row">
                 <label for="type" class="col-lg-3 col-form-label">Type</label>
                 <div class="col-lg-9">
-                    <input class="form-control" type="text" placeholder="Beverage Type" id="type" name="type">
+                    <select class="form-control" name="type" id="type">
+                        <option disabled selected>Select beverage type</option>
+                        {% for beverage_type in beverage_types %}
+                            <option value="{{ beverage_type.id }}">{{ beverage_type.type }}</option>
+                        {% endfor %}
+                    </select>
+                    <!--<input class="form-control" type="text" placeholder="Beverage Type" id="type" name="type"
+                           required="required">-->
                 </div>
             </div>
 

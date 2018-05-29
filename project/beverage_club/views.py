@@ -14,11 +14,20 @@ def index():
         Beverage.name.label('name'), Beverage.id.label('id')
     ).join(BeverageBatch).filter(BeverageBatch.quantity > 0).order_by(Beverage.name).all()
 
-    # Get the three most sold beers.
-
-    # If no beers are sold, return the latest beers
-
     return render_template('beverage_club/index.html', beverages=beverages, form=form)
+
+
+@beverage_club.route('/admin_module', methods=['GET', 'POST'])
+def admin_module():
+    form_beverage = NewBeverageForm()
+    form_beverage_type = NewBeverageTypesForm()
+
+    beverages = Beverage.query.all()
+    beverage_types = BeverageTypes.query.all()
+
+    return render_template('beverage_club/new_beverage.html', form_beverage=form_beverage,
+                           form_beverage_type=form_beverage_type, beverages=beverages,
+                           beverage_types=beverage_types)
 
 
 @beverage_club.route('/new', methods=['GET', 'POST'])
@@ -35,6 +44,14 @@ def new_beverage():
         name = form.name.data
         type = form.type.data
 
+        # checks if beverage already exists
+        name_db = Beverage.query.filter(
+            Beverage.name == name
+        ).first()
+        if name_db:
+            flash("Beverage already exists", "alert alert-danger")
+            return redirect(url_for('beverage_club.admin_module'))
+
         beverage = Beverage(name=name, type=type, contents=contents)
 
         try:
@@ -46,7 +63,7 @@ def new_beverage():
             db.session.rollback()
             flash(str(e), "alert alert-danger")
 
-    return render_template('beverage_club/new_beverage.html', form=form)
+    return admin_module
 
 
 @beverage_club.route('/new_type', methods=['GET', 'POST'])
@@ -55,6 +72,14 @@ def new_beverage_type():
 
     if form.validate_on_submit():
         type = form.type.data
+
+        # checks if beverage type already exists
+        type_db = BeverageTypes.query.filter(
+            BeverageTypes.type == type
+        ).first()
+        if type_db:
+            flash("Beverage Type already exists", "alert alert-danger")
+            return redirect(url_for('beverage_club.admin_module'))
 
         beverage_type = BeverageTypes(type=type)
 
@@ -67,7 +92,7 @@ def new_beverage_type():
             db.session.rollback()
             flash(str(e), "alert alert-danger")
 
-    return render_template('beverage_club/new_beverage_type.html', form=form)
+    return admin_module
 
 
 @beverage_club.route('/beverage/<int:user_id>', methods=['GET', 'POST'])

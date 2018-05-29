@@ -10,8 +10,7 @@
     <button class="btn btn-info" data-toggle="modal" data-target="#moredrinkers">Add more payees</button>
     <a href="{{ url_for('beverage_club.new_beverage_batch') }}" class="btn btn-info">Add Beverage Batch</a>
     {% if current_user.admin %}
-        <a href="{{ url_for('beverage_club.new_beverage') }}" class="btn btn-info">Add beverage</a>
-        <a href="{{ url_for('beverage_club.new_beverage_type') }}" class="btn btn-info">Add beverage Type</a>
+        <a href="{{ url_for('beverage_club.admin_module') }}" class="btn btn-info">Beverage Admin Page</a>
     {% endif %}
 {% endblock %}
 

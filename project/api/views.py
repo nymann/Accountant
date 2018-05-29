@@ -29,3 +29,15 @@ def dinners():
         Dinner.payee_id.is_(User.id)
     ).group_by(Dinner.id).all()
     return jsonify(dinners=dinners)
+
+
+@api.route('/is_user')
+def is_user():
+    if 'id' in request.args:
+        id = int(request.args['id'])
+    else:
+        return "Error: No id field provided"
+
+    results = User.queary.get(id)
+    
+    return jsonify(results)

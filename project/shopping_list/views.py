@@ -1,18 +1,23 @@
 from flask import render_template, flash, abort, request, redirect, url_for
 from flask_login import current_user
 from project.shopping_list import shopping_list
-from project.models import Shopping, User, db, Items
-from project.forms import ShoppingForm, ItemForm
+from project.models import Shopping, User, db, Items, NeededItems
+from project.forms import ShoppingForm, ItemForm, NeededItemForm
 from datetime import date, datetime
 from sqlalchemy.exc import DBAPIError
 
 
 @shopping_list.route('/')
 def index():
+    form = NeededItemForm()
     shopping_list_entries = Shopping.query.filter(
         Shopping.accounted.is_(False)
     ).all()
-    return render_template('shopping_list/index.html', shopping_list_entries=shopping_list_entries)
+    needed_items = NeededItems.query.filter(
+        NeededItems.item_bought.is_(False)
+    ).all()
+    return render_template('shopping_list/index.html', shopping_list_entries=shopping_list_entries,
+                           needed_items=needed_items, form=form)
 
 
 @shopping_list.route('/<shopping_id>')
@@ -128,3 +133,20 @@ def delete_item(shopping_id, item_id):
         db.session.rollback()
 
     return redirect(url_for('shopping_list.edit', shopping_id=shopping_id))
+
+
+@shopping_list.route('/needed_item', methods=['GET', 'POST'])
+def add_needed_item():
+    form = NeededItemForm()
+    if form.validate_on_submit():
+        item_name = form.name.data
+        needed_item = NeededItems(item_name=item_name)
+        try:
+            db.session.add(NeededItems)
+            db.session.commit()
+            flash("Needed item added to list", "alert alert-info")
+        except DBAPIError as e:
+            flash(str(e), "alert alert-danger")
+            db.session.rollback()
+
+    return index()

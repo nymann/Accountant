@@ -99,7 +99,13 @@ def items_new(shopping_id, edit):
         db.session.commit()
     if edit:
         return redirect(url_for('shopping_list.edit', shopping_id=shopping_id))
-    return render_template('shopping_list/new_items.html', shopping=shopping_entry, form=form)
+
+    needed_items = NeededItems.query.filter(
+        NeededItems.item_bought == False
+    ).all()
+
+    return render_template('shopping_list/new_items.html', shopping=shopping_entry, needed_items=needed_items,
+                           form=form)
 
 
 @shopping_list.route('<int:shopping_id>/items/edit/<int:item_id>', methods=['GET', 'POST'])
@@ -142,7 +148,7 @@ def add_needed_item():
         item_name = form.name.data
         needed_item = NeededItems(item_name=item_name)
         try:
-            db.session.add(NeededItems)
+            db.session.add(needed_item)
             db.session.commit()
             flash("Needed item added to list", "alert alert-info")
         except DBAPIError as e:

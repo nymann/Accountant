@@ -22,7 +22,7 @@
                     <ul class="list-group list-group-flush">
                         {% if needed_items %}
                             {% for needed_item in needed_items %}
-                                <li class="list-group-item">{{ needed_item.name }}</li>
+                                <li class="list-group-item">{{ needed_item.item_name }}</li>
                             {% endfor %}
                         {% else %}
                             <li class="list-group-item">Great! We do not need any items!</li>

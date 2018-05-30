@@ -22,7 +22,12 @@
                     <ul class="list-group list-group-flush">
                         {% if needed_items %}
                             {% for needed_item in needed_items %}
-                                <li class="list-group-item">{{ needed_item.item_name }}</li>
+                                <li class="list-group-item">{{ needed_item.item_name }}
+                                    <button type="button" class="close" aria-label="Close" id="remove_needed_item"
+                                            name="remove_needed_item">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </li>
                             {% endfor %}
                         {% else %}
                             <li class="list-group-item">Great! We do not need any items!</li>

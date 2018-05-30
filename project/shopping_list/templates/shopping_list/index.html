@@ -23,10 +23,13 @@
                         {% if needed_items %}
                             {% for needed_item in needed_items %}
                                 <li class="list-group-item">{{ needed_item.item_name }}
-                                    <a href="{{ url_for('shopping_list.remove_needed_item', needed_item_id=needed_item.id) }}" class="close"
-                                       aria-label="Close" id="remove_needed_item" name="remove_needed_item">
-                                        <span aria-hidden="false"> &times; </span>
-                                    </a>needed_item_id
+                                    {% if current_user.active %}
+                                        <a href="{{ url_for('shopping_list.remove_needed_item', needed_item_id=needed_item.id) }}"
+                                           class="close"
+                                           aria-label="Close" id="remove_needed_item" name="remove_needed_item">
+                                            <span aria-hidden="false"> &times; </span>
+                                        </a>
+                                    {% endif %}
                                 </li>
                             {% endfor %}
                         {% else %}
@@ -51,6 +54,7 @@
                         <tbody>
                         {% for shopping_list_entry in shopping_list_entries %}
                             {% for item in shopping_list_entry.items %}
+                                {% if current_user.active %}
                                 <tr class="clickable-row"
                                     data-href="{{ url_for('shopping_list.entry', shopping_id=shopping_list_entry.id) }}">
                                     <td>{% if loop.first %}{{ shopping_list_entry.date | datetime() }}{% endif %}</td>
@@ -59,6 +63,15 @@
                                     <td>{{ item.amount }}</td>
                                     <td>{{ item.price }} DKK.</td>
                                 </tr>
+                                {% else %}
+                                <tr>
+                                    <td>{% if loop.first %}{{ shopping_list_entry.date | datetime() }}{% endif %}</td>
+                                    <td>{% if loop.first %}{{ shopping_list_entry.payee.name }}{% endif %}</td>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.amount }}</td>
+                                    <td>{{ item.price }} DKK.</td>
+                                </tr>
+                                {% endif %}
                             {% endfor %}
                         {% endfor %}
                         </tbody>

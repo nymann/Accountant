@@ -17,26 +17,28 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            {% if beverages %}
-                {% for beverage in beverages %}
-                    <div class="col-lg-4 col-sm-12">
-                        <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}"
-                              class="form-group" method="POST">
-                            <div class="form-group">
-                                {{ form.hidden_tag() }}
-                            </div>
-                            <button class="btn btn-block btn-lg btn-info" name="beverage_id" id="beverage_id"
-                                    value="{{ beverage.id }}">{{ beverage.name }}</button>
-                        </form>
-                    </div>
-                {% endfor %}
-            {% else %}
-                There are no more beers, go buy some!
-            {% endif %}
+    {% if current_user.active %}
+        <div class="container">
+            <div class="row">
+                {% if beverages %}
+                    {% for beverage in beverages %}
+                        <div class="col-lg-4 col-sm-12">
+                            <form action="{{ url_for('beverage_club.buy_beverage', user_id=current_user.id) }}"
+                                  class="form-group" method="POST">
+                                <div class="form-group">
+                                    {{ form.hidden_tag() }}
+                                </div>
+                                <button class="btn btn-block btn-lg btn-info" name="beverage_id" id="beverage_id"
+                                        value="{{ beverage.id }}">{{ beverage.name }}</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    There are no more beers, go buy some!
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    {% include 'beverage_club/beveragepayees.html' %}
+        {% include 'beverage_club/beveragepayees.html' %}
+    {% endif %}
 {% endblock %}

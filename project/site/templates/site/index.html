@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Next meeting</h5>
                         <h6 class="card-subtitle text-muted">
-                            {% if event %}
+                            {% if event and current_user.active %}
                                 {{ event.date }}
                             {% else %}
                                 Nothing scheduled

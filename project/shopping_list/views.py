@@ -10,12 +10,15 @@ from sqlalchemy.exc import DBAPIError
 @shopping_list.route('/')
 def index():
     form = NeededItemForm()
+
     shopping_list_entries = Shopping.query.filter(
         Shopping.accounted.is_(False)
     ).all()
+
     needed_items = NeededItems.query.filter(
         NeededItems.item_bought.is_(False)
     ).all()
+
     return render_template('shopping_list/index.html', shopping_list_entries=shopping_list_entries,
                            needed_items=needed_items, form=form)
 
@@ -154,5 +157,19 @@ def add_needed_item():
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")
             db.session.rollback()
+
+    return index()
+
+
+@shopping_list.route('/removed_item/<needed_item_id>', methods=['GET', 'POST'])
+def remove_needed_item(needed_item_id):
+    needed_item = NeededItems.query.get_or_404(int(needed_item_id))
+    print(needed_item_id)
+    try:
+        needed_item.item_bought = True
+        db.session.commit()
+        flash("Successfully removed needed item.", "alert alert-info")
+    except DBAPIError as e:
+        flash(str(e), "alert alert-danger")
 
     return index()

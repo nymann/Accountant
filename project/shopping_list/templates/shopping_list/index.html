@@ -23,10 +23,10 @@
                         {% if needed_items %}
                             {% for needed_item in needed_items %}
                                 <li class="list-group-item">{{ needed_item.item_name }}
-                                    <button type="button" class="close" aria-label="Close" id="remove_needed_item"
-                                            name="remove_needed_item">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                    <a href="{{ url_for('shopping_list.remove_needed_item', needed_item_id=needed_item.id) }}" class="close"
+                                       aria-label="Close" id="remove_needed_item" name="remove_needed_item">
+                                        <span aria-hidden="false"> &times; </span>
+                                    </a>needed_item_id
                                 </li>
                             {% endfor %}
                         {% else %}

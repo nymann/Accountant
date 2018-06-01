@@ -16,19 +16,25 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-8">
                     <h4>{{ user.name }}</h4>
+                    <div class="mt-lg-4">
+                        <h6 class="card-subtitle" style="opacity: 0.8;">
+                            {% if user.phone_number %}
+                                {{ user.phone_number }}
+                                <i class="fas fa-mobile-alt mr-lg-4 mt-lg-2"></i>
+                            {% endif %}</h6>
+                    </div>
+                    <div class="mt-lg-1">
+                        <h6 class="card-subtitle" style="opacity: 0.8;">
+                            {{ user.move_in_date.strftime("%d. of %B %Y") }}
+                            <i class="fas fa-home ml-lg-2 mt-lg-2"></i>
+                        </h6>
+                    </div>
                 </div>
-                <div class="offset-2 col-lg-3">
-                    <h6 class="card-subtitle">{% if user.phone_number %}{{ user.phone_number }}{% endif %}</h6>
-                    <ul class="list-unstyled">
-                        <li class="card-text">Moved in the {{ user.move_in_date.strftime("%d. of %B %Y") }}</li>
-                        <li class="card-text">Lives in room no. {{ user.room_number }}</li>
-                    </ul>
-                </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2 text-right">
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#updateSettingsForm">
-                        Update Information
+                        <i class="fas fa-cog" style="opacity: 0.9;"></i>
                     </button>
                 </div>
             </div>
@@ -36,24 +42,23 @@
                 <div class="col-lg-2">
                     {% if user.active %}
                         <br/>
-                        <h5 class="text-info">Active</h5>
+                        <h5 class="text-white">
+                            {% if user.room_number %}
+                                Room {{ user.room_number }}
+                            {% endif %}
+                        </h5>
                     {% endif %}
                 </div>
             </div>
-            {% if user == current_user %}
-                <div class="row">
-                    <div class="offset-9 col-lg-3" style="opacity: 0.7;">
-                        <div class="row"><h5>Associated with</h5></div>
-                        <div class="row">
-                            {% for oauth in oauths %}
-                                <div class="mr-3">
-                                    <p>{{ oauth.provider }}</p>
-                                </div>
-                            {% endfor %}
-                        </div>
+            <div class="row mt-lg-4">
+                <div class="col-lg-9">
+                    <div style="font-size: 2.5em; opacity:0.4;">
+                        {% for oauth in oauths %}
+                            <i class="fab fa-{{ oauth.provider }} mr-lg-2"></i>
+                        {% endfor %}
                     </div>
                 </div>
-            {% endif %}
+            </div>
         </div>
     </div>
     <!-- Modal -->

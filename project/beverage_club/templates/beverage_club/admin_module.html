@@ -31,14 +31,13 @@
             <div class="form-group row">
                 <label for="type" class="col-lg-3 col-form-label">Type</label>
                 <div class="col-lg-9">
-                    <select class="form-control" name="type" id="type">
-                        <option disabled selected>Select beverage type</option>
-                        {% for beverage_type in beverage_types %}
-                            <option value="{{ beverage_type.id }}">{{ beverage_type.type }}</option>
-                        {% endfor %}
-                    </select>
-                    <!--<input class="form-control" type="text" placeholder="Beverage Type" id="type" name="type"
-                           required="required">-->
+                    <div class="form-group">
+                        <select class="form-control" id="type" name="type">
+                            {% for beverage_type in beverage_types %}
+                                <option value="{{ beverage_type.id }}">{{ beverage_type.type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -71,7 +70,7 @@
             <div class="form-group row">
                 <label for="type" class="col-lg-3 col-form-label">Type</label>
                 <div class="col-lg-9">
-                    <input class="form-control" type="text" placeholder="Beverage Type" id="type" name="type">
+                    <input class="form-control" type="text" placeholder="Beverage Type" id="type_new" name="type_new">
                 </div>
             </div>
 
@@ -117,4 +116,15 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(function () {
+            $("#type").popSelect({
+                showTitle: false,
+                maxAllowed: 1
+            });
+        });
+    </script>
 {% endblock %}

@@ -59,6 +59,10 @@ class ItemForm(FlaskForm):
     price = StringField('price')
 
 
+class NeededItemForm(FlaskForm):
+    name = StringField('name')
+
+
 class NewBeverageForm(FlaskForm):
     name = StringField('name')
     type = StringField('type')
@@ -76,4 +80,4 @@ class BuyBeverageForm(FlaskForm):
 
 
 class NewBeverageTypesForm(FlaskForm):
-    type = StringField('type')
+    type_new = StringField('type_new')

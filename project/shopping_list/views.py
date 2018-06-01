@@ -1,18 +1,26 @@
 from flask import render_template, flash, abort, request, redirect, url_for
 from flask_login import current_user
 from project.shopping_list import shopping_list
-from project.models import Shopping, User, db, Items
-from project.forms import ShoppingForm, ItemForm
+from project.models import Shopping, User, db, Items, NeededItems
+from project.forms import ShoppingForm, ItemForm, NeededItemForm
 from datetime import date, datetime
 from sqlalchemy.exc import DBAPIError
 
 
 @shopping_list.route('/')
 def index():
+    form = NeededItemForm()
+
     shopping_list_entries = Shopping.query.filter(
         Shopping.accounted.is_(False)
     ).all()
-    return render_template('shopping_list/index.html', shopping_list_entries=shopping_list_entries)
+
+    needed_items = NeededItems.query.filter(
+        NeededItems.item_bought.is_(False)
+    ).all()
+
+    return render_template('shopping_list/index.html', shopping_list_entries=shopping_list_entries,
+                           needed_items=needed_items, form=form)
 
 
 @shopping_list.route('/<shopping_id>')
@@ -87,6 +95,12 @@ def items_new(shopping_id, edit):
     form = ItemForm()
     shopping_entry = Shopping.query.get_or_404(int(shopping_id))
     if form.validate_on_submit():
+        needed_item = NeededItems.query.filter(
+            NeededItems.item_name == form.name.data
+        ).first()
+        if needed_item:
+            needed_item.item_bought = True
+
         item = Items(price=float(form.price.data), name=form.name.data, amount=int(form.amount.data),
                      user_id=shopping_entry.payee_id)
         shopping_entry.items.append(item)
@@ -94,7 +108,13 @@ def items_new(shopping_id, edit):
         db.session.commit()
     if edit:
         return redirect(url_for('shopping_list.edit', shopping_id=shopping_id))
-    return render_template('shopping_list/new_items.html', shopping=shopping_entry, form=form)
+
+    needed_items = NeededItems.query.filter(
+        NeededItems.item_bought == False
+    ).all()
+
+    return render_template('shopping_list/new_items.html', shopping=shopping_entry, needed_items=needed_items,
+                           form=form)
 
 
 @shopping_list.route('<int:shopping_id>/items/edit/<int:item_id>', methods=['GET', 'POST'])
@@ -128,3 +148,34 @@ def delete_item(shopping_id, item_id):
         db.session.rollback()
 
     return redirect(url_for('shopping_list.edit', shopping_id=shopping_id))
+
+
+@shopping_list.route('/needed_item', methods=['GET', 'POST'])
+def add_needed_item():
+    form = NeededItemForm()
+    if form.validate_on_submit():
+        item_name = form.name.data
+        needed_item = NeededItems(item_name=item_name)
+        try:
+            db.session.add(needed_item)
+            db.session.commit()
+            flash("Needed item added to list", "alert alert-info")
+        except DBAPIError as e:
+            flash(str(e), "alert alert-danger")
+            db.session.rollback()
+
+    return index()
+
+
+@shopping_list.route('/removed_item/<needed_item_id>', methods=['GET', 'POST'])
+def remove_needed_item(needed_item_id):
+    needed_item = NeededItems.query.get_or_404(int(needed_item_id))
+    print(needed_item_id)
+    try:
+        needed_item.item_bought = True
+        db.session.commit()
+        flash("Successfully removed needed item.", "alert alert-info")
+    except DBAPIError as e:
+        flash(str(e), "alert alert-danger")
+
+    return index()

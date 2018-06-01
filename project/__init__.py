@@ -1,13 +1,12 @@
-from flask import Flask, flash, redirect, url_for
+from flask import Flask, redirect, url_for
 from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 from flask_dance.contrib.facebook import make_facebook_blueprint
-from flask_dance.contrib.twitter import make_twitter_blueprint
 from flask_dance.contrib.github import make_github_blueprint
-from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_dance.contrib.twitter import make_twitter_blueprint
+from flask_login import LoginManager, current_user, login_required, logout_user
 from flask_uploads import configure_uploads
-from sqlalchemy import or_
-from sqlalchemy.orm.exc import NoResultFound
+from werkzeug.contrib.fixers import ProxyFix
 
 from project.api import api
 from project.beverage_club import beverage_club
@@ -16,16 +15,16 @@ from project.kitchen_meeting import kitchen_meeting
 from project.models import db, User, OAuth
 from project.shopping_list import shopping_list
 from project.site import site
-from project.utils.uploadsets import avatars
 from project.utils.login import general_logged_in, general_error
+from project.utils.uploadsets import avatars
 
-import os
-
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+# import os
+#
+# os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 app = Flask(__name__)
-
 app.config.from_pyfile('../config.cfg', silent=False)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 facebook_blueprint = make_facebook_blueprint(
     backend=SQLAlchemyBackend(OAuth, db.session, user=current_user, user_required=False)

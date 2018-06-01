@@ -23,7 +23,7 @@
                 <label for="beverage_id" class="col-lg-3 col-form-label">Beverage</label>
                 <div class="col-lg-9">
                     <div class="form-group">
-                        <select multiple class="form-control" id="beverage_id" name="beverage_id">
+                        <select class="form-control" id="beverage_id" name="beverage_id">
                             {% for beverage in beverages %}
                                 <option value="{{ beverage.id }}">{{ beverage.name }}</option>
                             {% endfor %}
@@ -36,7 +36,8 @@
             <div class="form-group row">
                 <label for="quantity" class="col-lg-3 col-form-label">Quantity</label>
                 <div class="col-lg-9">
-                    <input class="form-control" type="number" placeholder="Beverage Quantity" id="quantity" name="quantity"
+                    <input class="form-control" type="number" placeholder="Beverage Quantity" id="quantity"
+                           name="quantity"
                            required="required" min="0" max="144">
                 </div>
             </div>
@@ -46,7 +47,7 @@
                 <label for="price" class="col-lg-3 col-form-label">Total price</label>
                 <div class="col-lg-9">
                     <input type="number" class="form-control" placeholder="Total price" id="price" name="price"
-                        required="required" min="0">
+                           required="required" min="0">
                 </div>
             </div>
 
@@ -64,7 +65,8 @@
     <script>
         $(function () {
             $("#beverage_id").popSelect({
-                showTitle: false
+                showTitle: false,
+                maxAllowed: 1
             });
         });
     </script>

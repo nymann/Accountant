@@ -9,13 +9,36 @@
     <p class="lead">Items bought since last accounting.</p>
     {% if current_user.active or current_user.admin %}
         <a href="{{ url_for('shopping_list.new') }}" class="btn btn-info">New Shopping Entry</a>
+        <button class="btn btn-info btn-md" data-toggle="modal" data-target="#add_needed_item">Add needed item</button>
     {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="card col-lg-12">
+            <div class="card col-lg-3">
+                <div class="card-body">
+                    <h5 class="card-title">We need this</h5>
+                    <ul class="list-group list-group-flush">
+                        {% if needed_items %}
+                            {% for needed_item in needed_items %}
+                                <li class="list-group-item">{{ needed_item.item_name }}
+                                    {% if current_user.active %}
+                                        <a href="{{ url_for('shopping_list.remove_needed_item', needed_item_id=needed_item.id) }}"
+                                           class="close"
+                                           aria-label="Close" id="remove_needed_item" name="remove_needed_item">
+                                            <span aria-hidden="false"> &times; </span>
+                                        </a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item">Great! We do not need any items!</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card col-lg-9">
                 <div class="card-body">
                     <h5 class="card-title">Bought Items</h5>
                     <table class="table">
@@ -31,6 +54,7 @@
                         <tbody>
                         {% for shopping_list_entry in shopping_list_entries %}
                             {% for item in shopping_list_entry.items %}
+                                {% if current_user.active %}
                                 <tr class="clickable-row"
                                     data-href="{{ url_for('shopping_list.entry', shopping_id=shopping_list_entry.id) }}">
                                     <td>{% if loop.first %}{{ shopping_list_entry.date | datetime() }}{% endif %}</td>
@@ -39,6 +63,15 @@
                                     <td>{{ item.amount }}</td>
                                     <td>{{ item.price }} DKK.</td>
                                 </tr>
+                                {% else %}
+                                <tr>
+                                    <td>{% if loop.first %}{{ shopping_list_entry.date | datetime() }}{% endif %}</td>
+                                    <td>{% if loop.first %}{{ shopping_list_entry.payee.name }}{% endif %}</td>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.amount }}</td>
+                                    <td>{{ item.price }} DKK.</td>
+                                </tr>
+                                {% endif %}
                             {% endfor %}
                         {% endfor %}
                         </tbody>
@@ -47,6 +80,7 @@
             </div>
         </div>
     </div>
+    {% include 'shopping_list/add_needed_item.html' %}
 {% endblock %}
 
 {% block scripts %}

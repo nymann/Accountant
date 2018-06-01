@@ -87,6 +87,13 @@ class Items(db.Model):
     shopping = db.relationship(Shopping, back_populates="items")
 
 
+class NeededItems(db.Model):
+    __tablename__ = 'needed_items'
+    id = db.Column(db.Integer, primary_key=True)
+    item_name = db.Column(db.String, nullable=False)
+    item_bought = db.Column(db.Boolean, default=False)
+
+
 class MeetingEvent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)

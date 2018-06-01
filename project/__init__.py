@@ -73,7 +73,7 @@ def twitter_logged_in(blueprint, token):
 
 @oauth_error.connect_via(twitter_blueprint)
 def twitter_error(blueprint, error, error_description=None, error_uri=None):
-    general_error(blueprint, error, error_description, error_uri)
+    return general_error(blueprint, error, error_description, error_uri)
 
 
 @oauth_authorized.connect_via(facebook_blueprint)

@@ -18,12 +18,17 @@ html > body {
 }
 
 .footer {
-    position: absolute;
+    position: fixed;
+    color: white;
     bottom: 0;
     width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 60px;
-    line-height: 60px; /* Vertically center the text there */
+    height: 50px; /* Set the fixed height of the footer here */
+    line-height: 50px; /* Vertically center the text there */
+    background-color: #17a2b8;
+}
+
+.spacer{
+    height: 100px;
 }
 
 body > .jumbotron {

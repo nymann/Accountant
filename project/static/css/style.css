@@ -27,7 +27,7 @@ html > body {
     background-color: #17a2b8;
 }
 
-.spacer{
+.spacer {
     height: 100px;
 }
 
@@ -45,4 +45,17 @@ body > .jumbotron {
 
 body, html {
     height: 100%;
+}
+
+a:link {
+    color: #17a2b8;
+}
+
+a:visited {
+    color: #17a2b8;
+}
+
+a:hover {
+    color: #17a2b8;
+    font-weight: bold;
 }

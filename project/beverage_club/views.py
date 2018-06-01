@@ -33,8 +33,6 @@ def admin_module():
                            beverage_types=beverage_types)
 
 
-
-
 @beverage_club.route('/new', methods=['GET', 'POST'])
 def new_beverage():
     form = NewBeverageForm()

@@ -25,9 +25,16 @@ def admin_module():
     beverages = Beverage.query.all()
     beverage_types = BeverageTypes.query.all()
 
-    return render_template('beverage_club/new_beverage.html', form_beverage=form_beverage,
+    if beverage_types is False:
+        1 + 1
+    else:
+        flash("There are no beverage types. Go create on.", "alert alert-danger")
+
+    return render_template('beverage_club/admin_module.html', form_beverage=form_beverage,
                            form_beverage_type=form_beverage_type, beverages=beverages,
                            beverage_types=beverage_types)
+
+
 
 
 @beverage_club.route('/new', methods=['GET', 'POST'])
@@ -77,7 +84,7 @@ def new_beverage_type():
     form = NewBeverageTypesForm()
 
     if form.validate_on_submit():
-        type = form.type.data
+        type = form.type_new.data
 
         # checks if beverage type already exists
         type_db = BeverageTypes.query.filter(
@@ -135,25 +142,28 @@ def new_beverage_batch():
     form = NewBeverageBatchForm()
     beverages = Beverage.query.all()
 
-    if form.validate_on_submit():
-        try:
-            beverage_id = form.beverage_id.data
-            quantity = int(form.quantity.data)
-            price_per_can = float(form.price.data) / quantity
+    if beverages:
+        if form.validate_on_submit():
+            try:
+                beverage_id = form.beverage_id.data
+                quantity = int(form.quantity.data)
+                price_per_can = float(form.price.data) / quantity
 
-        except ValueError as e:
-            flash(str(e), "alert alert-danger")
-            redirect(url_for('beverage_club.new_beverage_batch'))
+            except ValueError as e:
+                flash(str(e), "alert alert-danger")
+                redirect(url_for('beverage_club.new_beverage_batch'))
 
-        beverage_batch = BeverageBatch(beverage_id=beverage_id, quantity=quantity, price_per_can=price_per_can)
+            beverage_batch = BeverageBatch(beverage_id=beverage_id, quantity=quantity, price_per_can=price_per_can)
 
-        try:
-            db.session.add(beverage_batch)
-            db.session.commit()
-            flash("Beverage Batch added succesfully")
-            return redirect(url_for('beverage_club.index'))
-        except DBAPIError as e:
-            db.session.rollback()
-            flash(str(e), "alert alert-danger")
+            try:
+                db.session.add(beverage_batch)
+                db.session.commit()
+                flash("Beverage Batch added succesfully")
+                return redirect(url_for('beverage_club.index'))
+            except DBAPIError as e:
+                db.session.rollback()
+                flash(str(e), "alert alert-danger")
+    else:
+        flash("There is no beverages created. Contact an admin.", "alert alert-danger")
 
     return render_template('beverage_club/beverage_batch.html', form=form, beverages=beverages)

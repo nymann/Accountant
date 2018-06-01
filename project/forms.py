@@ -80,4 +80,4 @@ class BuyBeverageForm(FlaskForm):
 
 
 class NewBeverageTypesForm(FlaskForm):
-    type = StringField('type')
+    type_new = StringField('type_new')

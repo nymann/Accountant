@@ -24,7 +24,7 @@ html > body {
     width: 100%;
     height: 50px; /* Set the fixed height of the footer here */
     line-height: 50px; /* Vertically center the text there */
-    background-color: #17a2b8;
+    background-color: #333333;
 }
 
 .spacer {
@@ -32,30 +32,13 @@ html > body {
 }
 
 body > .jumbotron {
-    background: url("../img/background.png") no-repeat center center;
     color: white;
     border-radius: 0;
-
     /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: url("../img/background.png") no-repeat fixed center;
     background-size: cover;
 }
 
 body, html {
     height: 100%;
-}
-
-a:link {
-    color: #17a2b8;
-}
-
-a:visited {
-    color: #17a2b8;
-}
-
-a:hover {
-    color: #17a2b8;
-    font-weight: bold;
 }

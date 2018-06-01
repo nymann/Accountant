@@ -31,24 +31,23 @@
                             <i class="fas fa-home ml-lg-2 mt-lg-2"></i>
                         </h6>
                     </div>
+                    <div class="mt-lg-1">
+                        {% if user.active %}
+                            <h6 class=card-subtitle" style="opacity: 0.8;">
+                                {% if user.room_number %}
+                                    Lives in room no. {{ user.room_number }}
+                                {% endif %}
+                            </h6>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="col-lg-2 text-right">
-                    <button type="button" class="btn btn-outline-light" data-toggle="modal" data-target="#updateSettingsForm">
+                    <button type="button" class="btn btn-outline-light" data-toggle="modal"
+                            data-target="#updateSettingsForm">
                         <i class="fas fa-cog" style="font-size: 1.5em;opacity: 0.9;"></i>
                     </button>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-2">
-                    {% if user.active %}
-                        <br/>
-                        <h5 class="text-white">
-                            {% if user.room_number %}
-                                Room {{ user.room_number }}
-                            {% endif %}
-                        </h5>
-                    {% endif %}
-                </div>
+
             </div>
             <div class="row mt-lg-4">
                 <div class="col-lg-9">
@@ -147,7 +146,7 @@
                         <h6 class="card-subtitle text-muted">Since the last accounting-report</h6>
                         <br>
                         <p class="card-text green">Income: {{ shopping_income|round(2) }} DKK</p>
-                        {% if dinner_expenses > 0 %}
+                        {% if shopping_expenses > 0 %}
                             <p class="card-text text-danger">Expenses: {{ shopping_expenses|round(2) }} DKK</p>
                         {% else %}
                             <p class="card-text green">Expenses: {{ shopping_expenses|round(2) }} DKK</p>

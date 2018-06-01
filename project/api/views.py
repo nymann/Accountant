@@ -1,4 +1,5 @@
 from sqlalchemy.sql import label
+from flask_login import login_required
 from sqlalchemy.exc import DBAPIError
 
 from project.api import api
@@ -13,6 +14,7 @@ def index():
 
 
 @api.route('/dinners')
+@login_required
 def dinners():
     start = request.args.get('start')
     end = request.args.get('end')

@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, render_template
 from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 from flask_dance.contrib.facebook import make_facebook_blueprint
@@ -27,7 +27,7 @@ app.config.from_pyfile('../config.cfg', silent=False)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
 facebook_blueprint = make_facebook_blueprint(
-    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user)
+    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user, user_required=False)
 )
 
 twitter_blueprint = make_twitter_blueprint(
@@ -35,7 +35,7 @@ twitter_blueprint = make_twitter_blueprint(
 )
 
 github_blueprint = make_github_blueprint(
-    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user)
+    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user, user_required=False)
 )
 
 app.register_blueprint(facebook_blueprint, url_prefix='/login')
@@ -49,6 +49,21 @@ app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 
 configure_uploads(app, avatars)
+login_manager = LoginManager(app)
+login_manager.login_view = '/login'
+login_manager.login_message = 'You have to login in order to view that page.'
+login_manager.login_message_category = 'alert alert-danger'
+db.app = app
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404_not_found.html', msg=error)
+
+
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template('403_forbidden.html', msg=error)
 
 
 @oauth_authorized.connect_via(twitter_blueprint)
@@ -63,27 +78,26 @@ def twitter_error(blueprint, error, error_description=None, error_uri=None):
 
 @oauth_authorized.connect_via(facebook_blueprint)
 def facebook_logged_in(blueprint, token):
-    general_logged_in(blueprint, token, '/me?fields=id,name,email')
+    return general_logged_in(blueprint, token, '/me?fields=id,name,email')
 
 
 @oauth_error.connect_via(facebook_blueprint)
 def facebook_error(blueprint, error, error_description=None, error_uri=None):
-    general_error(blueprint, error, error_description, error_uri)
+    return general_error(blueprint, error, error_description, error_uri)
 
 
 @oauth_authorized.connect_via(github_blueprint)
 def github_logged_in(blueprint, token):
-    general_logged_in(blueprint, token, '/user')
+    return general_logged_in(blueprint, token, '/user')
 
 
 @oauth_error.connect_via(github_blueprint)
 def github_error(blueprint, error, error_description=None, error_uri=None):
-    general_error(blueprint, error, error_description, error_uri)
+    return general_error(blueprint, error, error_description, error_uri)
 
 
-login_manager = LoginManager(app)
-db.app = app
 db.init_app(app)
+login_manager.init_app(app)
 db.create_all()
 
 

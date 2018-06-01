@@ -7,7 +7,7 @@
 {% block jumbocontent %}
     <h1 class="display-4">Dinner meals</h1>
     <p class="lead">List of dinner meals that haven't been accounted yet.</p>
-    {% if current_user.active %}
+    {% if current_user.active and current_user.subscribed_to_dinner_club %}
         <a href="{{ url_for('dinner_club.new') }}" class="btn btn-info">New meal</a>
     {% endif %}
 {% endblock %}

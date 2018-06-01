@@ -34,7 +34,8 @@ def new():
     form = ShoppingForm()
 
     if form.validate_on_submit():
-        user = User.query.get_or_404(int(form.payee.data))
+        user_id = int(form.payee.data) if form.payee.data else current_user.id
+        user = User.query.get_or_404(user_id)
         shopping = Shopping(payee_id=user.id, date=datetime.strptime(form.date.data, "%d/%m/%Y"))
         try:
             db.session.add(shopping)
@@ -77,7 +78,7 @@ def edit(shopping_id):
 def delete(shopping_id):
     shopping = Shopping.query.get_or_404(int(shopping_id))
     if current_user is not shopping.payee and not current_user.admin:
-        return abort(502)
+        return abort(403)
 
     try:
         db.session.delete(shopping)
@@ -110,7 +111,7 @@ def items_new(shopping_id, edit):
         return redirect(url_for('shopping_list.edit', shopping_id=shopping_id))
 
     needed_items = NeededItems.query.filter(
-        NeededItems.item_bought == False
+        NeededItems.item_bought.is_(False)
     ).all()
 
     return render_template('shopping_list/new_items.html', shopping=shopping_entry, needed_items=needed_items,

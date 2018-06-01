@@ -40,7 +40,7 @@ class User(UserMixin, db.Model):
 class OAuth(OAuthConsumerMixin, db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     user = db.relationship(User)
-    provider_user_id = db.Column(db.String(255), unique=True)
+    provider_user_id = db.Column(db.String(255), unique=True, nullable=False)
 
 
 class Dinner(db.Model):

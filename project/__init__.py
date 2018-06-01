@@ -50,6 +50,9 @@ app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 
 configure_uploads(app, avatars)
 login_manager = LoginManager(app)
+login_manager.login_view = '/login'
+login_manager.login_message = 'You have to login in order to view that page.'
+login_manager.login_message_category = 'alert alert-danger'
 db.app = app
 
 

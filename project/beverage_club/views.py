@@ -25,9 +25,7 @@ def admin_module():
     beverages = Beverage.query.all()
     beverage_types = BeverageTypes.query.all()
 
-    if beverage_types is False:
-        1 + 1
-    else:
+    if len(beverage_types) == 0:
         flash("There are no beverage types. Go create on.", "alert alert-danger")
 
     return render_template('beverage_club/admin_module.html', form_beverage=form_beverage,

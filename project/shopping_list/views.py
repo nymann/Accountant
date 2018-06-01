@@ -78,7 +78,7 @@ def edit(shopping_id):
 def delete(shopping_id):
     shopping = Shopping.query.get_or_404(int(shopping_id))
     if current_user is not shopping.payee and not current_user.admin:
-        return abort(502)
+        return abort(403)
 
     try:
         db.session.delete(shopping)

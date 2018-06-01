@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, render_template
 from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 from flask_dance.contrib.facebook import make_facebook_blueprint
@@ -54,6 +54,16 @@ login_manager.login_view = '/login'
 login_manager.login_message = 'You have to login in order to view that page.'
 login_manager.login_message_category = 'alert alert-danger'
 db.app = app
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404_not_found.html', msg=error)
+
+
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template('403_forbidden.html', msg=error)
 
 
 @oauth_authorized.connect_via(twitter_blueprint)

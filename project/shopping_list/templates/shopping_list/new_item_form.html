@@ -7,8 +7,15 @@
 <div class="form-group row">
     <label for="name" class="col-lg-3 col-form-label">Item Name</label>
     <div class="col-lg-9">
-        <input type="text" name="name" placeholder="name" class="form-control" id="name"
-               value="" required="required" aria-describedby="nameHelpBlock" autofocus="autofocus">
+        <input type="text" name="name" placeholder="name" class="form-control" id="name" list="item_list"
+               required="required" aria-describedby="nameHelpBlock" autofocus="autofocus" autocomplete="off">
+
+        <datalist class="form-control" id="item_list">
+            {% for needed_item in needed_items %}
+                <option value="{{ needed_item.item_name }}"></option>
+            {% endfor %}
+        </datalist>
+
         <span id="nameHelpBlock" class="form-text text-muted">The name of the item you bought.</span>
     </div>
 </div>

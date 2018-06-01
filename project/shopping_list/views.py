@@ -95,6 +95,12 @@ def items_new(shopping_id, edit):
     form = ItemForm()
     shopping_entry = Shopping.query.get_or_404(int(shopping_id))
     if form.validate_on_submit():
+        needed_item = NeededItems.query.filter(
+            NeededItems.item_name == form.name.data
+        ).first()
+        if needed_item:
+            needed_item.item_bought = True
+
         item = Items(price=float(form.price.data), name=form.name.data, amount=int(form.amount.data),
                      user_id=shopping_entry.payee_id)
         shopping_entry.items.append(item)

@@ -31,11 +31,6 @@ body > .jumbotron {
     color: white;
     border-radius: 0;
 
-    /* The image used */
-    background-image: url("../img/glorious.jpg");
-
-    /* Full height */
-
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
     background-position: center;

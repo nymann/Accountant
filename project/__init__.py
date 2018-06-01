@@ -28,7 +28,7 @@ app = Flask(__name__)
 app.config.from_pyfile('../config.cfg', silent=False)
 
 facebook_blueprint = make_facebook_blueprint(
-    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user)
+    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user, user_required=False)
 )
 
 twitter_blueprint = make_twitter_blueprint(
@@ -36,7 +36,7 @@ twitter_blueprint = make_twitter_blueprint(
 )
 
 github_blueprint = make_github_blueprint(
-    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user)
+    backend=SQLAlchemyBackend(OAuth, db.session, user=current_user, user_required=False)
 )
 
 app.register_blueprint(facebook_blueprint, url_prefix='/login')
@@ -50,6 +50,8 @@ app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 
 configure_uploads(app, avatars)
+login_manager = LoginManager(app)
+db.app = app
 
 
 @oauth_authorized.connect_via(twitter_blueprint)
@@ -64,27 +66,26 @@ def twitter_error(blueprint, error, error_description=None, error_uri=None):
 
 @oauth_authorized.connect_via(facebook_blueprint)
 def facebook_logged_in(blueprint, token):
-    general_logged_in(blueprint, token, '/me?fields=id,name,email')
+    return general_logged_in(blueprint, token, '/me?fields=id,name,email')
 
 
 @oauth_error.connect_via(facebook_blueprint)
 def facebook_error(blueprint, error, error_description=None, error_uri=None):
-    general_error(blueprint, error, error_description, error_uri)
+    return general_error(blueprint, error, error_description, error_uri)
 
 
 @oauth_authorized.connect_via(github_blueprint)
 def github_logged_in(blueprint, token):
-    general_logged_in(blueprint, token, '/user')
+    return general_logged_in(blueprint, token, '/user')
 
 
 @oauth_error.connect_via(github_blueprint)
 def github_error(blueprint, error, error_description=None, error_uri=None):
-    general_error(blueprint, error, error_description, error_uri)
+    return general_error(blueprint, error, error_description, error_uri)
 
 
-login_manager = LoginManager(app)
-db.app = app
 db.init_app(app)
+login_manager.init_app(app)
 db.create_all()
 
 

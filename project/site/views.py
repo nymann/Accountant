@@ -115,7 +115,7 @@ def profile(user_id):
                 dinner_expenses += guest.number_of_guests * dinner.price / number_of_participants
 
     form = UserForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and (current_user.id is user.id or current_user.admin):
         old_avatar_url = user.picture_url
         filename = None
         try:
@@ -124,13 +124,13 @@ def profile(user_id):
             user.subscribed_to_dinner_club = form.subscribed_to_dinner_club.data
             user.phone_number = form.phone_number.data
             user.move_in_date = datetime.strptime(form.move_in_date.data, "%d/%m/%Y")
+            user.room_number = form.room_number.data
             if 'picture' in request.files:
                 filename = process_user_avatar(request.files['picture'], avatars)
                 user.picture_url = filename
 
             if current_user.admin:
                 user.admin = form.admin.data
-                user.room_number = form.room_number.data
                 user.active = form.active.data
                 move_out_date = str(form.move_out_date)
                 if move_out_date and move_out_date.isspace():

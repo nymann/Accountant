@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from project.utils.decorators import admin, active
 
@@ -115,6 +116,8 @@ def profile(user_id):
 
     form = UserForm()
     if form.validate_on_submit():
+        old_avatar_url = user.picture_url
+        filename = None
         try:
             user.email = form.email.data
             user.name = form.name.data
@@ -134,6 +137,9 @@ def profile(user_id):
                     user.move_out_date = datetime.strptime(move_out_date, "%d/%m/%Y")
 
             db.session.commit()
+            if filename and old_avatar_url:
+                #     TODO DELETE PIC
+                print("delete")
             flash("Updated", "alert alert-info")
             return redirect(url_for('site.profile', user_id=user_id))
 

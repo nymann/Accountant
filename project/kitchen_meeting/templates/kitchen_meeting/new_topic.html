@@ -1,0 +1,47 @@
+<div class="modal fade" id="create_new_topic" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Meeting Topic</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!-- Content of modal -->
+            <div class="modal-body">
+                <form class="form-group" action="{{ url_for('kitchen_meeting.new_topic') }}" id="new_topic"
+                      method="POST">
+                    <div class="form-group">
+                        {{ form.hidden_tag() }}
+                    </div>
+                    <div class="form-group row">
+                        <label for="topic" class="col-lg-3 col-form-label">Topic</label>
+                        <div class="col-lg-9">
+                            <input class="form-control" type="text" placeholder="Topic header" id="topic"
+                                   name="topic"
+                                   required="required" value="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="description" class="col-lg-3 col-form-label">Topic description</label>
+                        <div class="col-lg-9">
+                            <textarea placeholder="Topic description" id="description" name="description"
+                                      cols="40" rows="3" class="form-control" title="Topic"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info" id="save_topic">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $('#save_topic').click(function () {
+        $('#new_topic').submit();
+    });
+</script>

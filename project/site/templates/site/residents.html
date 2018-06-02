@@ -4,13 +4,13 @@
 
 {% block jumbocontent %}
     <h1 class="display-4">Residents</h1>
-    <p class="lead">Who's currently living on KK24 at Bergsøe?</p>
+    <p class="lead">Who's currently living at KK24?</p>
 {% endblock %}
 
 {% block content %}
     <div class="container">
         {% if active_residents %}
-            <h5>Active members</h5>
+            <h5>Active residents</h5>
             <ul class="list-unstyled">
                 {% for user in active_residents %}
                     <li><a href="{{ url_for('site.profile', user_id=user.id) }}">{{ user.name }}</a></li>

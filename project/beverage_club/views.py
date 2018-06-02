@@ -1,3 +1,5 @@
+from flask_login import login_required
+
 from project.beverage_club import beverage_club
 from sqlalchemy.exc import DBAPIError
 
@@ -7,6 +9,7 @@ from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes,
 
 
 @beverage_club.route('/')
+@login_required
 def index():
     form = BuyBeverageForm()
 
@@ -18,6 +21,7 @@ def index():
 
 
 @beverage_club.route('/admin_module', methods=['GET', 'POST'])
+@login_required
 def admin_module():
     form_beverage = NewBeverageForm()
     form_beverage_type = NewBeverageTypesForm()
@@ -34,6 +38,7 @@ def admin_module():
 
 
 @beverage_club.route('/new', methods=['GET', 'POST'])
+@login_required
 def new_beverage():
     form = NewBeverageForm()
 
@@ -76,6 +81,7 @@ def new_beverage():
 
 
 @beverage_club.route('/new_type', methods=['GET', 'POST'])
+@login_required
 def new_beverage_type():
     form = NewBeverageTypesForm()
 
@@ -105,6 +111,7 @@ def new_beverage_type():
 
 
 @beverage_club.route('/beverage/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def buy_beverage(user_id):
     form = BuyBeverageForm()
     if form.validate_on_submit():
@@ -134,6 +141,7 @@ def buy_beverage(user_id):
 
 
 @beverage_club.route('/beverage_batch', methods=['GET', 'POST'])
+@login_required
 def new_beverage_batch():
     form = NewBeverageBatchForm()
     beverages = Beverage.query.all()
@@ -147,7 +155,7 @@ def new_beverage_batch():
 
             except ValueError as e:
                 flash(str(e), "alert alert-danger")
-                redirect(url_for('beverage_club.new_beverage_batch'))
+                return redirect(url_for('beverage_club.new_beverage_batch'))
 
             beverage_batch = BeverageBatch(beverage_id=beverage_id, quantity=quantity, price_per_can=price_per_can)
 

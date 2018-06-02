@@ -1,13 +1,16 @@
-from flask import render_template, flash, abort, request, redirect, url_for
-from flask_login import current_user
-from project.shopping_list import shopping_list
-from project.models import Shopping, User, db, Items, NeededItems
-from project.forms import ShoppingForm, ItemForm, NeededItemForm
 from datetime import date, datetime
+
+from flask import render_template, flash, abort, redirect, url_for
+from flask_login import current_user, login_required
 from sqlalchemy.exc import DBAPIError
+
+from project.forms import ShoppingForm, ItemForm, NeededItemForm
+from project.models import Shopping, User, db, Items, NeededItems
+from project.shopping_list import shopping_list
 
 
 @shopping_list.route('/')
+@login_required
 def index():
     form = NeededItemForm()
 
@@ -24,12 +27,14 @@ def index():
 
 
 @shopping_list.route('/<shopping_id>')
+@login_required
 def entry(shopping_id):
     entry = Shopping.query.get_or_404(int(shopping_id))
     return render_template('shopping_list/shopping_entry.html', entry=entry)
 
 
 @shopping_list.route('/new', methods=['GET', 'POST'])
+@login_required
 def new():
     form = ShoppingForm()
 
@@ -55,6 +60,7 @@ def new():
 
 
 @shopping_list.route('/edit/<shopping_id>', methods=['GET', 'POST'])
+@login_required
 def edit(shopping_id):
     form = ShoppingForm()
     shopping = Shopping.query.get_or_404(int(shopping_id))
@@ -75,6 +81,7 @@ def edit(shopping_id):
 
 
 @shopping_list.route('/delete/<shopping_id>')
+@login_required
 def delete(shopping_id):
     shopping = Shopping.query.get_or_404(int(shopping_id))
     if current_user is not shopping.payee and not current_user.admin:
@@ -92,6 +99,7 @@ def delete(shopping_id):
 
 @shopping_list.route('/<shopping_id>/items/new', defaults={'edit': False}, methods=['GET', 'POST'])
 @shopping_list.route('/<shopping_id>/items/new/<edit>', methods=['GET', 'POST'])
+@login_required
 def items_new(shopping_id, edit):
     form = ItemForm()
     shopping_entry = Shopping.query.get_or_404(int(shopping_id))

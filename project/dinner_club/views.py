@@ -1,8 +1,8 @@
 from collections import Counter
 from datetime import datetime
 
-from flask import render_template, redirect, url_for, flash, request,abort
-from flask_login import current_user, login_required
+from flask import render_template, request, abort
+from flask_login import login_required
 from sqlalchemy.exc import DBAPIError
 
 from project.dinner_club import dinner_club
@@ -108,6 +108,7 @@ def meal(dinner_id):
 
 
 @dinner_club.route('/meal/edit/<dinner_id>', methods=['GET', 'POST'])
+@login_required
 def edit(dinner_id):
     form = DinnerForm()
     dinner = Dinner.query.get(int(dinner_id))

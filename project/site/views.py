@@ -1,6 +1,4 @@
-import os
 from datetime import datetime
-from project.utils.decorators import admin, active
 
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_required
@@ -14,6 +12,7 @@ from project.utils.uploadsets import avatars, process_user_avatar
 
 
 @site.route('/')
+@login_required
 def index():
     # latest meal
     latest_dinner = Dinner.query.filter(

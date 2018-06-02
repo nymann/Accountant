@@ -89,13 +89,14 @@
 {% endblock %}
 
 {% block content %}
+    <!-- Dinner Club Balance -->
     <div class="container">
         <div class="row mb-2">
             <div class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Dinner Club Balance</h5>
-                        <h6 class="card-subtitle text-muted">Since last accounting-report</h6>
+                        <h6 class="card-subtitle text-muted">Since the last report</h6>
                         <br>
                         <p class="card-text green">Income: {{ dinner_income|round(2) }} DKK</p>
                         {% if dinner_expenses > 0 %}
@@ -142,13 +143,14 @@
         </div>
     </div>
     <hr>
+    <!-- Shopping List Balance -->
     <div class="container">
         <div class="row">
             <div class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Shopping List Balance</h5>
-                        <h6 class="card-subtitle text-muted">Since the last accounting-report</h6>
+                        <h6 class="card-subtitle text-muted">Since the last report</h6>
                         <br>
                         <p class="card-text green">Income: {{ shopping_income|round(2) }} DKK</p>
                         {% if shopping_expenses > 0 %}

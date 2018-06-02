@@ -42,3 +42,11 @@ body > .jumbotron {
 body, html {
     height: 100%;
 }
+
+.input-group-text {
+    width: 45px;
+}
+
+.input-group {
+    width: 100%;
+}

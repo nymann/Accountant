@@ -3,86 +3,115 @@
     <div class="form-group row">
         {{ form.hidden_tag() }}
     </div>
-    {#Email#}
-    <div class="form-group row">
-        <label for="email" class="col-lg-3 col-form-label">Email</label>
-        <div class="col-lg-9">
-            <input type="text" name="email" placeholder="email" class="form-control" id="email"
-                   value="{{ user.email }}">
-            <span id="emailHelpBlock" class="form-text text-muted">Your email address.</span>
+
+    {#Name#}
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            <input type="text" name="name" placeholder="name" class="form-control" id="name"
+                   value="{% if user.name %}{{ user.name }}{% endif %}">
         </div>
     </div>
 
-    {#Name#}
-    <div class="form-group row">
-        <label for="name" class="col-lg-3 col-form-label">Name</label>
-        <div class="col-lg-9">
-            <input type="text" name="name" placeholder="name" class="form-control" id="name"
-                   value="{% if user.name %}{{ user.name }}{% endif %}">
-            <span id="nameHelpBlock" class="form-text text-muted">Your full name.</span>
+    {#Email#}
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-at"></i></span>
+            </div>
+            <input type="text" name="email" placeholder="email" class="form-control" id="email"
+                   value="{{ user.email }}">
         </div>
     </div>
 
     {#Phone Number#}
-    <div class="form-group row">
-        <label for="phone_number" class="col-lg-3 col-form-label">Phone number</label>
-        <div class="col-lg-9">
-            <input type="text" name="phone_number" placeholder="phone number" class="form-control" id="name"
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+            </div>
+            <input type="text" name="phone_number" placeholder="22 80 53 26" class="form-control" id="phone_number"
                    value="{% if user.phone_number %}{{ user.phone_number }}{% endif %}">
-            <span id="phone_numberHelpBlock" class="form-text text-muted">Your phone number.</span>
+        </div>
+    </div>
+
+    {#Room Number#}
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-door-open"></i></span>
+            </div>
+            <input type="text" name="room_number" placeholder="Room number"
+                   value="{% if user.room_number %}{{ user.room_number }}{% endif %}"
+                   class="form-control" id="room_number">
+        </div>
+    </div>
+
+
+    {#Move in date#}
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-home"></i></span>
+            </div>
+            <input type="text" name="move_in_date" placeholder="move in date" class="form-control" id="move_in_date"
+                   value="{{ user.move_in_date | datetime() }}" aria-describedby="move_in_dateHelpBlock">
+        </div>
+        <span id="move_in_dateHelpBlock" class="form-text text-muted">What day did you move in?</span>
+    </div>
+
+    {#Dinner Club#}
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="subscribed_to_dinner_club"
+                   name="subscribed_to_dinner_club"
+                   {% if user.subscribed_to_dinner_club %}checked="checked"{% endif %}>
+            <label class="custom-control-label" for="subscribed_to_dinner_club">Subscribed to Dinner Club?</label>
         </div>
     </div>
 
     {#Picture#}
-    <div class="form-group row">
-        <div class="offset-3 col-lg-9">
-            <label class="btn btn-primary">Choose File
-                <input id="picture" name="picture" type="file" hidden accept="image/*">
-            </label>
-            <span id="pictureHelpBlock" class="form-text text-muted">Your profile picture.</span>
-        </div>
-    </div>
-
-    {#Dinner Club#}
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="subscribed_to_dinner_club" name="subscribed_to_dinner_club"
-               {% if user.subscribed_to_dinner_club %}checked="checked"{% endif %}>
-        <label class="form-check-label" for="subscribed_to_dinner_club">Subscribed to Dinner Club?</label>
-    </div>
-
-    {#Move in date#}
-    <div class="form-group row">
-        <input type="text" name="move_in_date" placeholder="move in date" class="form-control" id="move_in_date"
-               value="{{ user.move_in_date | datetime() }}" aria-describedby="move_in_dateHelpBlock">
-        <span id="move_in_dateHelpBlock" class="form-text text-muted">What day did you move in?</span>
+    <div class="form-group">
+        <label class="btn btn-info"><i class="fas fa-camera-retro mr-2"></i>Choose Picture
+            <input id="picture" name="picture" type="file" hidden accept="image/*">
+        </label>
     </div>
 
     {#Admin Menu#}
     {% if current_user.admin %}
-        {#Room Number#}
-        <div class="form-group row">
-            <input type="text" name="room_number" placeholder="Room number" value="{{ user.room_number }}"
-                   class="form-control" id="room_number">
-        </div>
-
+        <hr>
+        <h6 class="text-muted">Admin menu</h6>
         {#Admin#}
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="admin" name="admin"
-                   {% if user.admin %}checked="checked"{% endif %}>
-            <label class="form-check-label" for="admin">Admin?</label>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="admin" name="admin"
+                       {% if user.admin %}checked="checked"{% endif %}>
+                <label class="custom-control-label" for="admin">Admin?</label>
+            </div>
         </div>
 
         {#Active#}
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="active" name="active"
-                   {% if user.active %}checked="checked"{% endif %}>
-            <label class="form-check-label" for="active">Active?</label>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="active" name="active"
+                       {% if user.active %}checked="checked"{% endif %}>
+                <label class="custom-control-label" for="active">Active?</label>
+            </div>
         </div>
 
         {#Move out date#}
-        <div class="form-group row">
-            <input type="text" name="move_out_date" placeholder="move out date" class="form-control" id="move_out_date"
-                   value="{% if user.move_out_date %}{{ user.move_out_date | datetime() }}{% endif %}" aria-describedby="move_out_dateHelpBlock">
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-truck-moving"></i></span>
+                </div>
+                <input type="text" name="move_out_date" placeholder="move out date" class="form-control"
+                       id="move_out_date"
+                       value="{% if user.move_out_date %}{{ user.move_out_date | datetime() }}{% endif %}"
+                       aria-describedby="move_out_dateHelpBlock">
+            </div>
             <span id="move_out_dateHelpBlock" class="form-text text-muted">Set move out date.</span>
         </div>
     {% endif %}

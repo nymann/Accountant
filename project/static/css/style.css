@@ -50,3 +50,5 @@ body, html {
 .input-group {
     width: 100%;
 }
+
+.sticky-top { top: 0.5em; }

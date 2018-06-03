@@ -33,7 +33,7 @@
                         {% endif %}
                     </ul>
                 </div>
-                <div class="card-footer bg-white">
+                <div class="card-footer">
                     {% if current_user.active or current_user.admin %}
                         <button class="btn btn-info btn-md" data-toggle="modal" data-target="#add_needed_item">Add Item
                         </button>
@@ -85,7 +85,7 @@
                         <p class="card-text">No items bought yet.</p>
                     {% endif %}
                 </div>
-                <div class="card-footer text-right bg-white">
+                <div class="card-footer text-right">
                     {% if current_user.active or current_user.admin %}
                         <a href="{{ url_for('shopping_list.new') }}" class="btn btn-info">Add Items</a>
                     {% endif %}

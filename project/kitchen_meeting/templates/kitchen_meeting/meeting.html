@@ -30,8 +30,12 @@
                         </tr>
                         {% for topic in topics %}
                             <tr>
-                                <td class="text-muted" align="center"><input type="checkbox" name="mark_topics"
-                                                                             value="{{ topic.id }}"></td>
+                                <td align="center">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="mark_topics"
+                                               value="{{ topic.id }}">
+                                    </div>
+                                </td>
                                 <td class="text-muted">{{ topic.topic }}</td>
                                 <td class="text-muted">{{ topic.description }}</td>
                                 <td class="text-muted"><a

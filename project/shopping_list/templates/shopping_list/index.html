@@ -11,8 +11,8 @@
 
 {% block content %}
     <div class="container">
-        <div class="row mb-2">
-            <div class="card col-lg-3" style="padding: 0;">
+        <div class="row mb-2 card-deck">
+            <div class="card col-lg-3">
                 <div class="card-body">
                     <h5 class="card-title">Wanted Items</h5>
                     <ul class="list-group list-group-flush">
@@ -40,7 +40,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="card offset-lg-1 col-lg-8" style="padding: 0;">
+            <div class="card col-lg-9">
                 <div class="card-body">
                     <h5 class="card-title">Bought Items</h5>
                     {% if shopping_list_entries and shopping_list_entries|length > 0 %}

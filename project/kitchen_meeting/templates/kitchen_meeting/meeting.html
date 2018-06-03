@@ -8,6 +8,7 @@
     <h1 class="display-4">Meeting</h1>
     <p class="lead">{{ event.date | datetime() }}</p>
     <button class="btn btn-info" id="meeting_done" type="submit" form="meeting_completed">Meeting resolved</button>
+    <a href="{{ url_for('kitchen_meeting.index') }}" class="btn btn-danger">Cancel</a>
 {% endblock %}
 
 {% block content %}

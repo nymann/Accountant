@@ -107,7 +107,7 @@
                         {% endif %}
                     </div>
                     <div class="card-footer">
-                        {% if total_income > total_expenses %}
+                        {% if total_expenses > total_income %}
                             <h3 class="card-title text-danger">{{ total_balance|round(2) }} DKK</h3>
                         {% else %}
                             <h3 class="card-title green">{{ total_balance|round(2) }} DKK</h3>

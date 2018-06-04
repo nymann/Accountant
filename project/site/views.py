@@ -6,7 +6,8 @@ from sqlalchemy import or_, func
 from sqlalchemy.exc import DBAPIError
 
 from project.forms import UserForm
-from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth
+from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth, BeverageUser, Beverage, \
+    BeverageBatch, BeverageID, BeverageTypes
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
 
@@ -115,6 +116,22 @@ def profile(user_id):
                     # It's our guest.
                     dinner_expenses += guest.number_of_guests * dinner.price / number_of_participants
 
+    beverage_expenses = db.session.query(
+        func.sum(BeverageBatch.price_per_can)
+    ).join(
+        BeverageUser
+    ).filter(
+        BeverageBatch.beverage_id == BeverageUser.beverage_batch_id,
+        BeverageUser.user_id == user.id
+    ).scalar()
+    beverage_expenses = beverage_expenses if beverage_expenses else 0.0
+
+    beverage_income = db.session.query(
+        func.sum(BeverageBatch.total_price)
+    ).filter(
+        BeverageBatch.payee_id == user.id
+    ).scalar()
+
     form = UserForm()
     if form.validate_on_submit() and (current_user.id is user.id or current_user.admin):
         old_avatar_url = user.picture_url
@@ -149,7 +166,8 @@ def profile(user_id):
 
     return render_template('site/profile.html', user=user, form=form, shopping_list_entries=shopping_list_entries,
                            shopping_income=shopping_income, shopping_expenses=shopping_expenses,
-                           dinner_income=dinner_income, dinner_expenses=dinner_expenses, oauths=oauths)
+                           dinner_income=dinner_income, dinner_expenses=dinner_expenses, oauths=oauths,
+                           beverage_expenses=beverage_expenses, beverage_income=beverage_income)
 
 
 @site.route('/residents')

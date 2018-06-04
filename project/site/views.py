@@ -132,6 +132,7 @@ def profile(user_id):
     ).filter(
         BeverageBatch.payee_id == user.id
     ).scalar()
+    beverage_income = beverage_income if beverage_income else 0.0
 
     beverages_bought = db.session.query(
         label("price", func.count(Beverage.id) * BeverageBatch.price_per_can),

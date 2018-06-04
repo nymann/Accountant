@@ -200,25 +200,47 @@
     <!-- Beverage club -->
     <div class="container">
         <div class="row mb-2">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Beverage Balance</h5>
-                    <h6 class="card-subtitle text-muted">Since the last report</h6>
-                    <br>
-                    <p class="card-text green">Income: {{ beverage_income|round(2) }} DKK</p>
-                    {% if beverage_expenses > 0 %}
-                        <p class="card-text text-danger">Expenses: {{ beverage_expenses|round(2) }} DKK</p>
-                    {% else %}
-                        <p class="card-text green">Expenses: {{ beverage_expenses|round(2) }} DKK</p>
-                    {% endif %}
+            <div class="col-lg-3 mb-1">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Beverage Balance</h5>
+                        <h6 class="card-subtitle text-muted">Since the last report</h6>
+                        <br>
+                        <p class="card-text green">Income: {{ beverage_income|round(2) }} DKK</p>
+                        {% if beverage_expenses > 0 %}
+                            <p class="card-text text-danger">Expenses: {{ beverage_expenses|round(2) }} DKK</p>
+                        {% else %}
+                            <p class="card-text green">Expenses: {{ beverage_expenses|round(2) }} DKK</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        {% if beverage_expenses > beverage_income %}
+                            <h3 class="card-title text-danger">{{ (beverage_income - beverage_expenses)|round(2) }}
+                                DKK</h3>
+                        {% else %}
+                            <h3 class="card-title green">{{ (beverage_income - beverage_expenses)|round(2) }} DKK</h3>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="card-footer">
-                    {% if beverage_expenses > beverage_income %}
-                        <h3 class="card-title text-danger">{{ (beverage_income - beverage_expenses)|round(2) }}
-                            DKK</h3>
-                    {% else %}
-                        <h3 class="card-title green">{{ (beverage_income - beverage_expenses)|round(2) }} DKK</h3>
-                    {% endif %}
+            </div>
+            <div class="col-lg-9 mb-1">
+                <div class="card bg-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Beverage Club</h5>
+                        <p class="card-subtitle text-muted">Beverages bought by {{ user.name }}.</p>
+                        <table class="table" id="beverageTable">
+                            <tbody>
+                            {% for beverage in beverages_bought %}
+                                    <tr class="clickable-row"
+                                        data-href="#">
+                                        <td>{{ beverage.type }}</td>
+                                        <td>{{ beverage.name }}</td>
+                                        <td>{{ beverage.price|round(2) }} DKK.</td>
+                                    </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

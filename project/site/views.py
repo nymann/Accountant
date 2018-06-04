@@ -4,6 +4,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_required
 from sqlalchemy import or_, func
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.sql import label
 
 from project.forms import UserForm
 from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth, BeverageUser, Beverage, \
@@ -132,6 +133,21 @@ def profile(user_id):
         BeverageBatch.payee_id == user.id
     ).scalar()
 
+    beverages_bought = db.session.query(
+        BeverageBatch.price_per_can.label("price"),
+        BeverageTypes.type.label("type"),
+        Beverage.name.label("name")
+    ).join(
+        BeverageUser
+    ).join(
+        Beverage
+    ).join(
+        BeverageTypes
+    ).filter(
+        BeverageBatch.accounted.is_(False),
+        BeverageUser.user_id == user.id
+    ).all()
+
     form = UserForm()
     if form.validate_on_submit() and (current_user.id is user.id or current_user.admin):
         old_avatar_url = user.picture_url
@@ -167,7 +183,8 @@ def profile(user_id):
     return render_template('site/profile.html', user=user, form=form, shopping_list_entries=shopping_list_entries,
                            shopping_income=shopping_income, shopping_expenses=shopping_expenses,
                            dinner_income=dinner_income, dinner_expenses=dinner_expenses, oauths=oauths,
-                           beverage_expenses=beverage_expenses, beverage_income=beverage_income)
+                           beverage_expenses=beverage_expenses, beverage_income=beverage_income,
+                           beverages_bought=beverages_bought)
 
 
 @site.route('/residents')

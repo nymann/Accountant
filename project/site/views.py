@@ -151,7 +151,9 @@ def profile(user_id):
         BeverageBatch.accounted.is_(False),
         BeverageUser.user_id == user.id
     ).all()
-
+    total_income = beverage_income + dinner_income + shopping_income
+    total_expenses = beverage_expenses + dinner_expenses + shopping_expenses
+    total_balance = total_income - total_expenses
     form = UserForm()
     if form.validate_on_submit() and (current_user.id is user.id or current_user.admin):
         old_avatar_url = user.picture_url
@@ -188,7 +190,8 @@ def profile(user_id):
                            shopping_income=shopping_income, shopping_expenses=shopping_expenses,
                            dinner_income=dinner_income, dinner_expenses=dinner_expenses, oauths=oauths,
                            beverage_expenses=beverage_expenses, beverage_income=beverage_income,
-                           beverages_bought=beverages_bought)
+                           beverages_bought=beverages_bought, total_balance=total_balance, total_income=total_income,
+                           total_expenses=total_expenses)
 
 
 @site.route('/residents')

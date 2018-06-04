@@ -136,13 +136,16 @@ def profile(user_id):
     beverages_bought = db.session.query(
         BeverageBatch.price_per_can.label("price"),
         BeverageTypes.type.label("type"),
-        Beverage.name.label("name")
+        Beverage.name.label("name"),
+        label("count", func.count(Beverage.id))
     ).join(
         BeverageUser
     ).join(
         Beverage
     ).join(
         BeverageTypes
+    ).group_by(
+        Beverage.name
     ).filter(
         BeverageBatch.accounted.is_(False),
         BeverageUser.user_id == user.id

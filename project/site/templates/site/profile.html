@@ -231,12 +231,12 @@
                         <table class="table" id="beverageTable">
                             <tbody>
                             {% for beverage in beverages_bought %}
-                                    <tr>
-                                        <td>{{ beverage.type }}</td>
-                                        <td>{{ beverage.count }}</td>
-                                        <td>{{ beverage.name }}</td>
-                                        <td>{{ beverage.price|round(2) * beverage.count}} DKK.</td>
-                                    </tr>
+                                <tr>
+                                    <td>{{ beverage.type }}</td>
+                                    <td>{{ beverage.count }}</td>
+                                    <td>{{ beverage.name }}</td>
+                                    <td>{{ beverage.price|round(2) }} DKK.</td>
+                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>

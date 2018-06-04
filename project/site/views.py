@@ -134,7 +134,7 @@ def profile(user_id):
     ).scalar()
 
     beverages_bought = db.session.query(
-        BeverageBatch.price_per_can.label("price"),
+        label("price", func.count(Beverage.id) * BeverageBatch.price_per_can),
         BeverageTypes.type.label("type"),
         Beverage.name.label("name"),
         label("count", func.count(Beverage.id))

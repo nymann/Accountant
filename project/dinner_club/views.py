@@ -6,8 +6,8 @@ from flask_login import login_required
 from sqlalchemy.exc import DBAPIError
 
 from project.dinner_club import dinner_club
-from project.forms import DinnerForm
-from project.models import User, Dinner, GuestAssociation, db
+from project.forms import DinnerForm, ParticipateForm
+from project.models import User, Dinner, GuestAssociation, db, participants
 from project.utils.decorators import *
 from project.utils.helper import *
 
@@ -28,12 +28,15 @@ def new():
         payee_id = form.payee.data if form.payee.data else current_user.id
         dish_name = form.dish_name.data
         # value checker
-        try:
-            price = float(form.price.data)
-        except ValueError as e:
-            flash(str(e), 'alert alert-danger')
-            return redirect(url_for('dinner_club.new'))
-        # price = float(form.price.data)
+        if len(form.price.data) > 0:
+            try:
+                price = float(form.price.data)
+            except ValueError as e:
+                flash(str(e), 'alert alert-danger')
+                return redirect(url_for('dinner_club.new'))
+        else:
+            price = None
+
         date = datetime.strptime(form.date.data, "%d/%m/%Y").date()
 
         participants = list()
@@ -44,9 +47,10 @@ def new():
         for user_id in request.form.getlist('chefs'):
             chefs.append(User.query.get(int(user_id)))
 
+        d = Dinner(payee_id=payee_id, price=price, date=date, participants=participants, chefs=chefs,
+                   dish_name=dish_name)
+
         try:
-            d = Dinner(payee_id=payee_id, price=price, date=date, participants=participants, chefs=chefs,
-                       dish_name=dish_name)
             g = Counter(form.guests.data.splitlines())
             if form.guests.data is None or str(form.guests.data).isspace() or str(form.guests.data) is "":
                 db.session.add(d)
@@ -85,19 +89,33 @@ def new():
 @dinner_club.route('/')
 @login_required
 def index():
+    form = ParticipateForm()
+    # Getting the current date.
+    curDate = datetime.now()
+
     latest_dinner = Dinner.query.filter(
-        Dinner.accounted.is_(False)
+        Dinner.accounted.is_(False),
+        Dinner.date < curDate
     ).order_by(
         Dinner.date.desc()
     ).first()
 
-    dinners = Dinner.query.filter(
-        Dinner.accounted.is_(False)
+    dinners_future = Dinner.query.filter(
+        Dinner.accounted.is_(False),
+        Dinner.date >= curDate
     ).order_by(
         Dinner.date.desc()
     ).all()
 
-    return render_template('dinner_club/index.html', dinners=dinners, latest_dinner=latest_dinner)
+    dinners_past = Dinner.query.filter(
+        Dinner.accounted.is_(False),
+        Dinner.date < curDate
+    ).order_by(
+        Dinner.date.desc()
+    ).all()
+
+    return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_past=dinners_past,
+                           latest_dinner=latest_dinner, form=form)
 
 
 @dinner_club.route('/meal/<dinner_id>')
@@ -194,3 +212,20 @@ def delete(dinner_id):
         return redirect(url_for('dinner_club.meal', dinner_id=dinner_id))
     return redirect(url_for('dinner_club.index'))
 
+
+@dinner_club.route('/participate/<int:user_id>', methods=['GET', 'POST'])
+def participate(user_id):
+    form = ParticipateForm()
+
+    if form.validate_on_submit():
+        dinner = Dinner.query.get(int(form.dinner_id.data))
+        dinner.participants.append(User.query.get(int(user_id)))
+
+        try:
+            db.session.commit()
+            flash("You are successfully added to the dinner!", "alert alert-info")
+        except DBAPIError as e:
+            db.session.rollback()
+            flash(str(e), "alert alert-danger")
+
+    return index()

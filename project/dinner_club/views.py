@@ -85,19 +85,32 @@ def new():
 @dinner_club.route('/')
 @login_required
 def index():
+    # Getting the current date.
+    curDate = datetime.now()
+
     latest_dinner = Dinner.query.filter(
-        Dinner.accounted.is_(False)
+        Dinner.accounted.is_(False),
+        Dinner.date < curDate
     ).order_by(
         Dinner.date.desc()
     ).first()
 
-    dinners = Dinner.query.filter(
-        Dinner.accounted.is_(False)
+    dinners_future = Dinner.query.filter(
+        Dinner.accounted.is_(False),
+        Dinner.date >= curDate
     ).order_by(
         Dinner.date.desc()
     ).all()
 
-    return render_template('dinner_club/index.html', dinners=dinners, latest_dinner=latest_dinner)
+    dinners_past = Dinner.query.filter(
+        Dinner.accounted.is_(False),
+        Dinner.date < curDate
+    ).order_by(
+        Dinner.date.desc()
+    ).all()
+
+    return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_past=dinners_past,
+                           latest_dinner=latest_dinner)
 
 
 @dinner_club.route('/meal/<dinner_id>')

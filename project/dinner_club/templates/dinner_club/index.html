@@ -18,33 +18,52 @@
                         <h5 class="card-title">Future dinners</h5>
                     </div>
                     <div class="card-body">
-                        <table class="table" id="dinnerTable">
-                            <tbody>
-                            {% for dinner in dinners_future %}
-                                {% set g = dinner.guests | sum(attribute='number_of_guests') %}
-                                {% if current_user.active %}
-                                    <tr class="clickable-row"
-                                        data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
-                                        <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
-                                        <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
-                                        <td class="text-muted">{{ dinner.dish_name }}</td>
-                                        <td class="text-muted">Fancy buttun here
-                                        </td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
-                                        <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
-                                        <td class="text-muted">{{ g + dinner.participants|length }}
-                                            attended
-                                        </td>
-                                        <td class="text-muted">{{ dinner.dish_name }}</td>
-                                        <td class="text-muted">{{ dinner.price }} kr.</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                        {% if dinners_future %}
+                            <table class="table" id="dinnerTable">
+                                <tbody>
+                                {% for dinner in dinners_future %}
+                                    {% set g = dinner.guests | sum(attribute='number_of_guests') %}
+                                    {% if current_user.active %}
+                                        <tr>
+                                            <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
+                                            <td class="text-muted">{{ dinner.dish_name }}</td>
+                                            <td class="text-muted">
+                                                <a href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}"
+                                                   class="btn btn-info">View</a>
+                                            </td>
+                                            <td class="text-muted">
+                                                {% if current_user.id in dinner.participants %}
+                                                    <form action="{{ url_for('dinner_club.participate', user_id=current_user.id) }}"
+                                                          class="form-group" method="POST">
+                                                        <div>{{ form.hidden_tag() }}</div>
+                                                        <button class="btn btn-info" name="dinner_id" id="dinner_id"
+                                                                value="{{ dinner.id }}">
+                                                            Participate
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    You are already participating!
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
+                                            <td class="text-muted">{{ g + dinner.participants|length }}
+                                                attended
+                                            </td>
+                                            <td class="text-muted">{{ dinner.dish_name }}</td>
+                                            <td class="text-muted">{{ dinner.price }} kr.</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p>There are no dinners registered yet.</p>
+                        {% endif %}
                     </div>
                     {% if current_user.active and current_user.subscribed_to_dinner_club %}
                         <div class="card-footer">
@@ -80,7 +99,7 @@
                         </div>
                     {% else %}
                         <div class="card-body">
-                            <p>No dinners registered yet.</p>
+                            <p>There are no dinners registered yet.</p>
                         </div>
                     {% endif %}
                 </div>
@@ -91,35 +110,44 @@
                         <h5 class="card-title">Meals</h5>
                     </div>
                     <div class="card-body">
-                        <table class="table" id="dinnerTable">
-                            <tbody>
-                            {% for dinner in dinners_past %}
-                                {% set g = dinner.guests | sum(attribute='number_of_guests') %}
-                                {% if current_user.active %}
-                                    <tr class="clickable-row"
-                                        data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
-                                        <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
-                                        <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
-                                        <td class="text-muted">{{ g + dinner.participants|length }}
-                                            attended
-                                        </td>
-                                        <td class="text-muted">{{ dinner.dish_name }}</td>
-                                        <td class="text-muted">{{ dinner.price }} kr.</td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
-                                        <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
-                                        <td class="text-muted">{{ g + dinner.participants|length }}
-                                            attended
-                                        </td>
-                                        <td class="text-muted">{{ dinner.dish_name }}</td>
-                                        <td class="text-muted">{{ dinner.price }} kr.</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                        {% if dinners_past %}
+                            <table class="table" id="dinnerTable">
+                                <tbody>
+                                {% for dinner in dinners_past %}
+                                    {% set g = dinner.guests | sum(attribute='number_of_guests') %}
+                                    {% if current_user.active %}
+                                        <tr
+                                                {% if dinner.price == 0.0 %}
+                                                    class="clickable-row table-danger"
+                                                {% else %}
+                                                    class="clickable-row"
+                                                {% endif %}
+                                                    data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
+                                            <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
+                                            <td class="text-muted">{{ g + dinner.participants|length }}
+                                                attended
+                                            </td>
+                                            <td class="text-muted">{{ dinner.dish_name }}</td>
+                                            <td class="text-muted">{{ dinner.price }} kr.</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
+                                            <td class="text-muted">{{ g + dinner.participants|length }}
+                                                attended
+                                            </td>
+                                            <td class="text-muted">{{ dinner.dish_name }}</td>
+                                            <td class="text-muted">{{ dinner.price }} kr.</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p>There are no dinners registered yet.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

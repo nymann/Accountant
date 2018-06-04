@@ -47,7 +47,7 @@ class Dinner(db.Model):
     __tablename__ = 'dinner'
     id = db.Column(db.Integer, primary_key=True)
     payee_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
-    price = db.Column(db.Float, nullable=False)
+    price = db.Column(db.Float, default=0.0)
     date = db.Column(db.Date, nullable=False)
     participants = db.relationship("User", secondary=participants, backref=db.backref("dinners", lazy="dynamic"))
     guests = db.relationship("GuestAssociation", back_populates="dinner")

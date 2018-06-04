@@ -81,3 +81,7 @@ class BuyBeverageForm(FlaskForm):
 
 class NewBeverageTypesForm(FlaskForm):
     type_new = StringField('type_new')
+
+
+class ParticipateForm(FlaskForm):
+    dinner_id = StringField('dinner_id')

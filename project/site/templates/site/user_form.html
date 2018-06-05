@@ -77,7 +77,11 @@
         <label class="btn btn-info"><i class="fas fa-camera-retro mr-2"></i>Choose Picture
             <input id="picture" name="picture" type="file" hidden accept="image/*">
         </label>
-        <img src="#" id="preview" alt="" class="img-thumbnail">
+        {% if user.picture_url %}
+            <img src="{{ url_for('static', filename='avatars/' + user.picture_url) }}" id="preview" alt="" class="img-thumbnail">
+        {% else %}
+            <img src="#" id="preview" alt="" class="img-thumbnail">
+        {% endif %}
     </div>
 
     {#Admin Menu#}

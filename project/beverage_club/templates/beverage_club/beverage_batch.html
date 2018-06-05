@@ -51,6 +51,20 @@
                 </div>
             </div>
 
+            {#payee_id#}
+            <div class="form-group row">
+                <label for="payee_id" class="col-lg-3 col-form-label">Payee</label>
+                <div class="col-lg-9">
+                    <div class="form-group">
+                        <select class="form-control" id="payee_id" name="payee_id">
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             {# Submit #}
             <div class="form-group row">
                 <div class="offset-lg-3 col-lg-9">

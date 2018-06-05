@@ -89,6 +89,36 @@
 {% endblock %}
 
 {% block content %}
+    <!-- Total Balance -->
+    <div class="container">
+        <div class="row mb-2">
+            <div class="col-lg-3 mb-1">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title">Total Balance</h5>
+                        <h6 class="card-subtitle text-muted">Since the last report</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text green">Income: {{ total_income|round(2) }} DKK</p>
+                        {% if total_expenses > 0 %}
+                            <p class="card-text text-danger">Expenses: {{ total_expenses|round(2) }} DKK</p>
+                        {% else %}
+                            <p class="card-text green">Expenses: {{ total_expenses|round(2) }} DKK</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        {% if total_expenses > total_income %}
+                            <h3 class="card-title text-danger">{{ total_balance|round(2) }} DKK</h3>
+                        {% else %}
+                            <h3 class="card-title green">{{ total_balance|round(2) }} DKK</h3>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+
     <!-- Dinner Club Balance -->
     <div class="container">
         <div class="row mb-2">
@@ -145,7 +175,8 @@
             </div>
         </div>
     </div>
-    <hr style="width: 100%; height: 2px;">
+    <hr>
+
     <!-- Shopping List Balance -->
     <div class="container">
         <div class="row mb-2">
@@ -178,7 +209,7 @@
                 <div class="card bg-white">
                     <div class="card-header bg-white">
                         <h5 class="card-title">Shopping List</h5>
-                        <h6 class="card-subtitle text-muted">Items bought by  {{ user.name }}.</h6>
+                        <h6 class="card-subtitle text-muted">Items bought by {{ user.name }}.</h6>
                     </div>
                     <div class="card-body">
                         <table class="table" id="shoppingTable">
@@ -194,6 +225,56 @@
                                         <td>{{ item.price|round(2) }} DKK.</td>
                                     </tr>
                                 {% endfor %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+    <!-- Beverage club -->
+    <div class="container">
+        <div class="row mb-2">
+            <div class="col-lg-3 mb-1">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Beverage Balance</h5>
+                        <h6 class="card-subtitle text-muted">Since the last report</h6>
+                        <br>
+                        <p class="card-text green">Income: {{ beverage_income|round(2) }} DKK</p>
+                        {% if beverage_expenses > 0 %}
+                            <p class="card-text text-danger">Expenses: {{ beverage_expenses|round(2) }} DKK</p>
+                        {% else %}
+                            <p class="card-text green">Expenses: {{ beverage_expenses|round(2) }} DKK</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        {% if beverage_expenses > beverage_income %}
+                            <h3 class="card-title text-danger">{{ (beverage_income - beverage_expenses)|round(2) }}
+                                DKK</h3>
+                        {% else %}
+                            <h3 class="card-title green">{{ (beverage_income - beverage_expenses)|round(2) }} DKK</h3>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 mb-1">
+                <div class="card bg-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Beverage Club</h5>
+                        <h6 class="card-subtitle text-muted">Beverages bought by {{ user.name }}.</h6>
+                        <table class="table" id="beverageTable">
+                            <tbody>
+                            {% for beverage in beverages_bought %}
+                                <tr>
+                                    <td>{{ beverage.type }}</td>
+                                    <td>{{ beverage.count }}</td>
+                                    <td>{{ beverage.name }}</td>
+                                    <td>{{ beverage.price|round(2) }} DKK.</td>
+                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>

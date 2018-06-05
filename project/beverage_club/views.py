@@ -5,7 +5,7 @@ from sqlalchemy.exc import DBAPIError
 
 from flask import render_template, flash, redirect, url_for
 from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm, NewBeverageTypesForm
-from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes, db
+from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes, db, User
 
 
 @beverage_club.route('/')
@@ -126,7 +126,7 @@ def buy_beverage(user_id):
 
         try:
             # decrementing quantity
-            beverage_batch.quantity = beverage_batch.quantity - 1
+            beverage_batch.quantity -= 1
 
             # assigning beer
             bought_beverage = BeverageUser(beverage_batch_id=beverage_batch.id, user_id=user_id)
@@ -145,6 +145,9 @@ def buy_beverage(user_id):
 def new_beverage_batch():
     form = NewBeverageBatchForm()
     beverages = Beverage.query.all()
+    users = User.query.filter(
+        User.active
+    ).all()
 
     if beverages:
         if form.validate_on_submit():
@@ -157,7 +160,10 @@ def new_beverage_batch():
                 flash(str(e), "alert alert-danger")
                 return redirect(url_for('beverage_club.new_beverage_batch'))
 
-            beverage_batch = BeverageBatch(beverage_id=beverage_id, quantity=quantity, price_per_can=price_per_can)
+            beverage_batch = BeverageBatch(
+                beverage_id=beverage_id, quantity=quantity, price_per_can=price_per_can,
+                payee_id=int(form.payee_id.data)
+            )
 
             try:
                 db.session.add(beverage_batch)
@@ -170,4 +176,4 @@ def new_beverage_batch():
     else:
         flash("There is no beverages created. Contact an admin.", "alert alert-danger")
 
-    return render_template('beverage_club/beverage_batch.html', form=form, beverages=beverages)
+    return render_template('beverage_club/beverage_batch.html', form=form, beverages=beverages, users=users)

@@ -4,9 +4,11 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_required
 from sqlalchemy import or_, func
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.sql import label
 
 from project.forms import UserForm
-from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth
+from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth, BeverageUser, Beverage, \
+    BeverageBatch, BeverageID, BeverageTypes
 from project.site import site
 from project.utils.uploadsets import avatars, process_user_avatar
 
@@ -115,6 +117,47 @@ def profile(user_id):
                     # It's our guest.
                     dinner_expenses += guest.number_of_guests * dinner.price / number_of_participants
 
+    beverage_expenses = db.session.query(
+        func.sum(BeverageBatch.price_per_can)
+    ).join(
+        BeverageUser
+    ).filter(
+        BeverageUser.user_id == user.id,
+        BeverageBatch.accounted.is_(False)
+    ).scalar()
+    beverage_expenses = beverage_expenses if beverage_expenses else 0.0
+
+    #   Beverage Income
+    beverage_income = db.session.query(
+        func.sum(BeverageBatch.price_per_can)
+    ).join(
+        BeverageUser
+    ).filter(
+        BeverageBatch.payee_id == user.id,
+        BeverageBatch.accounted.is_(False)
+    ).scalar()
+    beverage_income = beverage_income if beverage_income else 0.0
+
+    beverages_bought = db.session.query(
+        label("price", func.count(Beverage.id) * BeverageBatch.price_per_can),
+        BeverageTypes.type.label("type"),
+        Beverage.name.label("name"),
+        label("count", func.count(Beverage.id))
+    ).join(
+        BeverageUser
+    ).join(
+        Beverage
+    ).join(
+        BeverageTypes
+    ).group_by(
+        Beverage.name
+    ).filter(
+        BeverageBatch.accounted.is_(False),
+        BeverageUser.user_id == user.id
+    ).all()
+    total_income = beverage_income + dinner_income + shopping_income
+    total_expenses = beverage_expenses + dinner_expenses + shopping_expenses
+    total_balance = total_income - total_expenses
     form = UserForm()
     if form.validate_on_submit() and (current_user.id is user.id or current_user.admin):
         old_avatar_url = user.picture_url
@@ -149,7 +192,10 @@ def profile(user_id):
 
     return render_template('site/profile.html', user=user, form=form, shopping_list_entries=shopping_list_entries,
                            shopping_income=shopping_income, shopping_expenses=shopping_expenses,
-                           dinner_income=dinner_income, dinner_expenses=dinner_expenses, oauths=oauths)
+                           dinner_income=dinner_income, dinner_expenses=dinner_expenses, oauths=oauths,
+                           beverage_expenses=beverage_expenses, beverage_income=beverage_income,
+                           beverages_bought=beverages_bought, total_balance=total_balance, total_income=total_income,
+                           total_expenses=total_expenses)
 
 
 @site.route('/residents')

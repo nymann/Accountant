@@ -38,9 +38,13 @@
                                     <b>{{ dinner.dish_name }}</b> for dinner.</p>
                                 <p class="card-text">{{ g + dinner.participants|length }}
                                     attended ({{ g }} guests).</p>
-                                <p class="card-text">{{ dinner.price }} kr.
-                                    ({{ (dinner.price/(g + dinner.participants|length))|round(2) }}
-                                    kr. pr. person)</p>
+                                {% if dinner.participants|length > 0 %}
+                                    <p class="card-text">{{ dinner.price }} kr.
+                                        ({{ (dinner.price/(g + dinner.participants|length))|round(2) }}
+                                        kr. pr. person)</p>
+                                {% else %}
+                                    <p class="card-text">Can't calculate price. There are no participants.</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

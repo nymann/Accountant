@@ -33,7 +33,16 @@
                                                    class="btn btn-info">View</a>
                                             </td>
                                             <td class="text-muted">
-                                                {% if current_user.id in dinner.participants %}
+                                                {% if current_user in dinner.participants %}
+                                                    <form action="{{ url_for('dinner_club.participate', user_id=current_user.id) }}"
+                                                          class="form-group" method="POST">
+                                                        <div>{{ form.hidden_tag() }}</div>
+                                                        <button class="btn btn-danger" name="dinner_id" id="dinner_id"
+                                                                value="{{ dinner.id }}">
+                                                            Can't Participate
+                                                        </button>
+                                                    </form>
+                                                {% else %}
                                                     <form action="{{ url_for('dinner_club.participate', user_id=current_user.id) }}"
                                                           class="form-group" method="POST">
                                                         <div>{{ form.hidden_tag() }}</div>
@@ -42,8 +51,6 @@
                                                             Participate
                                                         </button>
                                                     </form>
-                                                {% else %}
-                                                    You are already participating!
                                                 {% endif %}
                                             </td>
                                         </tr>

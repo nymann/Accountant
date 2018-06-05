@@ -26,31 +26,29 @@
                                     {% if current_user.active %}
                                         <tr>
                                             <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
-                                            <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
-                                            <td class="text-muted">{{ dinner.dish_name }}</td>
+                                            <td class="text-muted">{{ dinner.payee.name }}</td>
+                                            {% if dinner.dish_name|length < 1 %}
+                                                <td class="text-muted">No name yet.</td>
+                                            {% else %}
+                                                <td class="text-muted">{{ dinner.dish_name }}</td>
+                                            {% endif %}
                                             <td class="text-muted">
                                                 <a href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}"
-                                                   class="btn btn-info">View</a>
+                                                   class="btn btn-info">View dinner</a>
                                             </td>
                                             <td class="text-muted">
                                                 {% if current_user in dinner.participants %}
-                                                    <form action="{{ url_for('dinner_club.participate', user_id=current_user.id) }}"
-                                                          class="form-group" method="POST">
-                                                        <div>{{ form.hidden_tag() }}</div>
-                                                        <button class="btn btn-danger" name="dinner_id" id="dinner_id"
-                                                                value="{{ dinner.id }}">
-                                                            Can't Participate
-                                                        </button>
-                                                    </form>
+                                                    <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
+                                                            dinner_id=dinner.id) }}"
+                                                       class="btn btn-danger" name="dinner_id" id="dinner_id">
+                                                        Can't Participate
+                                                    </a>
                                                 {% else %}
-                                                    <form action="{{ url_for('dinner_club.participate', user_id=current_user.id) }}"
-                                                          class="form-group" method="POST">
-                                                        <div>{{ form.hidden_tag() }}</div>
-                                                        <button class="btn btn-info" name="dinner_id" id="dinner_id"
-                                                                value="{{ dinner.id }}">
-                                                            Participate
-                                                        </button>
-                                                    </form>
+                                                    <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
+                                                            dinner_id=dinner.id) }}"
+                                                       class="btn btn-info" name="dinner_id" id="dinner_id">
+                                                        Participate
+                                                    </a>
                                                 {% endif %}
                                             </td>
                                         </tr>

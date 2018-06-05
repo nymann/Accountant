@@ -99,18 +99,20 @@
                         <h6 class="card-subtitle text-muted">Since the last report</h6>
                     </div>
                     <div class="card-body">
-                        <p class="card-text green">Income: {{ total_income|round(2) }} DKK</p>
+                        <p class="card-text green">Income: {{ (user_helper.total_income())|round(2) }} DKK</p>
+                        {% set total_expenses = user_helper.total_expenses()|round(2) %}
                         {% if total_expenses > 0 %}
-                            <p class="card-text text-danger">Expenses: {{ total_expenses|round(2) }} DKK</p>
+                            <p class="card-text text-danger">Expenses: {{ total_expenses }} DKK</p>
                         {% else %}
-                            <p class="card-text green">Expenses: {{ total_expenses|round(2) }} DKK</p>
+                            <p class="card-text green">Expenses: {{ total_expenses }} DKK</p>
                         {% endif %}
                     </div>
                     <div class="card-footer">
-                        {% if total_expenses > total_income %}
-                            <h3 class="card-title text-danger">{{ total_balance|round(2) }} DKK</h3>
+                        {% set total_balance = user_helper.total_balance()|round(2) %}
+                        {% if total_balance < 0 %}
+                            <h3 class="card-title text-danger">{{ total_balance }} DKK</h3>
                         {% else %}
-                            <h3 class="card-title green">{{ total_balance|round(2) }} DKK</h3>
+                            <h3 class="card-title green">{{ total_balance }} DKK</h3>
                         {% endif %}
                     </div>
                 </div>
@@ -129,18 +131,20 @@
                         <h6 class="card-subtitle text-muted">Since the last report</h6>
                     </div>
                     <div class="card-body">
-                        <p class="card-text green">Income: {{ dinner_income|round(2) }} DKK</p>
+                        <p class="card-text green">Income: {{ user_helper.dinner_income()|round(2) }} DKK</p>
+                        {% set dinner_expenses = user_helper.dinner_expenses()|round(2) %}
                         {% if dinner_expenses > 0 %}
-                            <p class="card-text text-danger">Expenses: {{ dinner_expenses|round(2) }} DKK</p>
+                            <p class="card-text text-danger">Expenses: {{ dinner_expenses }} DKK</p>
                         {% else %}
-                            <p class="card-text green">Expenses: {{ dinner_expenses|round(2) }} DKK</p>
+                            <p class="card-text green">Expenses: {{ dinner_expenses }} DKK</p>
                         {% endif %}
                     </div>
                     <div class="card-footer">
-                        {% if dinner_expenses > dinner_income %}
-                            <h3 class="card-title text-danger">{{ (dinner_income - dinner_expenses)|round(2) }} DKK</h3>
+                        {% set dinner_balance = user_helper.dinner_balance()|round(2) %}
+                        {% if dinner_balance < 0 %}
+                            <h3 class="card-title text-danger">{{ dinner_balance }} DKK</h3>
                         {% else %}
-                            <h3 class="card-title green">{{ (dinner_income - dinner_expenses)|round(2) }} DKK</h3>
+                            <h3 class="card-title green">{{ dinner_balance }} DKK</h3>
                         {% endif %}
                     </div>
                 </div>
@@ -188,19 +192,21 @@
                     </div>
                     <div class="card-body">
 
-                        <p class="card-text green">Income: {{ shopping_income|round(2) }} DKK</p>
+                        <p class="card-text green">Income: {{ user_helper.shopping_income()|round(2) }} DKK</p>
+                        {% set shopping_expenses = user_helper.shopping_expenses()|round(2) %}
                         {% if shopping_expenses > 0 %}
-                            <p class="card-text text-danger">Expenses: {{ shopping_expenses|round(2) }} DKK</p>
+                            <p class="card-text text-danger">Expenses: {{ shopping_expenses }} DKK</p>
                         {% else %}
-                            <p class="card-text green">Expenses: {{ shopping_expenses|round(2) }} DKK</p>
+                            <p class="card-text green">Expenses: {{ shopping_expenses }} DKK</p>
                         {% endif %}
                     </div>
                     <div class="card-footer">
-                        {% if shopping_expenses > shopping_income %}
-                            <h3 class="card-title text-danger">{{ (shopping_income - shopping_expenses)|round(2) }}
+                        {% set shopping_balance = user_helper.shopping_balance()|round(2) %}
+                        {% if shopping_balance < 0 %}
+                            <h3 class="card-title text-danger">{{ shopping_balance }}
                                 DKK</h3>
                         {% else %}
-                            <h3 class="card-title green">{{ (shopping_income - shopping_expenses)|round(2) }} DKK</h3>
+                            <h3 class="card-title green">{{ shopping_balance }} DKK</h3>
                         {% endif %}
                     </div>
                 </div>
@@ -244,19 +250,20 @@
                         <h5 class="card-title">Beverage Balance</h5>
                         <h6 class="card-subtitle text-muted">Since the last report</h6>
                         <br>
-                        <p class="card-text green">Income: {{ beverage_income|round(2) }} DKK</p>
+                        <p class="card-text green">Income: {{ user_helper.beverage_income()|round(2) }} DKK</p>
+                        {% set beverage_expenses = user_helper.beverage_expenses()|round(2) %}
                         {% if beverage_expenses > 0 %}
-                            <p class="card-text text-danger">Expenses: {{ beverage_expenses|round(2) }} DKK</p>
+                            <p class="card-text text-danger">Expenses: {{ beverage_expenses }} DKK</p>
                         {% else %}
-                            <p class="card-text green">Expenses: {{ beverage_expenses|round(2) }} DKK</p>
+                            <p class="card-text green">Expenses: {{ beverage_expenses }} DKK</p>
                         {% endif %}
                     </div>
                     <div class="card-footer">
-                        {% if beverage_expenses > beverage_income %}
-                            <h3 class="card-title text-danger">{{ (beverage_income - beverage_expenses)|round(2) }}
-                                DKK</h3>
+                        {% set beverage_balance = user_helper.beverage_balance()|round(2) %}
+                        {% if beverage_balance < 0 %}
+                            <h3 class="card-title text-danger">{{ beverage_balance }} DKK</h3>
                         {% else %}
-                            <h3 class="card-title green">{{ (beverage_income - beverage_expenses)|round(2) }} DKK</h3>
+                            <h3 class="card-title green">{{ beverage_balance }} DKK</h3>
                         {% endif %}
                     </div>
                 </div>

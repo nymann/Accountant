@@ -7,9 +7,12 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
 
 from project.forms import UserForm
-from project.models import User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth, BeverageUser, Beverage, \
-    BeverageBatch, BeverageID, BeverageTypes
+from project.models import (
+    User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
+    BeverageTypes
+)
 from project.site import site
+from project.utils.helper import UserHelper
 from project.utils.uploadsets import avatars, process_user_avatar
 
 
@@ -55,6 +58,7 @@ def login():
 @login_required
 def profile(user_id):
     user = User.query.get_or_404(user_id)
+    user_helper = UserHelper(user)
     oauths = OAuth.query.filter(
         OAuth.user_id == user_id
     ).all()
@@ -64,100 +68,16 @@ def profile(user_id):
         Shopping.payee_id.is_(user_id)
     ).all()
 
-    non_accounted_shopping_entries = Shopping.query.filter(
-        Shopping.accounted.is_(False)
-    ).all()
-
-    shopping_expenses = 0.0
-    if user.active:
-        for shopping in non_accounted_shopping_entries:
-            active_members = db.session.query(
-                func.count(User.id)
-            ).filter(
-                User.active,
-                or_(User.move_in_date.is_(None), User.move_in_date <= shopping.date)
-            ).scalar()
-            for item in shopping.items:
-                if (user.move_in_date is None or user.move_in_date <= shopping.date) and (
-                        user.move_out_date is None or user.move_in_date >= shopping.date):
-                    shopping_expenses += (item.price * item.amount) / active_members
-
-    shopping_income = db.session.query(
-        func.sum(Items.price * Items.amount)
-    ).join(Shopping).filter(
-        Shopping.payee_id.is_(user_id),
-        Shopping.accounted.is_(False)
-    ).scalar()
-    shopping_income = shopping_income if shopping_income else 0.0
-
-    dinner_income = db.session.query(
-        func.sum(Dinner.price)
-    ).filter(
-        Dinner.payee_id.is_(user_id),
-        Dinner.accounted.is_(False)
-    ).scalar()
-    dinner_income = dinner_income if dinner_income else 0.0
-
-    non_accounted_dinners = Dinner.query.filter(
-        Dinner.accounted.is_(False)
-    ).all()
-    dinner_expenses = 0.0
-    if user.active:
-        for dinner in non_accounted_dinners:
-            if user not in dinner.participants:
-                continue
-            # How many participated?
-            number_of_guests = 0
-            for guest in dinner.guests:
-                number_of_guests += guest.number_of_guests
-            number_of_participants = len(dinner.participants) + number_of_guests
-            dinner_expenses += dinner.price / number_of_participants
-            for guest in dinner.guests:
-                if guest.user_id is user_id:
-                    # It's our guest.
-                    dinner_expenses += guest.number_of_guests * dinner.price / number_of_participants
-
-    beverage_expenses = db.session.query(
-        func.sum(BeverageBatch.price_per_can)
-    ).join(
-        BeverageUser
-    ).filter(
-        BeverageUser.user_id == user.id,
-        BeverageBatch.accounted.is_(False)
-    ).scalar()
-    beverage_expenses = beverage_expenses if beverage_expenses else 0.0
-
-    #   Beverage Income
-    beverage_income = db.session.query(
-        func.sum(BeverageBatch.price_per_can)
-    ).join(
-        BeverageUser
-    ).filter(
-        BeverageBatch.payee_id == user.id,
-        BeverageBatch.accounted.is_(False)
-    ).scalar()
-    beverage_income = beverage_income if beverage_income else 0.0
-
     beverages_bought = db.session.query(
         label("price", func.count(Beverage.id) * BeverageBatch.price_per_can),
         BeverageTypes.type.label("type"),
         Beverage.name.label("name"),
         label("count", func.count(Beverage.id))
-    ).join(
-        BeverageUser
-    ).join(
-        Beverage
-    ).join(
-        BeverageTypes
-    ).group_by(
-        Beverage.name
-    ).filter(
+    ).join(BeverageUser).join(Beverage).join(BeverageTypes).group_by(Beverage.name).filter(
         BeverageBatch.accounted.is_(False),
         BeverageUser.user_id == user.id
     ).all()
-    total_income = beverage_income + dinner_income + shopping_income
-    total_expenses = beverage_expenses + dinner_expenses + shopping_expenses
-    total_balance = total_income - total_expenses
+
     form = UserForm()
     if form.validate_on_submit() and (current_user.id is user.id or current_user.admin):
         old_avatar_url = user.picture_url
@@ -191,11 +111,7 @@ def profile(user_id):
             flash(str(e), "alert alert-danger")
 
     return render_template('site/profile.html', user=user, form=form, shopping_list_entries=shopping_list_entries,
-                           shopping_income=shopping_income, shopping_expenses=shopping_expenses,
-                           dinner_income=dinner_income, dinner_expenses=dinner_expenses, oauths=oauths,
-                           beverage_expenses=beverage_expenses, beverage_income=beverage_income,
-                           beverages_bought=beverages_bought, total_balance=total_balance, total_income=total_income,
-                           total_expenses=total_expenses)
+                           oauths=oauths, beverages_bought=beverages_bought, user_helper=user_helper)
 
 
 @site.route('/residents')
@@ -216,3 +132,17 @@ def residents():
 @site.route('/private_policy')
 def private_policy():
     return render_template('site/private_policy.html')
+
+
+@site.route('/reports')
+def reports():
+    users = User.query.filter(
+        User.active.is_(True)
+    ).all()
+
+    user_helpers = list()
+    for user in users:
+        user_helper = UserHelper(user)
+        user_helpers.append(user_helper)
+        print(user_helper)
+    return render_template('site/reports.html', user_helpers=user_helpers)

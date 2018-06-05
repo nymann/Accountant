@@ -216,14 +216,26 @@ def delete(dinner_id):
 @dinner_club.route('/participate/<int:user_id>', methods=['GET', 'POST'])
 def participate(user_id):
     form = ParticipateForm()
-
     if form.validate_on_submit():
-        dinner = Dinner.query.get(int(form.dinner_id.data))
-        dinner.participants.append(User.query.get(int(user_id)))
+        dinner = None
+        try:
+            dinner = Dinner.query.filter(
+                Dinner.id == form.dinner_id.data
+            ).first()
+        except DBAPIError as e:
+            flash(str(e), "alert alert-danger")
+        if current_user in dinner.participants:
+            dinner = Dinner.query.get(int(form.dinner_id.data))
+            dinner.participants.remove(User.query.get(int(user_id)))
+            msg = "You are successfully removed from the dinner!"
+        else:
+            dinner = Dinner.query.get(int(form.dinner_id.data))
+            dinner.participants.append(User.query.get(int(user_id)))
+            msg = "You are successfully added to the dinner!"
 
         try:
             db.session.commit()
-            flash("You are successfully added to the dinner!", "alert alert-info")
+            flash(msg, "alert alert-info")
         except DBAPIError as e:
             db.session.rollback()
             flash(str(e), "alert alert-danger")

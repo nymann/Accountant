@@ -30,8 +30,8 @@
                     <td>{{ user.shopping_balance() }} DKK</td>
                     <td>{{ user.beverage_balance() }} DKK</td>
                     {% set total_balance = user.total_balance() %}
-                    <td class="{% if total_balance > 0 %}green{% else %}text-danger{% endif %}">
-                        <b>{{ total_balance }}</b></td>
+                    <td class="{% if total_balance >= 0 %}green{% else %}text-danger{% endif %}">
+                        <b>{{ total_balance }} DKK</b></td>
                 </tr>
             {% endfor %}
 

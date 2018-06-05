@@ -162,7 +162,7 @@ def new_beverage_batch():
 
             beverage_batch = BeverageBatch(
                 beverage_id=beverage_id, quantity=quantity, price_per_can=price_per_can,
-                total_price=int(form.price.data), payee_id=int(form.payee_id.data)
+                payee_id=int(form.payee_id.data)
             )
 
             try:

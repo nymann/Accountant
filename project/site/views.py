@@ -122,15 +122,19 @@ def profile(user_id):
     ).join(
         BeverageUser
     ).filter(
-        BeverageBatch.beverage_id == BeverageUser.beverage_batch_id,
-        BeverageUser.user_id == user.id
+        BeverageUser.user_id == user.id,
+        BeverageBatch.accounted.is_(False)
     ).scalar()
     beverage_expenses = beverage_expenses if beverage_expenses else 0.0
 
+    #   Beverage Income
     beverage_income = db.session.query(
-        func.sum(BeverageBatch.total_price)
+        func.sum(BeverageBatch.price_per_can)
+    ).join(
+        BeverageUser
     ).filter(
-        BeverageBatch.payee_id == user.id
+        BeverageBatch.payee_id == user.id,
+        BeverageBatch.accounted.is_(False)
     ).scalar()
     beverage_income = beverage_income if beverage_income else 0.0
 

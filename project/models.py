@@ -129,7 +129,6 @@ class BeverageBatch(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     price_per_can = db.Column(db.Float, nullable=False)
     payee_id = db.Column(db.ForeignKey(User.id), nullable=False)
-    total_price = db.Column(db.Float, nullable=False)
     accounted = db.Column(db.Boolean, default=False)
 
 

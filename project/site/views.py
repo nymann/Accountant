@@ -144,5 +144,4 @@ def reports():
     for user in users:
         user_helper = UserHelper(user)
         user_helpers.append(user_helper)
-        print(user_helper)
     return render_template('site/reports.html', user_helpers=user_helpers)

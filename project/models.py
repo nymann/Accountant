@@ -142,3 +142,21 @@ class BeverageUser(db.Model):
     beverage_batch_id = db.Column(db.Integer, db.ForeignKey(BeverageBatch.id))
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     timestamp = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+
+
+class UserReport(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    user = db.relationship(User)
+    paid = db.Column(db.Boolean, default=False, nullable=False)
+    dinner_balance = db.Column(db.Float, nullable=False)
+    shopping_balance = db.Column(db.Float, nullable=False)
+    beverage_balance = db.Column(db.Float, nullable=False)
+    total_balance = db.Column(db.Float, nullable=False)
+    accounting_report_id = db.Column(db.Integer, db.ForeignKey("accounting_report.id"))
+
+
+class AccountingReport(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_reports = db.relationship("UserReport")
+    date = db.Column(db.DateTime, default=datetime.now(), nullable=False)

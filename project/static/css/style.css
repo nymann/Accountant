@@ -57,3 +57,7 @@ body, html {
 }
 
 .sticky-top { top: 0.5em; }
+
+.popover-select-wrapper{
+    width: 100%;
+}

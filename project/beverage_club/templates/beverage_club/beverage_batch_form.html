@@ -3,7 +3,9 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateSettingsFormLongTitle">Here you can add new Beverage Batches</h5>
+                <h5 class="modal-title" id="updateSettingsFormLongTitle">
+                    Here you can add new Beverage Batches
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -11,7 +13,7 @@
 
             <!-- Content of modal -->
             <div class="modal-body">
-                {% if bevarage %}
+                {% if beverages %}
                     <form action="{{ url_for('beverage_club.new_beverage_batch') }}" id="new_beverage_batch_form"
                           class="form-group" method="POST">
 
@@ -26,8 +28,8 @@
                             <div class="col-lg-9">
                                 <div class="form-group">
                                     <select class="form-control" id="beverage_id" name="beverage_id">
-                                        {% for beverage in beverage_types %}
-                                            <option value="{{ beverage.id }}">{{ beverage.type }}</option>
+                                        {% for beverage in beverages %}
+                                            <option value="{{ beverage.id }}">{{ beverage.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -90,6 +92,7 @@
         $('#new_beverage_batch_form').submit();
     });
 </script>
+
 
 {#<script>#}
 {#    $(function () {#}

@@ -27,13 +27,11 @@ def index():
         Beverage.name
     ).distinct()
 
-    bevarage = Beverage.query.all()
+    beverages = Beverage.query.all()
     beverage_types = BeverageTypes.query.all()
-    # if len(beverage_types) == 0:
-    #     beverage_types = None;
 
     return render_template('beverage_club/index.html', beverages_batch=beverages_batch,
-                           beverage_types=beverage_types, bevarage=bevarage, users=users, form=form)
+                           beverage_types=beverage_types, beverages=beverages, users=users, form=form)
 
 
 @beverage_club.route('/admin_module', methods=['GET', 'POST'])

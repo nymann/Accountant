@@ -6,6 +6,8 @@ from sqlalchemy.exc import DBAPIError
 from flask import render_template, flash, redirect, url_for
 from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm, NewBeverageTypesForm
 from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes, db, User
+from project.utils.decorators import *
+from project.utils.helper import *
 
 
 @beverage_club.route('/')
@@ -13,11 +15,23 @@ from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes,
 def index():
     form = BuyBeverageForm()
 
+    users = User.query.filter(
+        User.active
+    ).all()
+
     beverages = db.session.query(
         Beverage.name.label('name'), Beverage.id.label('id')
-    ).join(BeverageBatch).filter(BeverageBatch.quantity > 0).order_by(Beverage.name).all()
+    ).join(BeverageBatch).filter(
+        BeverageBatch.quantity > 0
+    ).order_by(
+        Beverage.name
+    ).distinct()
 
-    return render_template('beverage_club/index.html', beverages=beverages, form=form)
+    beverage_types = BeverageTypes.query.all()
+
+
+    return render_template('beverage_club/index.html', beverages=beverages,
+                           beverage_types=beverage_types, users=users, form=form)
 
 
 @beverage_club.route('/admin_module', methods=['GET', 'POST'])
@@ -141,7 +155,7 @@ def buy_beverage(user_id):
 
 
 @beverage_club.route('/beverage_batch', methods=['GET', 'POST'])
-@login_required
+@active
 def new_beverage_batch():
     form = NewBeverageBatchForm()
     beverages = Beverage.query.all()
@@ -151,6 +165,7 @@ def new_beverage_batch():
 
     if beverages:
         if form.validate_on_submit():
+            payee_id = form.payee.data if form.payee.data else current_user.id
             try:
                 beverage_id = form.beverage_id.data
                 quantity = int(form.quantity.data)
@@ -161,9 +176,7 @@ def new_beverage_batch():
                 return redirect(url_for('beverage_club.new_beverage_batch'))
 
             beverage_batch = BeverageBatch(
-                beverage_id=beverage_id, quantity=quantity, price_per_can=price_per_can,
-                payee_id=int(form.payee_id.data)
-            )
+                beverage_id=beverage_id, quantity=quantity, price_per_can=price_per_can, payee_id=payee_id)
 
             try:
                 db.session.add(beverage_batch)
@@ -176,4 +189,4 @@ def new_beverage_batch():
     else:
         flash("There is no beverages created. Contact an admin.", "alert alert-danger")
 
-    return render_template('beverage_club/beverage_batch.html', form=form, beverages=beverages, users=users)
+    return render_template('beverage_club/beverage_batch_old.html', form=form, beverages=beverages, users=users)

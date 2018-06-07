@@ -9,7 +9,8 @@
     <p class="lead">Here you can add beverage to your tab. Let's GO!</p>
     {% if current_user.active %}
         <button class="btn btn-info" data-toggle="modal" data-target="#moredrinkers">Add more payees</button>
-        <a href="{{ url_for('beverage_club.new_beverage_batch') }}" class="btn btn-info">Add Beverage Batch</a>
+        <button class="btn btn-info" data-toggle="modal" data-target="#beverage_batch_form">Add Beverage Batch</button>
+{#        <a href="{{ url_for('beverage_club.new_beverage_batch') }}" class="btn btn-info">Add Beverage Batch</a>#}
     {% endif %}
     {% if current_user.admin %}
         <a href="{{ url_for('beverage_club.admin_module') }}" class="btn btn-info">Beverage Admin Page</a>
@@ -40,5 +41,6 @@
         </div>
 
         {% include 'beverage_club/beveragepayees.html' %}
+        {% include 'beverage_club/beverage_batch_form.html' %}
     {% endif %}
 {% endblock %}

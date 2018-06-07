@@ -1,0 +1,101 @@
+<div class="modal fade" id="beverage_batch_form" tabindex="-1" role="dialog"
+     aria-labelledby="updateSettingsFormTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateSettingsFormLongTitle">Here you can add new Beverage Batches</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Content of modal -->
+            <div class="modal-body">
+                {% if beverage_types|length > 2 %}
+                    <form action="{{ url_for('beverage_club.new_beverage_batch') }}" id="new_beverage_batch_form"
+                          class="form-group" method="POST">
+
+                        {# CSRF TOKEN #}
+                        <div class="form-group">
+                            {{ form.hidden_tag() }}
+                        </div>
+
+                        {# NAME #}
+                        <div class="form-group row">
+                            <label for="beverage_id" class="col-lg-3 col-form-label">Beverage</label>
+                            <div class="col-lg-9">
+                                <div class="form-group">
+                                    <select class="form-control" id="beverage_id" name="beverage_id">
+                                        {% for beverage in beverage_types %}
+                                            <option value="{{ beverage.id }}">{{ beverage.type }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Quantity #}
+                        <div class="form-group row">
+                            <label for="quantity" class="col-lg-3 col-form-label">Quantity</label>
+                            <div class="col-lg-9">
+                                <input class="form-control" type="number" placeholder="Beverage Quantity" id="quantity"
+                                       name="quantity"
+                                       required="required" min="0" max="144">
+                            </div>
+                        </div>
+
+                        {# PRICE #}
+                        <div class="form-group row">
+                            <label for="price" class="col-lg-3 col-form-label">Total price</label>
+                            <div class="col-lg-9">
+                                <input type="number" class="form-control" placeholder="Total price" id="price"
+                                       name="price"
+                                       required="required" min="0">
+                            </div>
+                        </div>
+
+                        {#payee_id#}
+                        {% if current_user.admin %}
+                            <div class="form-group row">
+                                <label for="payee_id" class="col-lg-3 col-form-label">Payee</label>
+                                <div class="col-lg-9">
+                                    <div class="form-group">
+                                        <select class="form-control" id="payee_id" name="payee_id">
+                                            {% for user in users %}
+                                                <option value="{{ user.id }}">{{ user.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </form>
+                {% else %}
+                    <p>It seems your beverage administrator has not created any beverages yet, please contact him.</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                {% if beverage_types|length > 2 %}
+                    <button type="button" class="btn btn-primary" id="save">Save</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $('#save').click(function () {
+        $('#new_beverage_batch_form').submit();
+    });
+</script>
+
+{#<script>#}
+{#    $(function () {#}
+{#        $("#beverage_id").popSelect({#}
+{#            showTitle: false,#}
+{#            maxAllowed: 1#}
+{#        });#}
+{#    });#}
+{#</script>#}

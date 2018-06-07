@@ -43,9 +43,14 @@ body, html {
     height: 100%;
 }
 
-.input-group-text {
+.append-logo {
     width: 45px;
 }
+
+.append-text{
+    width: 15ex;
+}
+
 
 .input-group {
     width: 100%;

@@ -24,7 +24,13 @@
                                 {% for dinner in dinners_future %}
                                     {% set g = dinner.guests | sum(attribute='number_of_guests') %}
                                     {% if current_user.active %}
-                                        <tr>
+                                        <tr
+                                                {% if dinner.price == 0.0 %}
+                                                    class="clickable-row"
+                                                {% else %}
+                                                    class="clickable-row"
+                                                {% endif %}
+                                                    data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
                                             <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.payee.name }}</td>
                                             {% if dinner.dish_name|length < 1 %}
@@ -123,7 +129,7 @@
                                     {% if current_user.active %}
                                         <tr
                                                 {% if dinner.price == 0.0 %}
-                                                    class="clickable-row table-danger"
+                                                    class="clickable-row"
                                                 {% else %}
                                                     class="clickable-row"
                                                 {% endif %}

@@ -1,15 +1,15 @@
 from datetime import datetime
 
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import current_user, login_required
-from sqlalchemy import or_, func
+from sqlalchemy import or_, func, desc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
 
 from project.forms import UserForm
 from project.models import (
     User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
-    BeverageTypes
+    BeverageTypes, UserReport, AccountingReport
 )
 from project.site import site
 from project.utils.helper import UserHelper
@@ -135,13 +135,47 @@ def private_policy():
 
 
 @site.route('/reports')
+@login_required
 def reports():
+    latest_report = AccountingReport.query.order_by(desc(AccountingReport.date)).first()
+    older_reports = AccountingReport.query.order_by(desc(AccountingReport.date)).offset(1).all()
+    return render_template('site/reports.html', report=latest_report, older_reports=older_reports)
+
+
+@site.route('/reports/do_accounting')
+@login_required
+def do_accounting():
+    if not current_user.admin:
+        return abort(403)
     users = User.query.filter(
         User.active.is_(True)
     ).all()
-
-    user_helpers = list()
+    accounted_date = datetime.now()
+    accounting_report = AccountingReport(date=accounted_date)
+    db.session.add(accounting_report)
     for user in users:
-        user_helper = UserHelper(user)
-        user_helpers.append(user_helper)
-    return render_template('site/reports.html', user_helpers=user_helpers)
+        u = UserHelper(user)
+        report = UserReport(
+            user_id=u.user.id, dinner_balance=u.dinner_balance(), shopping_balance=u.dinner_balance(),
+            beverage_balance=u.beverage_balance(), total_balance=u.total_balance()
+        )
+        try:
+            accounting_report.user_reports.append(report)
+            db.session.commit()
+        except DBAPIError as e:
+            flash(str(e), "alert alert-danger")
+
+    beverageBatches = BeverageBatch.query.filter(BeverageBatch.accounted.is_(False)).all()
+    for beverageBatch in beverageBatches:
+        beverageBatch.accounted = True
+        db.session.commit()
+    dinners = Dinner.query.filter(Dinner.accounted.is_(False)).all()
+    for dinner in dinners:
+        dinner.accounted = True
+        db.session.commit()
+    shoppings = Shopping.query.filter(Shopping.accounted.is_(False)).all()
+    for shopping in shoppings:
+        shopping.accounted = True
+        db.session.commit()
+
+    return redirect(url_for('site.reports'))

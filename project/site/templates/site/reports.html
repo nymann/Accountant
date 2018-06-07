@@ -6,7 +6,7 @@
     <h1 class="display-4">Reports</h1>
     <p class="lead">See the latest financial report for KK24</p>
     {% if current_user.admin %}
-        <a href="#" class="btn btn-info">Do Accounting</a>
+        <a href="{{ url_for('site.do_accounting') }}" class="btn btn-info">Do Accounting</a>
     {% endif %}
 {% endblock %}
 
@@ -23,19 +23,55 @@
             </tr>
             </thead>
             <tbody>
-            {% for user in user_helpers %}
-                <tr>
-                    <td><a href="{{ url_for('site.profile', user_id=user.user.id) }}">{{ user.user.name }}</a></td>
-                    <td>{{ user.dinner_balance() }} DKK</td>
-                    <td>{{ user.shopping_balance() }} DKK</td>
-                    <td>{{ user.beverage_balance() }} DKK</td>
-                    {% set total_balance = user.total_balance() %}
-                    <td class="{% if total_balance >= 0 %}green{% else %}text-danger{% endif %}">
-                        <b>{{ total_balance }} DKK</b></td>
-                </tr>
-            {% endfor %}
-
+            {% if report %}
+                {% for report in report.user_reports %}
+                    <tr>
+                        <td><a href="{{ url_for('site.profile', user_id=report.user_id) }}">{{ report.user.name }}</a>
+                        </td>
+                        <td>{{ report.dinner_balance|round(2) }} DKK</td>
+                        <td>{{ report.shopping_balance|round(2) }} DKK</td>
+                        <td>{{ report.beverage_balance|round(2) }} DKK</td>
+                        {% set total_balance = report.total_balance|round(2) %}
+                        <td class="{% if total_balance >= 0 %}green{% else %}text-danger{% endif %}">
+                            <b>{{ total_balance }} DKK</b></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
             </tbody>
         </table>
+    </div>
+    <hr>
+    <div class="container">
+        <h5 class="card-title">Old Accounting Reports</h5>
+        {% for accounting_report in older_reports %}
+            <br>
+            <h6 class="card-subtitle">{{ accounting_report.date.strftime("%d/%m/%Y %H:%M") }}</h6>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Dinner Balance</th>
+                    <th>Shopping Balance</th>
+                    <th>Beverage Balance</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                {% for report in accounting_report.user_reports %}
+                    <tbody>
+                    <tr>
+                        <td><a href="{{ url_for('site.profile', user_id=report.user_id) }}">{{ report.user.name }}</a>
+                        </td>
+                        <td>{{ report.dinner_balance|round(2) }} DKK</td>
+                        <td>{{ report.shopping_balance|round(2) }} DKK</td>
+                        <td>{{ report.beverage_balance|round(2) }} DKK</td>
+                        {% set total_balance = report.total_balance|round(2) %}
+                        <td class="{% if total_balance >= 0 %}green{% else %}text-danger{% endif %}">
+                            <b>{{ total_balance }} DKK</b></td>
+                    </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+
+        {% endfor %}
     </div>
 {% endblock %}

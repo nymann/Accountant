@@ -11,7 +11,7 @@
 
             <!-- Content of modal -->
             <div class="modal-body">
-                {% if beverage_types|length > 2 %}
+                {% if bevarage %}
                     <form action="{{ url_for('beverage_club.new_beverage_batch') }}" id="new_beverage_batch_form"
                           class="form-group" method="POST">
 

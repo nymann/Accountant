@@ -19,7 +19,7 @@ def index():
         User.active
     ).all()
 
-    beverages = db.session.query(
+    beverages_batch = db.session.query(
         Beverage.name.label('name'), Beverage.id.label('id')
     ).join(BeverageBatch).filter(
         BeverageBatch.quantity > 0
@@ -27,11 +27,13 @@ def index():
         Beverage.name
     ).distinct()
 
+    bevarage = Beverage.query.all()
     beverage_types = BeverageTypes.query.all()
+    # if len(beverage_types) == 0:
+    #     beverage_types = None;
 
-
-    return render_template('beverage_club/index.html', beverages=beverages,
-                           beverage_types=beverage_types, users=users, form=form)
+    return render_template('beverage_club/index.html', beverages_batch=beverages_batch,
+                           beverage_types=beverage_types, bevarage=bevarage, users=users, form=form)
 
 
 @beverage_club.route('/admin_module', methods=['GET', 'POST'])

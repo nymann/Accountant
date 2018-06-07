@@ -11,54 +11,55 @@
 
 {% block content %}
     <div class="container">
-        <form action="{{ url_for('beverage_club.new_beverage') }}" class="form-group" method="POST">
-
-            {# CSRF TOKEN #}
-            <div class="form-group">
-                {{ form_beverage.hidden_tag() }}
-            </div>
-
-            {# NAME #}
-            <div class="form-group row">
-                <label for="name" class="col-lg-3 col-form-label">Name</label>
-                <div class="col-lg-9">
-                    <input class="form-control" type="text" placeholder="Beverage Name" id="name" name="name"
-                           required="required">
+        {% if beverage_types %}
+            <form action="{{ url_for('beverage_club.new_beverage') }}" class="form-group" method="POST">
+                {# CSRF TOKEN #}
+                <div class="form-group">
+                    {{ form_beverage.hidden_tag() }}
                 </div>
-            </div>
 
-            {# TYPE #}
-            <div class="form-group row">
-                <label for="type" class="col-lg-3 col-form-label">Type</label>
-                <div class="col-lg-9">
-                    <div class="form-group">
-                        <select class="form-control" id="type" name="type">
-                            {% for beverage_type in beverage_types %}
-                                <option value="{{ beverage_type.id }}">{{ beverage_type.type }}</option>
-                            {% endfor %}
-                        </select>
+                {# NAME #}
+                <div class="form-group row">
+                    <label for="name" class="col-lg-3 col-form-label">Name</label>
+                    <div class="col-lg-9">
+                        <input class="form-control" type="text" placeholder="Beverage Name" id="name" name="name"
+                               required="required">
                     </div>
                 </div>
-            </div>
 
-            {# CONTENT #}
-            <div class="form-group row">
-                <label for="contents" class="col-lg-3 col-form-label">Content in cl</label>
-                <div class="col-lg-9">
-                    <input class="form-control" type="number" placeholder="Beverage Content" id="contents"
-                           name="contents"
-                           required="required" min="0" max="100">
+                {# TYPE #}
+                <div class="form-group row">
+                    <label for="type" class="col-lg-3 col-form-label">Type</label>
+                    <div class="col-lg-9">
+                        <div class="form-group">
+                            <select class="form-control" id="type" name="type">
+                                {% for beverage_type in beverage_types %}
+                                    <option value="{{ beverage_type.id }}">{{ beverage_type.type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            {# Submit #}
-            <div class="form-group row">
-                <div class="offset-lg-3 col-lg-9">
-                    <button class="btn btn-lg btn-block btn-info" type="submit">Add</button>
+                {# CONTENT #}
+                <div class="form-group row">
+                    <label for="contents" class="col-lg-3 col-form-label">Content in cl</label>
+                    <div class="col-lg-9">
+                        <input class="form-control" type="number" placeholder="Beverage Content" id="contents"
+                               name="contents"
+                               required="required" min="0" max="100">
+                    </div>
                 </div>
-            </div>
-        </form>
-        <hr>
+
+                {# Submit #}
+                <div class="form-group row">
+                    <div class="offset-lg-3 col-lg-9">
+                        <button class="btn btn-lg btn-block btn-info" type="submit">Add</button>
+                    </div>
+                </div>
+            </form>
+            <hr>
+        {% endif %}
         <form action="{{ url_for('beverage_club.new_beverage_type') }}" class="form-group" method="POST">
 
             {# CSRF TOKEN #}
@@ -103,13 +104,14 @@
                 <div class="card bg-white">
                     <div class="card-body">
                         <h5 class="card-title">Already existing beverage types</h5>
-                        {% if beverage_types %}
-                            {% for beverage_type in beverage_types %}
-                                <li class="list-group-item">{{ beverage_type.type }}</li>
-                            {% endfor %}
-                        {% else %}
-                            <h6>There are no beverage types</h6>
-                        {% endif %}
+                        <ul class="list-group list-group-flush">
+                            {% if beverage_types %}
+                                {% for beverage_type in beverage_types %}
+                                    <li class="list-group-item">{{ beverage_type.type }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <h6>There are no beverage types</h6>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>

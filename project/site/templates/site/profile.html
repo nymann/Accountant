@@ -246,10 +246,11 @@
         <div class="row mb-2">
             <div class="col-lg-3 mb-1">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header bg-white">
                         <h5 class="card-title">Beverage Balance</h5>
                         <h6 class="card-subtitle text-muted">Since the last report</h6>
-                        <br>
+                    </div>
+                    <div class="card-body">
                         <p class="card-text green">Income: {{ user_helper.beverage_income()|round(2) }} DKK</p>
                         {% set beverage_expenses = user_helper.beverage_expenses()|round(2) %}
                         {% if beverage_expenses > 0 %}
@@ -270,9 +271,11 @@
             </div>
             <div class="col-lg-9 mb-1">
                 <div class="card bg-white">
-                    <div class="card-body">
+                    <div class="card-header bg-white">
                         <h5 class="card-title">Beverage Club</h5>
                         <h6 class="card-subtitle text-muted">Beverages bought by {{ user.name }}.</h6>
+                    </div>
+                    <div class="card-body">
                         <table class="table" id="beverageTable">
                             <tbody>
                             {% for beverage in beverages_bought %}

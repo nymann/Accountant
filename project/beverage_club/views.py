@@ -3,7 +3,7 @@ from flask_login import login_required
 from project.beverage_club import beverage_club
 from sqlalchemy.exc import DBAPIError
 
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm, NewBeverageTypesForm
 from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes, db, User
 from project.utils.decorators import *
@@ -165,7 +165,7 @@ def new_beverage_batch():
 
     if beverages:
         if form.validate_on_submit():
-            payee_id = form.payee.data if form.payee.data else current_user.id
+            payee_id = form.payee_id.data if form.payee_id.data else current_user.id
             try:
                 beverage_id = form.beverage_id.data
                 quantity = int(form.quantity.data)
@@ -190,3 +190,41 @@ def new_beverage_batch():
         flash("There is no beverages created. Contact an admin.", "alert alert-danger")
 
     return render_template('beverage_club/beverage_batch_old.html', form=form, beverages=beverages, users=users)
+
+
+@beverage_club.route('/beverage_payess', methods=['GET', 'POST'])
+@active
+def beverage_payees():
+    form = BuyBeverageForm()
+    user_ids = request.form.getlist("user_id")
+    beverage_id = form.beverage_id.data
+
+    try:
+        for user_id in user_ids:
+            # getting beverage_batch with beverage_id
+            beverage_batch = BeverageBatch.query.filter(
+                BeverageBatch.quantity != 0
+            ).filter_by(
+                beverage_id=beverage_id
+            ).first()
+            # decrementing quantity
+            try:
+                beverage_batch.quantity -= 1
+            except AttributeError as e:
+                db.session.rollback()
+                print(str(e))
+                flash("The number of payees are higher, than the noted number of beverages...", "alert alert-danger")
+                return index()
+
+            # assigning beer
+            bought_beverage = BeverageUser(beverage_batch_id=beverage_batch.id, user_id=user_id)
+            db.session.add(bought_beverage)
+
+        db.session.commit()
+        flash("Successfully bought a beverage", "alert alert-info")
+    except DBAPIError as e:
+        db.session.rollback()
+        print(str(e))
+        flash(str(e), "alert alert-danger")
+
+    return index()

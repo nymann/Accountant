@@ -58,7 +58,9 @@ def login():
 @login_required
 def profile(user_id):
     user = User.query.get_or_404(user_id)
+
     user_helper = UserHelper(user)
+
     oauths = OAuth.query.filter(
         OAuth.user_id == user_id
     ).all()
@@ -66,7 +68,7 @@ def profile(user_id):
     shopping_list_entries = Shopping.query.filter(
         Shopping.accounted.is_(False),
         Shopping.payee_id.is_(user_id)
-    ).all()
+    ).order_by(Shopping.date).all()
 
     beverages_bought = db.session.query(
         label("price", func.count(Beverage.id) * BeverageBatch.price_per_can),
@@ -156,7 +158,7 @@ def do_accounting():
     for user in users:
         u = UserHelper(user)
         report = UserReport(
-            user_id=u.user.id, dinner_balance=u.dinner_balance(), shopping_balance=u.dinner_balance(),
+            user_id=u.user.id, dinner_balance=u.dinner_balance(), shopping_balance=u.shopping_balance(),
             beverage_balance=u.beverage_balance(), total_balance=u.total_balance()
         )
         try:

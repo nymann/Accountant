@@ -4,7 +4,8 @@ from project.beverage_club import beverage_club
 from sqlalchemy.exc import DBAPIError
 
 from flask import render_template, flash, redirect, url_for, request
-from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm, NewBeverageTypesForm
+from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm, NewBeverageTypesForm, \
+    BuyBeverageAdminForm
 from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes, db, User
 from project.utils.decorators import *
 from project.utils.helper import *
@@ -133,7 +134,7 @@ def buy_beverage(user_id):
 
         # getting beverage_batch with beverage_id
         beverage_batch = BeverageBatch.query.filter(
-            BeverageBatch.quantity != 0
+            BeverageBatch.quantity.isnot(0)
         ).filter_by(
             beverage_id=beverage_id
         ).first()
@@ -152,6 +153,52 @@ def buy_beverage(user_id):
             flash(str(e), "alert alert-danger")
 
     return index()
+
+
+@beverage_club.route('/buy_beverage_admin', methods=['GET', 'POST'])
+@admin
+def buy_beverage_admin():
+    users = User.query.filter(User.active).order_by(User.name).all()
+    beverage_batches = db.session.query(
+        Beverage.name.label('name'),
+        Beverage.id.label('id')
+    ).join(BeverageBatch).filter(
+        BeverageBatch.quantity > 0
+    ).order_by(
+        Beverage.name
+    ).distinct()
+
+    form = BuyBeverageAdminForm()
+    if not form.validate_on_submit():
+        return render_template(
+            'beverage_club/buy_beverage_admin.html', users=users, beverage_batches=beverage_batches, form=form
+        )
+
+    beverage_id = int(form.beverage_id.data)
+    user_id = int(form.user_id.data)
+    amount = int(form.amount.data)
+    # getting beverage_batch with beverage_id
+
+    beverage_batch = BeverageBatch.query.filter(
+        BeverageBatch.quantity >= amount
+    ).filter_by(
+        beverage_id=beverage_id
+    ).first()
+
+    if not beverage_batch:
+        flash(
+            "Couldn't find any beverage batches with beverage_id %s. Id is either invalid or there's less than %s"
+            "beverages left!" % (beverage_id, amount), "alert alert-danger"
+        )
+        return buy_beverage_admin()
+
+    for i in range(amount):
+        beverage_batch.quantity -= 1
+        bought_beverage = BeverageUser(beverage_batch_id=beverage_batch.id, user_id=user_id)
+        db.session.add(bought_beverage)
+        db.session.commit()
+    flash("Successfully bought %s beverage(s)" % amount, "alert alert-info")
+    return redirect(url_for('beverage_club.buy_beverage_admin'))
 
 
 @beverage_club.route('/beverage_batch', methods=['GET', 'POST'])

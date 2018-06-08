@@ -74,7 +74,7 @@
                                                     {{ shopping_list_entry.payee.name }}{% endif %}</td>
                                                 <td>{{ item.name }}</td>
                                                 <td>{{ item.amount }}</td>
-                                                <td>{{ item.price }} DKK.</td>
+                                                <td>{{ item.price * item.amount }} DKK.</td>
                                             </tr>
                                         {% else %}
                                             <tr>

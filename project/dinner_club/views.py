@@ -19,7 +19,7 @@ def new():
     users = User.query.filter(
         User.subscribed_to_dinner_club,
         User.active
-    ).all()
+    ).order_by(User.name).all()
 
     form = DinnerForm(participants=users)
     if form.validate_on_submit():

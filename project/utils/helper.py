@@ -37,11 +37,12 @@ class UserHelper:
                     func.count(User.id)
                 ).filter(
                     User.active,
+                    or_(User.move_out_date.is_(None), User.move_out_date >= shopping.date),
                     or_(User.move_in_date.is_(None), User.move_in_date <= shopping.date)
                 ).scalar()
                 for item in shopping.items:
                     if (self.user.move_in_date is None or self.user.move_in_date <= shopping.date) and (
-                            self.user.move_out_date is None or self.user.move_in_date >= shopping.date):
+                            self.user.move_out_date is None or self.user.move_out_date >= shopping.date):
                         shopping_expenses += (item.price * item.amount) / active_members
         return shopping_expenses
 

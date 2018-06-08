@@ -128,7 +128,7 @@ def meal(dinner_id):
 def edit(dinner_id):
     form = DinnerForm()
     dinner = Dinner.query.get(int(dinner_id))
-    if dinner.payee_id is not current_user.id or is_admin():
+    if dinner.payee_id is not current_user.id and not is_admin():
         return abort(403)
     if form.validate_on_submit():
         try:

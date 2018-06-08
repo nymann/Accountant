@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 from flask import render_template, flash, abort, redirect, url_for
 from flask_login import current_user, login_required
+from sqlalchemy import desc
 from sqlalchemy.exc import DBAPIError
 
 from project.forms import ShoppingForm, ItemForm, NeededItemForm
@@ -16,7 +17,7 @@ def index():
 
     shopping_list_entries = Shopping.query.filter(
         Shopping.accounted.is_(False)
-    ).all()
+    ).order_by(Shopping.date).all()
 
     needed_items = NeededItems.query.filter(
         NeededItems.item_bought.is_(False)

@@ -22,10 +22,8 @@ def new():
     ).all()
 
     form = DinnerForm(participants=users)
-
     if form.validate_on_submit():
-        # TODO(CHECK IF USER IS ADMIN, IF form.payee.data)
-        payee_id = form.payee.data if form.payee.data else current_user.id
+        payee_id = form.payee.data if form.payee.data and current_user.admin else current_user.id
         dish_name = form.dish_name.data
         # value checker
         if len(form.price.data) > 0:

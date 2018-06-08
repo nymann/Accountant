@@ -96,8 +96,8 @@ def profile(user_id):
             if current_user.admin:
                 user.admin = form.admin.data
                 user.active = form.active.data
-                move_out_date = str(form.move_out_date)
-                if move_out_date and move_out_date.isspace():
+                move_out_date = str(form.move_out_date.data).strip()
+                if move_out_date:
                     user.move_out_date = datetime.strptime(move_out_date, "%d/%m/%Y")
 
             db.session.commit()

@@ -7,13 +7,13 @@
 {% block jumbocontent %}
     <h1 class="display-4">{{ dinner.dish_name }}</h1>
 
-    <h5 class="text-muted">Chefs</h5>
+    <h5 class="text-muted text-white">Chefs</h5>
     <ul class="list-unstyled">
         {% for chef in dinner.chefs %}
             <li class="text">{{ chef.name }}</li>
         {% endfor %}
     </ul>
-    <h5 class="text-muted">Payee</h5>
+    <h5 class="text-muted text-white">Payee</h5>
     <p>{{ dinner.payee.name }}</p>
     {% if current_user == dinner.payee or current_user.admin %}
         <a href="{{ url_for('dinner_club.edit', dinner_id=dinner.id) }}" class="btn btn-info">Edit</a>

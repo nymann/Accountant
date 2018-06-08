@@ -11,87 +11,110 @@
 
 {% block content %}
     <div class="container">
-        {% if beverage_types %}
-            <form action="{{ url_for('beverage_club.new_beverage') }}" class="form-group" method="POST">
-                {# CSRF TOKEN #}
-                <div class="form-group">
-                    {{ form_beverage.hidden_tag() }}
-                </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <label for="type" class="col-lg-3 col-form-label">Add beverage type</label>
+                <form action="{{ url_for('beverage_club.new_beverage_type') }}" class="form-group" method="POST">
 
-                {# NAME #}
-                <div class="form-group offset-lg-2 col-lg-8">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text append-text">Beverage name</span>
+                    {# CSRF TOKEN #}
+                    <div class="form-group row">
+                        {{ form_beverage_type.hidden_tag() }}
+                    </div>
+
+                    {# TYPE #}
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="width: 17ex">Beverage type</span>
+                            </div>
+                            <input class="form-control" type="text" placeholder="Beverage Type" id="type_new"
+                                   name="type_new">
                         </div>
-                        <input class="form-control" type="text" placeholder="Insert beverage name here..." id="name"
-                               name="name"
-                               required="required">
                     </div>
-                </div>
 
-                {# TYPE #}
-                <div class="form-group offset-lg-2 col-lg-8">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text append-text">Beverage type</span>
+                    {# Submit #}
+                    <div class="form-group">
+                        <button class="btn btn-lg btn-block btn-info" type="submit">Add</button>
+                    </div>
+                </form>
+                {% if beverage_types %}
+                    <div class="">
+                        <hr>
+                    </div>
+                    <label class="col-lg-3 col-form-label">Add beverage</label>
+                    <form action="{{ url_for('beverage_club.new_beverage') }}" class="form-group" method="POST">
+                        {# CSRF TOKEN #}
+                        <div class="form-group">
+                            {{ form_beverage.hidden_tag() }}
                         </div>
-                        <select class="custom-select" id="type" name="type">
-                            {% for beverage_type in beverage_types %}
-                                <option value="{{ beverage_type.id }}">{{ beverage_type.type }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
 
-
-                {# CONTENT #}
-                <div class="form-group offset-lg-2 col-lg-8">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text append-text">Contents in cl.</span>
+                        {# NAME #}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="width: 17ex">Beverage name</span>
+                                </div>
+                                <input class="form-control" type="text" placeholder="Insert beverage name here..."
+                                       id="name"
+                                       name="name"
+                                       required="required">
+                            </div>
                         </div>
-                        <input class="form-control" type="number" placeholder="Beverage Content" id="contents"
-                               name="contents"
-                               required="required" min="0" max="100">
+
+                        {# TYPE #}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="width: 17ex">Beverage type</span>
+                                </div>
+                                <select class="custom-select" id="type" name="type">
+                                    {% for beverage_type in beverage_types %}
+                                        <option value="{{ beverage_type.id }}">{{ beverage_type.type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        {# CONTENT #}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="width: 17ex">Contents in cl.</span>
+                                </div>
+                                <input class="form-control" type="number" placeholder="Beverage Content" id="contents"
+                                       name="contents"
+                                       required="required" min="0" max="100">
+                            </div>
+                        </div>
+
+                        {# Submit #}
+                        <div class="form-group">
+                            <button class="btn btn-lg btn-block btn-info" type="submit">Add</button>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title">Beverage Club Tips</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle">Add beverge type</h6>
+                        <p class="text-muted">A beverage type, must be added before adding a beverage.</p>
+                        <p class="text-muted">This is a category for beverages, to make it easier for your members,
+                        to check out a wanted beverage.</p>
+                        {% if beverage_types %}
+                            <h6 class="card-subtitle">Add beverge</h6>
+                            <p class="text-muted">Now you can add beverages.</p>
+                            <p class="text-muted">Beverages belong under a category, a beverage could be a Tuborg Classic.</p>
+                            <p class="text-muted">When a beverage have been added, members can add bought beverages to the system and
+                            later check them out, when they want to buy one.</p>
+                        {% endif %}
                     </div>
                 </div>
-
-                {# Submit #}
-                <div class="form-group offset-lg-2 col-lg-8">
-                    <button class="btn btn-lg btn-block btn-info" type="submit">Add</button>
-                </div>
-            </form>
-            <div class="offset-lg-2 col-lg-8">
-                <hr>
             </div>
-        {% endif %}
-
-
-        <label for="type" class="offset-lg-2 col-lg-3 col-form-label">Add beverage type</label>
-
-        <form action="{{ url_for('beverage_club.new_beverage_type') }}" class="form-group" method="POST">
-
-            {# CSRF TOKEN #}
-            <div class="form-group row">
-                {{ form_beverage_type.hidden_tag() }}
-            </div>
-
-            {# TYPE #}
-            <div class="form-group offset-lg-2 col-lg-8">
-                <div class="input-group">
-                    <div class="input-group-prepend append-text">
-                        <span class="input-group-text">Beverage type</span>
-                    </div>
-                    <input class="form-control" type="text" placeholder="Beverage Type" id="type_new" name="type_new">
-                </div>
-            </div>
-
-            {# Submit #}
-            <div class="form-group offset-lg-2 col-lg-8">
-                <button class="btn btn-lg btn-block btn-info" type="submit">Add</button>
-            </div>
-        </form>
+        </div>
         <hr>
         <div class="row">
             <div class="col-lg-6">
@@ -131,12 +154,12 @@
 {% endblock %}
 
 {% block scripts %}
-    <script>
-        $(function () {
-            $("#type").popSelect({
-                showTitle: false,
-                maxAllowed: 1
-            });
-        });
-    </script>
+{#    <script>#}
+{#        $(function () {#}
+{#            $("#type").popSelect({#}
+{#                showTitle: false,#}
+{#                maxAllowed: 1#}
+{#            });#}
+{#        });#}
+{#    </script>#}
 {% endblock %}

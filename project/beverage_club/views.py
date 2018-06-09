@@ -21,7 +21,9 @@ def index():
     ).all()
 
     beverages_batch = db.session.query(
-        Beverage.name.label('name'), Beverage.id.label('id')
+        Beverage.name.label('name'),
+        Beverage.id.label('id'),
+        BeverageBatch.quantity.label('quantity')
     ).join(BeverageBatch).filter(
         BeverageBatch.quantity > 0
     ).order_by(
@@ -134,7 +136,7 @@ def buy_beverage(user_id):
 
         # getting beverage_batch with beverage_id
         beverage_batch = BeverageBatch.query.filter(
-            BeverageBatch.quantity.isnot(0)
+            BeverageBatch.quantity > 0
         ).filter_by(
             beverage_id=beverage_id
         ).first()

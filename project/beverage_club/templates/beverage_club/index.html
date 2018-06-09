@@ -10,7 +10,7 @@
     {% if current_user.active %}
         <button class="btn btn-info" data-toggle="modal" data-target="#moredrinkers">Add more payees</button>
         <button class="btn btn-info" data-toggle="modal" data-target="#beverage_batch_form">Add Beverage Batch</button>
-{#        <a href="{{ url_for('beverage_club.new_beverage_batch') }}" class="btn btn-info">Add Beverage Batch</a>#}
+        {#        <a href="{{ url_for('beverage_club.new_beverage_batch') }}" class="btn btn-info">Add Beverage Batch</a>#}
     {% endif %}
     {% if current_user.admin %}
         <a href="{{ url_for('beverage_club.admin_module') }}" class="btn btn-info">Beverage Admin Page</a>
@@ -31,8 +31,15 @@
                                 <div class="form-group">
                                     {{ form.hidden_tag() }}
                                 </div>
-                                <button class="btn btn-block btn-lg btn-info" name="beverage_id" id="beverage_id"
-                                        value="{{ beverage.id }}">{{ beverage.name }}</button>
+                                <div class="form-group">
+                                    <button class="btn btn-block btn-lg btn-info" name="beverage_id" id="beverage_id"
+                                            value="{{ beverage.id }}" aria-describedby="bevHelp">
+                                        {{ beverage.name }}
+                                    </button>
+                                    <small class="form-text text-muted" id="bevHelp">
+                                        {{ beverage.quantity }} left
+                                    </small>
+                                </div>
                             </form>
                         </div>
                     {% endfor %}

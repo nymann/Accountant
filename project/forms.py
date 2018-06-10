@@ -60,7 +60,7 @@ class ItemForm(FlaskForm):
 
 
 class NeededItemForm(FlaskForm):
-    name = StringField('name')
+    item_name = StringField('item_name')
 
 
 class NewBeverageForm(FlaskForm):

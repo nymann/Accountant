@@ -164,7 +164,7 @@ def delete_item(shopping_id, item_id):
 def add_needed_item():
     form = NeededItemForm()
     if form.validate_on_submit():
-        item_name = form.name.data
+        item_name = form.item_name.data
         needed_item = NeededItems(item_name=item_name)
         try:
             db.session.add(needed_item)
@@ -180,7 +180,6 @@ def add_needed_item():
 @shopping_list.route('/removed_item/<needed_item_id>', methods=['GET', 'POST'])
 def remove_needed_item(needed_item_id):
     needed_item = NeededItems.query.get_or_404(int(needed_item_id))
-    print(needed_item_id)
     try:
         needed_item.item_bought = True
         db.session.commit()

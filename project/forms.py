@@ -92,3 +92,11 @@ class BuyBeverageAdminForm(FlaskForm):
     beverage_id = StringField('beverage_id')
     user_id = StringField('user_id')
     amount = StringField('amount')
+
+
+class FeedbackForm(FlaskForm):
+    feedback_header = StringField('feedback_header')
+    feedback_description = StringField('feedback_description')
+    feedback_label = StringField('feedback_label')
+
+

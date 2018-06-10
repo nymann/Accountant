@@ -6,10 +6,10 @@ from sqlalchemy import or_, func, desc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
 
-from project.forms import UserForm
+from project.forms import UserForm, FeedbackForm
 from project.models import (
     User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
-    BeverageTypes, UserReport, AccountingReport
+    BeverageTypes, UserReport, AccountingReport, Feedback, FeedbackComment
 )
 from project.site import site
 from project.utils.helper import UserHelper
@@ -181,3 +181,5 @@ def do_accounting():
         db.session.commit()
 
     return redirect(url_for('site.reports'))
+
+

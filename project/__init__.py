@@ -11,6 +11,7 @@ from werkzeug.contrib.fixers import ProxyFix
 from project.api import api
 from project.beverage_club import beverage_club
 from project.dinner_club import dinner_club
+from project.feedback import feedback
 from project.kitchen_meeting import kitchen_meeting
 from project.models import db, User, OAuth
 from project.shopping_list import shopping_list
@@ -45,6 +46,7 @@ app.register_blueprint(site, url_prefix='')
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(beverage_club, url_prefix='/beverage_club')
 app.register_blueprint(dinner_club, url_prefix='/dinner_club')
+app.register_blueprint(feedback, url_prefix='/feedback')
 app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 

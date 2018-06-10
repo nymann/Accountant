@@ -2,6 +2,7 @@ from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from flask_dance.consumer.backend.sqla import OAuthConsumerMixin
 from datetime import datetime
+import enum
 
 db = SQLAlchemy()
 
@@ -160,3 +161,40 @@ class AccountingReport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_reports = db.relationship("UserReport")
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+
+
+class FeedbackLabel(enum.Enum):
+    BUG = "Bug"
+    IMPROVEMENT = "Improvement"
+    FEATURE = "New Feature"
+    QUESTION = "Question"
+    OTHER = "OTHER"
+
+
+class FeedbackStatus(enum.Enum):
+    NEW = "New"
+    STARTED = "In progress"
+    CLOSED = "Closed"
+
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    header = db.Column(db.String, nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    status = db.Column(db.Enum(FeedbackStatus), default=FeedbackStatus.NEW)
+    label = db.Column(db.Enum(FeedbackLabel), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+
+
+class FeedbackComment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    feedback_id = db.Column(db.Integer, db.ForeignKey(Feedback.id), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    messages = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+
+
+class FeedbackPicture(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    feedback_comment_id = db.Column(db.Integer, db.ForeignKey(FeedbackComment.id), nullable=False)
+    picture_url = db.Column(db.String)

@@ -174,7 +174,7 @@ def add_needed_item():
             flash(str(e), "alert alert-danger")
             db.session.rollback()
 
-    return index()
+    return redirect(url_for('shopping_list.index'))
 
 
 @shopping_list.route('/removed_item/<needed_item_id>', methods=['GET', 'POST'])

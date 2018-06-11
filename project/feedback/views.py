@@ -88,7 +88,7 @@ def feedback(feedback_id):
     )
 
     first_comment = query.first()
-    feedback_comments = query.all()[1:]
+    feedback_comments = query.all()
 
     return render_template(
         'feedback/feedback.html', feedback=feedback, feedback_comments=feedback_comments, first_comment=first_comment,

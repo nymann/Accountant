@@ -20,10 +20,14 @@
                         {{ first_comment.comment }}
                     </div>
                 </div>
+            </div>
+        </div>
 
-                {% for feedback_comment in feedback_comments[1:] %}
+        {% for feedback_comment in feedback_comments[1:] %}
+            <div class="row">
+                <div class="col-lg-12">
                     <div class="card bg-white">
-                        {% if current_user.isadmin() %}
+                        {% if current_user.admin %}
                             <div class="card-body">
                                 Supporter: {{ feedback_comment.comment }}
                             </div>
@@ -33,13 +37,20 @@
                             </div>
                         {% endif %}
                     </div>
-                {% endfor %}
-
-                <form action="{{ url_for('feedback.add_feedback_comment',  feedback_id=feedback.id) }}" method="post">
-                    <textarea name="feedback_comment" id="feedback_comment" cols="30" rows="10"></textarea>
-                    <button class="btn btn-lg btn-block btn-info" type="submit">Create</button>
-                </form>
+                </div>
             </div>
-        </div>
+        {% endfor %}
+
+        <form action="{{ url_for('feedback.add_feedback_comment',  feedback_id=feedback.id) }}"
+              method="post">
+
+            {# CSRF TOKEN#}
+            <div class="form-group row">
+                {{ form.hidden_tag() }}
+            </div>
+
+            <textarea name="feedback_comment" id="feedback_comment" cols="40" rows="3"></textarea>
+            <button class="btn btn-lg btn-block btn-info" type="submit">Submit</button>
+        </form>
     </div>
 {% endblock %}

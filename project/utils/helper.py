@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask_login import current_user
 from sqlalchemy import func, or_
 
@@ -54,13 +56,15 @@ class UserHelper:
             func.sum(Dinner.price)
         ).filter(
             Dinner.payee_id.is_(self.user.id),
-            Dinner.accounted.is_(False)
+            Dinner.accounted.is_(False),
+            Dinner.date < datetime.now()
         ).scalar()
         return dinner_income if dinner_income else 0.0
 
     def dinner_expenses(self):
         non_accounted_dinners = Dinner.query.filter(
-            Dinner.accounted.is_(False)
+            Dinner.accounted.is_(False),
+            Dinner.date < datetime.now()
         ).all()
         dinner_expenses = 0.0
         if self.user.active:

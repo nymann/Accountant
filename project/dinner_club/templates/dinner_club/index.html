@@ -38,11 +38,7 @@
                                             {% else %}
                                                 <td class="text-muted">{{ dinner.dish_name }}</td>
                                             {% endif %}
-                                            <td class="text-muted">
-                                                <a href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}"
-                                                   class="btn btn-info">View dinner</a>
-                                            </td>
-                                            <td class="text-muted">
+                                            <td class="text-muted text-right">
                                                 {% if current_user in dinner.participants %}
                                                     <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
                                                             dinner_id=dinner.id) }}"

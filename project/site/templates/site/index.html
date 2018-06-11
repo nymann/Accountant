@@ -19,10 +19,14 @@
                         Some cools stuff will appear here
                     </div>
                 </div>
-                <hr style="width: 100%; height: 2px;">
             </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container">
+        <div class="row match-height">
             <div class="col-lg-4 mb-2">
-                <div class="card">
+                <div class="card h-100">
                     <div class="card-header bg-white">
                         <h5 class="card-title">Next meeting</h5>
                     </div>
@@ -43,22 +47,28 @@
                 </div>
             </div>
             <div class=" col-lg-4 mb-2">
-                <div class="card">
+                <div class="card h-100">
                     <div class="card-header bg-white">
-                        <h5 class="card-title">Most recent meal</h5>
+                        <h5 class="card-title">Next meal</h5>
                     </div>
                     <div class="card-body">
-                        {% if latest_dinner %}
-                            {% set g = latest_dinner.guests | sum(attribute='number_of_guests') %}
-                            <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }},
-                                {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
-                            <p class="card-text">On {{ latest_dinner.date.strftime('%A the %d. of %b') }}, we had
-                                <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
-                            <p class="card-text">{{ g + latest_dinner.participants|length }}
-                                attended ({{ g }} guests).</p>
-                            {% if latest_dinner.participants|length > 0 %}
-                                <p class="card-text">{{ latest_dinner.price }} kr.
-                                    ({{ (latest_dinner.price/(g + latest_dinner.participants|length))|round(2) }}
+                        {% if next_dinner %}
+                            {% set g = next_dinner.guests | sum(attribute='number_of_guests') %}
+                            <h6 class="card-subtitle text-muted">
+                                {{ next_dinner.date.strftime('%d/%m/%Y') }},
+                                {{ next_dinner.payee.name|truncate(20, True) }}
+                            </h6>
+                            <p class="card-text">
+                                On {{ next_dinner.date.strftime('%A the %d. of %b') }}, we will have
+                                <b>{{ next_dinner.dish_name }}</b> for dinner.
+                            </p>
+                            <p class="card-text">
+                                {{ g + next_dinner.participants|length }}
+                                attended ({{ g }} guests).
+                            </p>
+                            {% if next_dinner.participants|length > 0 %}
+                                <p class="card-text">{{ next_dinner.price }} kr.
+                                    ({{ (next_dinner.price/(g + next_dinner.participants|length))|round(2) }}
                                     kr. pr. person)</p>
                             {% else %}
                                 <p class="card-text">Can't calculate price. There are no participants.</p>
@@ -70,7 +80,7 @@
                 </div>
             </div>
             <div class="col-lg-4 mb-2">
-                <div class="card">
+                <div class="card h-100">
                     <div class="card-header bg-white">
                         <h5 class="card-title">Latest shopping entry</h5>
                     </div>
@@ -89,6 +99,5 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}

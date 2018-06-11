@@ -53,41 +53,44 @@ def feedback_user():
     return index()
 
 
-@feedback.route('/feedback/<feedback_id>', methods=['GET', 'POST'])
+@feedback.route('/feedback/<feedback_id>/comment', methods=['POST'])
+@login_required
+def add_feedback_comment(feedback_id):
+    form = FeedbackCommentForm()
+
+    if form.validate_on_submit():
+
+        feedback_comment = FeedbackComment(feedback_id=feedback_id, author=current_user.id,
+                                           comment=form.feedback_comment.data)
+        print(form.feedback_comment.data)
+        try:
+            db.session.add(feedback_comment)
+            db.session.commit()
+            flash("Your comment have been successfully added", "alert alert-info")
+        except DBAPIError as e:
+            flash(str(e), "alert alert-danger")
+            db.session.rollback()
+
+    # return redirect(url_for('feedback.feedback', feedback_id=feedback_id), code=200)
+    return index()
+
+
+@feedback.route('/feedback/<int:feedback_id>', methods=['GET', 'POST'])
 @login_required
 def feedback(feedback_id):
     form = FeedbackCommentForm()
     feedback = Feedback.query.get(feedback_id)
 
-    first_comment = FeedbackComment.query.filter(
-        FeedbackComment.feedback_id == feedback_id
-    ).first()
-
-    feedback_comments = FeedbackComment.query.filter(
+    query = FeedbackComment.query.filter(
         FeedbackComment.feedback_id == feedback_id
     ).order_by(
         FeedbackComment.timestamp
-    ).all()
-    feedback_comments = feedback_comments[1:]
+    )
 
-    return render_template('feedback/feedback.html', feedback=feedback, feedback_comments=feedback_comments,
-                           first_comment=first_comment, form=form)
+    first_comment = query.first()
+    feedback_comments = query.all()[1:]
 
-
-@feedback.route('/feedback/<feedback_id>/comment', methods=['GET', 'POST'])
-@login_required
-def add_feedback_comment(feedback_id):
-    form = FeedbackCommentForm()
-
-    feedback_comment = FeedbackComment(feedback_id=feedback_id, author=current_user.id,
-                                       comment=form.feedback_comment.data)
-
-    try:
-        db.session.add(feedback_comment)
-        db.session.commit()
-        flash("Your comment have been successfully added", "alert alert-info")
-    except DBAPIError as e:
-        flash(str(e), "alert alert-danger")
-        db.session.rollback()
-
-    return redirect('/feedback/<feedback_id>', code=200)
+    return render_template(
+        'feedback/feedback.html', feedback=feedback, feedback_comments=feedback_comments, first_comment=first_comment,
+        form=form
+    )

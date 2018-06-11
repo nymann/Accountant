@@ -19,11 +19,11 @@ from project.utils.uploadsets import avatars, process_user_avatar
 @site.route('/')
 @login_required
 def index():
-    # latest meal
-    latest_dinner = Dinner.query.filter(
-        Dinner.accounted.is_(False)
+    # next meal
+    next_dinner = Dinner.query.filter(
+        Dinner.date >= datetime.now()
     ).order_by(
-        Dinner.date.desc()
+        Dinner.date.asc()
     ).first()
 
     # next meeting
@@ -45,7 +45,7 @@ def index():
         Shopping.date.desc()
     ).first()
 
-    return render_template('site/index.html', latest_dinner=latest_dinner, event=event, topics=topics,
+    return render_template('site/index.html', next_dinner=next_dinner, event=event, topics=topics,
                            purchase=purchase)
 
 
@@ -147,14 +147,17 @@ def reports():
 @site.route('/reports/do_accounting')
 @login_required
 def do_accounting():
+
     if not current_user.admin:
         return abort(403)
     users = User.query.filter(
         User.active.is_(True)
     ).all()
+
     accounted_date = datetime.now()
     accounting_report = AccountingReport(date=accounted_date)
     db.session.add(accounting_report)
+
     for user in users:
         u = UserHelper(user)
         report = UserReport(
@@ -168,13 +171,22 @@ def do_accounting():
             flash(str(e), "alert alert-danger")
 
     beverageBatches = BeverageBatch.query.filter(BeverageBatch.accounted.is_(False)).all()
+
+    # Beverage
     for beverageBatch in beverageBatches:
         beverageBatch.accounted = True
         db.session.commit()
-    dinners = Dinner.query.filter(Dinner.accounted.is_(False)).all()
+
+    # Dinner
+    dinners = Dinner.query.filter(
+        Dinner.accounted.is_(False),
+        Dinner.date < datetime.now()
+    ).all()
     for dinner in dinners:
         dinner.accounted = True
         db.session.commit()
+
+    # Shopping
     shoppings = Shopping.query.filter(Shopping.accounted.is_(False)).all()
     for shopping in shoppings:
         shopping.accounted = True

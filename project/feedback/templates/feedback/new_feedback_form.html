@@ -1,0 +1,92 @@
+<div class="modal fade" id="feedback_form" tabindex="-1" role="dialog"
+     aria-labelledby="updateSettingsFormTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateSettingsFormLongTitle">
+                    Here you can add a new feedback
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Content of modal -->
+            <div class="modal-body">
+                <form action="{{ url_for('feedback.feedback_user') }}" method="post" id="submit_feedback">
+
+                    {#CSRF token#}
+                    <div class="form-group row">
+                        {{ form.hidden_tag() }}
+                    </div>
+
+                    {#Header#}
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="feedback_header">Header</label>
+                            </div>
+                            <input type="text" class="custom-select" name="feedback_header" id="feedback_header"
+                                   aria-describedby="feedback_header_help">
+                        </div>
+                        <small class="form-text text-muted" id="feedback_header_help">What is the header for your
+                            feedback?
+                        </small>
+                    </div>
+
+                    {#Label#}
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="feedback_label">Label</label>
+                            </div>
+                            <select class="custom-select" name="feedback_label" id="feedback_label"
+                                    aria-describedby="feedback_label_help">
+                                <option disabled selected>Select a label</option>
+                                <option value="BUG">Bug</option>
+                                <option value="IMPROVEMENT">Improvement</option>
+                                <option value="FEATURE">New Feature</option>
+                                <option value="QUESTION">Question</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+                        <small class="form-text text-muted" id="feedback_label_help">Which type of feedback is this?
+                        </small>
+                    </div>
+
+                    {# Desciption #}
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="feedback_description">Description</label>
+                            </div>
+                            <textarea name="feedback_description" id="feedback_description" cols="300" rows="4"
+                                      aria-describedby="feedback_description_help"></textarea>
+                        </div>
+                        <small class="form-text text-muted" id="feedback_description_help">Here you can provide a more
+                            detailed explanation.
+                        </small>
+                    </div>
+
+
+                    {# Submit #}
+                    <div class="form-group row">
+                        <div class="col-lg-12">
+                            <button class="btn btn-lg btn-block btn-info" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submit_feedback">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#submit_feedback').click(function () {
+        $('#submit_feedback_form').submit();
+    });
+</script>

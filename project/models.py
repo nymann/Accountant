@@ -168,7 +168,7 @@ class FeedbackLabel(enum.Enum):
     IMPROVEMENT = "Improvement"
     FEATURE = "New Feature"
     QUESTION = "Question"
-    OTHER = "OTHER"
+    OTHER = "Other"
 
 
 class FeedbackStatus(enum.Enum):
@@ -190,7 +190,7 @@ class FeedbackComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     feedback_id = db.Column(db.Integer, db.ForeignKey(Feedback.id), nullable=False)
     author = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
-    messages = db.Column(db.String, nullable=False)
+    comment = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
 

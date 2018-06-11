@@ -5,6 +5,7 @@
 {% block jumbocontent %}
     <h1 class="display-4">Feedback</h1>
     <p class="lead">Here you can submit a comment about a bug, an improvement or an idea to a new feature. </p>
+    <button class="btn btn-info" data-toggle="modal" data-target="#feedback_form">Add feedback</button>
     <a href="{{ url_for('site.index') }}" class="btn btn-danger">Cancel</a>
 {% endblock %}
 
@@ -12,69 +13,39 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <form action="{{ url_for('site.feedback') }}" method="post">
-
-                    {#CSRF token#}
-                    <div class="form-group row">
-                        {{ form.hidden_tag() }}
-                    </div>
-
-                    {#Header#}
-                    <div class="form-group">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="feedback_header">Header</label>
-                            </div>
-                            <input type="text" class="custom-select" name="feedback_header" id="feedback_header"
-                                   aria-describedby="feedback_header_help">
-                        </div>
-                        <small class="form-text text-muted" id="feedback_header_help">What is the header for your
-                            feedback?
-                        </small>
-                    </div>
-
-                    {#Label#}
-                    <div class="form-group">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="feedback_label">Label</label>
-                            </div>
-                            <select class="custom-select" name="feedback_label" id="feedback_label"
-                                    aria-describedby="feedback_label_help">
-                                <option disabled selected>Select a label</option>
-                                <option value="BUG">Bug</option>
-                                <option value="IMPROVEMENT">Improvement</option>
-                                <option value="FEATURE">New Feature</option>
-                                <option value="QUESTION">Question</option>
-                                <option value="OTHER">Other</option>
-                            </select>
-                        </div>
-                        <small class="form-text text-muted" id="feedback_label_help">Which type of feedback is this?
-                        </small>
-                    </div>
-
-                    {# Desciption #}
-                    <div class="form-group">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="feedback_description">Description</label>
-                            </div>
-                            <textarea name="feedback_description" id="feedback_description" cols="300" rows="4"
-                                      aria-describedby="feedback_description_help"></textarea>
-                        </div>
-                        <small class="form-text text-muted" id="feedback_description_help">Here you can provide a more detailed explanation.
-                        </small>
-                    </div>
-
-
-                    {# Submit #}
-                    <div class="form-group row">
-                        <div class="col-lg-12">
-                            <button class="btn btn-lg btn-block btn-info" type="submit">Submit</button>
-                        </div>
-                    </div>
-                </form>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Status</th>
+                        <th>Label</th>
+                        <th>Title</th>
+                    </tr>
+                    {% if feedbacks %}
+                        {% for feedback in feedbacks %}
+                            <tr class="clickable-row"
+                                data-href="{{ url_for('feedback.feedback', feedback_id=feedback.id) }}">
+                                <td>{{ feedback.status.value }}</td>
+                                <td>{{ feedback.label.value }}</td>
+                                <td>{{ feedback.header }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <p>The are no issues at the moment</p>
+                    {% endif %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+    {% include 'feedback/new_feedback_form.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
 {% endblock %}

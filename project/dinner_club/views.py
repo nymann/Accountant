@@ -1,9 +1,10 @@
 from collections import Counter
-from datetime import datetime
 
+from dateutil.relativedelta import relativedelta
 from flask import render_template, request, abort
 from flask_login import login_required
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.sql import label
 
 from project.dinner_club import dinner_club
 from project.forms import DinnerForm, ParticipateForm
@@ -91,6 +92,7 @@ def index():
     # Getting the current date.
     curDate = datetime.now()
 
+    # Latest dinner
     latest_dinner = Dinner.query.filter(
         Dinner.accounted.is_(False),
         Dinner.date < curDate
@@ -98,19 +100,31 @@ def index():
         Dinner.date.desc()
     ).first()
 
-    dinners_future = Dinner.query.filter(
+    time_limit = datetime.now() + relativedelta(hours=36)
+    # Future dinners
+    dinners_future = db.session.query(
+        Dinner.datetime.label('datetime'),
+        User.name.label('payee'),
+        Dinner.dish_name.label('dish_name'),
+        label()
+    ).join(
+        User
+    ).filter(
         Dinner.accounted.is_(False),
         Dinner.date >= curDate
     ).order_by(
         Dinner.date.desc()
     ).all()
 
+    # Past dinners
     dinners_past = Dinner.query.filter(
         Dinner.accounted.is_(False),
         Dinner.date < curDate
     ).order_by(
         Dinner.date.desc()
     ).all()
+
+    # can_participate = dinner.datetime <
 
     return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_past=dinners_past,
                            latest_dinner=latest_dinner, form=form)
@@ -213,13 +227,11 @@ def delete(dinner_id):
 
 @dinner_club.route('/participate/<int:user_id>/<int:dinner_id>', methods=['GET', 'POST'])
 def participate(user_id, dinner_id):
-    dinner = None
-    try:
-        dinner = Dinner.query.filter(
-            Dinner.id == dinner_id
-        ).first()
-    except DBAPIError as e:
-        flash(str(e), "alert alert-danger")
+    dinner = Dinner.query.get_or_404(Dinner.id)
+
+    if dinner.datetime < datetime.now() + relativedelta(hours=36):
+        return abort(502)
+
     if current_user in dinner.participants:
         dinner = Dinner.query.get(int(dinner_id))
         dinner.participants.remove(User.query.get(int(user_id)))
@@ -235,6 +247,5 @@ def participate(user_id, dinner_id):
     except DBAPIError as e:
         db.session.rollback()
         flash(str(e), "alert alert-danger")
-
 
     return index()

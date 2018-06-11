@@ -17,17 +17,28 @@
                         {{ feedback.header }}
                     </div>
                     <div class="card-body">
-                        {{ feedback_comments[0].comment }}
+                        {{ first_comment.comment }}
                     </div>
                 </div>
 
-                {% for feedback_comment in feedback_comments %}
+                {% for feedback_comment in feedback_comments[1:] %}
                     <div class="card bg-white">
-                        <div class="card-body">
-                            {{ feedback_comment.comment }}
-                        </div>
+                        {% if current_user.isadmin() %}
+                            <div class="card-body">
+                                Supporter: {{ feedback_comment.comment }}
+                            </div>
+                        {% else %}
+                            <div class="card-body">
+                                User: {{ feedback_comment.comment }}
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
+
+                <form action="{{ url_for('feedback.add_feedback_comment',  feedback_id=feedback.id) }}" method="post">
+                    <textarea name="feedback_comment" id="feedback_comment" cols="30" rows="10"></textarea>
+                    <button class="btn btn-lg btn-block btn-info" type="submit">Create</button>
+                </form>
             </div>
         </div>
     </div>

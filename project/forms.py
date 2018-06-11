@@ -100,3 +100,5 @@ class FeedbackForm(FlaskForm):
     feedback_label = StringField('feedback_label')
 
 
+class FeedbackCommentForm(FlaskForm):
+    feedback_comment = StringField('feedback_comment')

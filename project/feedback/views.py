@@ -1,7 +1,8 @@
-from flask import render_template, redirect, url_for, flash, request, abort
+from flask import render_template, flash
 from flask_login import current_user, login_required
 from sqlalchemy.exc import DBAPIError
 
+import project
 from project.feedback import feedback
 from project.forms import FeedbackForm, FeedbackCommentForm
 from project.models import db, Feedback, FeedbackComment
@@ -62,13 +63,13 @@ def add_feedback_comment(feedback_id):
 
         feedback_comment = FeedbackComment(feedback_id=feedback_id, author=current_user.id,
                                            comment=form.feedback_comment.data)
-        print(form.feedback_comment.data)
         try:
             db.session.add(feedback_comment)
             db.session.commit()
             flash("Your comment have been successfully added", "alert alert-info")
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")
+            project.sentry.captureMessage(str(e))
             db.session.rollback()
 
     # return redirect(url_for('feedback.feedback', feedback_id=feedback_id), code=200)

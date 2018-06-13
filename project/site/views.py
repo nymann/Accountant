@@ -6,10 +6,10 @@ from sqlalchemy import or_, func, desc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
 
-from project.forms import UserForm, FeedbackForm
+from project.forms import UserForm
 from project.models import (
-    User, Dinner, MeetingEvent, Shopping, Items, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
-    BeverageTypes, UserReport, AccountingReport, Feedback, FeedbackComment
+    User, Dinner, MeetingEvent, Shopping, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
+    BeverageTypes, UserReport, AccountingReport
 )
 from project.site import site
 from project.utils.helper import UserHelper
@@ -103,9 +103,9 @@ def profile(user_id):
                     user.move_out_date = datetime.strptime(move_out_date, "%d/%m/%Y")
 
             db.session.commit()
-            if filename and old_avatar_url:
-                #     TODO DELETE PIC
-                print("delete")
+            # if filename and old_avatar_url:
+            #     #     TODO DELETE PIC
+
             flash("Updated", "alert alert-info")
             return redirect(url_for('site.profile', user_id=user_id))
 
@@ -168,6 +168,7 @@ def do_accounting():
             accounting_report.user_reports.append(report)
             db.session.commit()
         except DBAPIError as e:
+            db.session.rollback()
             flash(str(e), "alert alert-danger")
 
     beverageBatches = BeverageBatch.query.filter(BeverageBatch.accounted.is_(False)).all()

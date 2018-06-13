@@ -1,12 +1,12 @@
+from flask import render_template, request
 from flask_login import login_required
-
-from project.beverage_club import beverage_club
 from sqlalchemy.exc import DBAPIError
 
-from flask import render_template, flash, redirect, url_for, request
+import project
+from project.beverage_club import beverage_club
 from project.forms import NewBeverageForm, NewBeverageBatchForm, BuyBeverageForm, NewBeverageTypesForm, \
     BuyBeverageAdminForm
-from project.models import Beverage, BeverageBatch, BeverageUser, BeverageTypes, db, User
+from project.models import Beverage, BeverageTypes
 from project.utils.decorators import *
 from project.utils.helper import *
 
@@ -73,7 +73,6 @@ def new_beverage():
         if type.lstrip() == "":
             flash("Beverage type must be selected", "alert alert-danger")
             return redirect(url_for('beverage_club.admin_module'))
-        print(type)
 
         # checks if beverage already exists
         name_db = Beverage.query.filter(
@@ -261,7 +260,7 @@ def beverage_payees():
                 beverage_batch.quantity -= 1
             except AttributeError as e:
                 db.session.rollback()
-                print(str(e))
+                project.sentry.captureMessage(str(e))
                 flash("The number of payees are higher, than the noted number of beverages...", "alert alert-danger")
                 return index()
 
@@ -273,7 +272,7 @@ def beverage_payees():
         flash("Successfully bought a beverage", "alert alert-info")
     except DBAPIError as e:
         db.session.rollback()
-        print(str(e))
+        project.sentry.captureMessage(str(e))
         flash(str(e), "alert alert-danger")
 
     return index()

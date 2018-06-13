@@ -5,6 +5,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import desc
 from sqlalchemy.exc import DBAPIError
 
+import project
 from project.forms import ShoppingForm, ItemForm, NeededItemForm
 from project.models import Shopping, User, db, Items, NeededItems
 from project.shopping_list import shopping_list
@@ -130,7 +131,6 @@ def items_new(shopping_id, edit):
 @shopping_list.route('<int:shopping_id>/items/edit/<int:item_id>', methods=['GET', 'POST'])
 def edit_item(shopping_id, item_id):
     form = ItemForm()
-    print(shopping_id)
     item = Items.query.get_or_404(int(item_id))
     if form.validate_on_submit():
         try:
@@ -141,6 +141,8 @@ def edit_item(shopping_id, item_id):
             flash("Successfully edited item.", "alert alert-info")
             return redirect(url_for('shopping_list.edit', shopping_id=shopping_id))
         except DBAPIError as e:
+            db.session.rollback()
+            project.sentry.captureMessage(str(e))
             flash(str(e), "alert alert-danger")
 
     return render_template('shopping_list/edit_item.html', item=item, form=form, shopping_id=shopping_id)
@@ -155,6 +157,7 @@ def delete_item(shopping_id, item_id):
         flash("Item deleted successfully.", "alert alert-info")
     except DBAPIError as e:
         flash(str(e), "alert alert-danger")
+        project.sentry.captureMessage(str(e))
         db.session.rollback()
 
     return redirect(url_for('shopping_list.edit', shopping_id=shopping_id))
@@ -172,6 +175,7 @@ def add_needed_item():
             flash("Needed item added to list", "alert alert-info")
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")
+            project.sentry.captureMessage(str(e))
             db.session.rollback()
 
     return redirect(url_for('shopping_list.index'))
@@ -185,6 +189,8 @@ def remove_needed_item(needed_item_id):
         db.session.commit()
         flash("Successfully removed needed item.", "alert alert-info")
     except DBAPIError as e:
+        project.sentry.captureMessage(str(e))
         flash(str(e), "alert alert-danger")
+        db.session.rollback()
 
     return index()

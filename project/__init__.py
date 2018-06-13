@@ -7,6 +7,7 @@ from flask_dance.contrib.twitter import make_twitter_blueprint
 from flask_login import LoginManager, current_user, login_required, logout_user
 from flask_uploads import configure_uploads
 from werkzeug.contrib.fixers import ProxyFix
+from raven.contrib.flask import Sentry
 
 from project.api import api
 from project.beverage_club import beverage_club
@@ -19,9 +20,7 @@ from project.site import site
 from project.utils.login import general_logged_in, general_error
 from project.utils.uploadsets import avatars
 
-# import os
-#
-# os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+import logging
 
 app = Flask(__name__)
 app.config.from_pyfile('../config.cfg', silent=False)
@@ -49,6 +48,11 @@ app.register_blueprint(dinner_club, url_prefix='/dinner_club')
 app.register_blueprint(feedback, url_prefix='/feedback')
 app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 app.register_blueprint(shopping_list, url_prefix='/shopping_list')
+
+sentry = Sentry(
+    app, logging=True, level=logging.ERROR,
+    dsn='https://c4c6b980a7514f4ea7fbd9c83f7fecf8:831d751b5b1e469ea54ed9dd866b4003@sentry.io/1225921'
+)
 
 configure_uploads(app, avatars)
 login_manager = LoginManager(app)

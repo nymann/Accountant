@@ -4,11 +4,11 @@ from dateutil.relativedelta import relativedelta
 from flask import render_template, request, abort
 from flask_login import login_required
 from sqlalchemy.exc import DBAPIError
-from sqlalchemy.sql import label
 
+import project
 from project.dinner_club import dinner_club
 from project.forms import DinnerForm, ParticipateForm
-from project.models import User, Dinner, GuestAssociation, db, participants
+from project.models import GuestAssociation
 from project.utils.decorators import *
 from project.utils.helper import *
 
@@ -198,7 +198,7 @@ def edit(dinner_id):
                         dinner.guests.append(ga)
                         db.session.commit()
                     except DBAPIError as e:
-                        print(str(e))
+                        project.sentry.captureMessage(str(e))
                         db.session.rollback()
                 else:
                     flash("Couldn't find guest with name {0}. Are you sure it's correct?".format(key))
@@ -227,6 +227,7 @@ def delete(dinner_id):
         flash("Deletion successful", "alert alert-info ")
     except DBAPIError as e:
         db.session.rollback()
+        project.sentry.captureMessage(str(e))
         flash(str(e), "alert alert-danger")
         return redirect(url_for('dinner_club.meal', dinner_id=dinner_id))
     return redirect(url_for('dinner_club.index'))
@@ -253,6 +254,7 @@ def participate(user_id, dinner_id):
         flash(msg, "alert alert-info")
     except DBAPIError as e:
         db.session.rollback()
+        project.sentry.captureMessage(str(e))
         flash(str(e), "alert alert-danger")
 
     return index()

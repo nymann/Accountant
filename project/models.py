@@ -38,12 +38,6 @@ class User(UserMixin, db.Model):
     items = db.relationship("Items", back_populates="user")
 
 
-class AccountingReport(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_reports = db.relationship("UserReport")
-    date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
-
-
 class OAuth(OAuthConsumerMixin, db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     user = db.relationship(User)
@@ -60,7 +54,7 @@ class Dinner(db.Model):
     guests = db.relationship("GuestAssociation", back_populates="dinner")
     chefs = db.relationship("User", secondary=chefs, backref=db.backref("dinners_where_cooked", lazy="dynamic"))
     dish_name = db.Column(db.String)
-    accounted = db.Column(db.Integer, db.ForeignKey(AccountingReport.id), nullable=True)
+    accounted = db.Column(db.Boolean, default=False)
     picture_url = db.Column(db.String)
 
 
@@ -80,7 +74,7 @@ class Shopping(db.Model):
     payee = db.relationship(User)
     date = db.Column(db.Date, nullable=False)
     items = db.relationship("Items", back_populates="shopping")
-    accounted = db.Column(db.Integer, db.ForeignKey(AccountingReport.id), nullable=True)
+    accounted = db.Column(db.Boolean, default=False)
 
 
 class Items(db.Model):
@@ -137,7 +131,7 @@ class BeverageBatch(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     price_per_can = db.Column(db.Float, nullable=False)
     payee_id = db.Column(db.ForeignKey(User.id), nullable=False)
-    accounted = db.Column(db.Integer, db.ForeignKey(AccountingReport.id), nullable=True)
+    accounted = db.Column(db.Boolean, default=False)
 
 
 class BeverageID(db.Model):
@@ -150,7 +144,6 @@ class BeverageUser(db.Model):
     beverage_batch_id = db.Column(db.Integer, db.ForeignKey(BeverageBatch.id))
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     timestamp = db.Column(db.DateTime, default=datetime.now(), nullable=False)
-    accounted = db.Column(db.Integer, db.ForeignKey(AccountingReport.id), nullable=True)
 
 
 class UserReport(db.Model):
@@ -163,6 +156,12 @@ class UserReport(db.Model):
     beverage_balance = db.Column(db.Float, nullable=False)
     total_balance = db.Column(db.Float, nullable=False)
     accounting_report_id = db.Column(db.Integer, db.ForeignKey("accounting_report.id"))
+
+
+class AccountingReport(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_reports = db.relationship("UserReport")
+    date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
 
 class FeedbackLabel(enum.Enum):

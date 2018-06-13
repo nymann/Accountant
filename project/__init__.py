@@ -131,3 +131,8 @@ def load_user(user_id):
 def logout():
     logout_user()
     return redirect(url_for('site.index'))
+
+
+@app.route('/sentry_test')
+def sentry_test():
+    sentry.captureMessage("BLA BLA")

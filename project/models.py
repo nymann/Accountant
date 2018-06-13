@@ -56,7 +56,7 @@ class Dinner(db.Model):
     chefs = db.relationship("User", secondary=chefs, backref=db.backref("dinners_where_cooked", lazy="dynamic"))
     dish_name = db.Column(db.String)
     accounted = db.Column(db.Boolean, default=False)
-    picture_url = db.Column(db.String)
+    # picture_url = db.Column(db.String)
 
 
 class GuestAssociation(db.Model):

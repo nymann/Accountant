@@ -102,24 +102,31 @@ def index():
 
     time_limit = datetime.now() + relativedelta(hours=36)
     # Future dinners
-    dinners_future = db.session.query(
-        Dinner.datetime.label('datetime'),
-        User.name.label('payee'),
-        Dinner.dish_name.label('dish_name'),
-        label()
-    ).join(
-        User
-    ).filter(
-        Dinner.accounted.is_(False),
-        Dinner.date >= curDate
-    ).order_by(
-        Dinner.date.desc()
-    ).all()
+    # dinners_future = db.session.query(
+    #     Dinner.datetime.label('datetime'),
+    #     User.name.label('payee'),
+    #     Dinner.dish_name.label('dish_name'),
+    #     label()
+    # ).join(
+    #     User
+    # ).filter(
+    #     Dinner.accounted.is_(False),
+    #     Dinner.date >= curDate
+    # ).order_by(
+    #     Dinner.date.desc()
+    # ).all()
 
     # Past dinners
     dinners_past = Dinner.query.filter(
         Dinner.accounted.is_(False),
         Dinner.date < curDate
+    ).order_by(
+        Dinner.date.desc()
+    ).all()
+
+    dinners_future = Dinner.query.filter(
+        Dinner.accounted.is_(False),
+        Dinner.date >= curDate
     ).order_by(
         Dinner.date.desc()
     ).all()

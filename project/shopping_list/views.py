@@ -48,6 +48,7 @@ def new():
             db.session.add(shopping)
             db.session.commit()
             flash("Success, shopping entry added", "alert alert-info")
+            print("Something should appear here")
             return redirect(url_for('shopping_list.items_new', shopping_id=shopping.id))
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")

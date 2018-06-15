@@ -7,6 +7,7 @@
 {% block jumbocontent %}
     <h1 class="display-4">{{ shopping.date | datetime() }}</h1>
     <p class="lead">What items did you buy?</p>
+    <a class="btn btn-light" href="{{ url_for('shopping_list.index') }}">Go back</a>
 {% endblock %}
 
 {% block content %}

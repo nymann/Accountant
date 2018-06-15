@@ -118,6 +118,7 @@ def items_new(shopping_id, edit):
         shopping_entry.items.append(item)
         db.session.add(shopping_entry)
         db.session.commit()
+        flash("Successfully added item to list", "alert alert-info")
     if edit:
         return redirect(url_for('shopping_list.edit', shopping_id=shopping_id))
 

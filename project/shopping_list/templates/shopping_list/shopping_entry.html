@@ -10,6 +10,7 @@
         {{ entry.date.strftime("%A the %d. of %B, %Y" ) }}</p>
     <a href="{{ url_for('shopping_list.edit', shopping_id=entry.id ) }}" class="btn btn-info">Edit</a>
     <a href="{{ url_for('shopping_list.delete', shopping_id=entry.id) }}" class="btn btn-danger">Delete</a>
+    <a class="btn btn-light" href="{{ url_for('shopping_list.index') }}">Go back</a>
 {% endblock %}
 
 {% block content %}

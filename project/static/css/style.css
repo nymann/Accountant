@@ -61,3 +61,14 @@ body, html {
 /*.popover-select-wrapper{*/
     /*width: 100%;*/
 /*}*/
+
+textarea.full_width{
+  display: block;
+  box-sizing: padding-box;
+  overflow: hidden;
+
+  width: 100%;
+  margin: 10px auto;
+  border-radius: 6px;
+  border: #17a2b8 solid 1px;
+}

@@ -1,6 +1,7 @@
 from collections import Counter
 
 from dateutil.relativedelta import relativedelta
+from datetime import time
 from flask import render_template, request, abort
 from flask_login import login_required
 from sqlalchemy.exc import DBAPIError
@@ -235,9 +236,11 @@ def delete(dinner_id):
 
 @dinner_club.route('/participate/<int:user_id>/<int:dinner_id>', methods=['GET', 'POST'])
 def participate(user_id, dinner_id):
-    dinner = Dinner.query.get_or_404(Dinner.id)
+    dinner = Dinner.query.get_or_404(dinner_id)
 
-    if dinner.datetime < datetime.now() + relativedelta(hours=36):
+    # if dinner.datetime < datetime.now() + relativedelta(hours=36):
+    #     return abort(502)
+    if dinner.date.datetime() < (datetime.now() + relativedelta(day=1)) and datetime.now().time().hour > 7:
         return abort(502)
 
     if current_user in dinner.participants:

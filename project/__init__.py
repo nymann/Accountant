@@ -51,8 +51,10 @@ app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 
 sentry = Sentry(
     app, logging=True, level=logging.ERROR,
-    dsn='https://c4c6b980a7514f4ea7fbd9c83f7fecf8:831d751b5b1e469ea54ed9dd866b4003@sentry.io/1225921'
 )
+
+if not app.debug:
+    sentry.dsn='https://c4c6b980a7514f4ea7fbd9c83f7fecf8:831d751b5b1e469ea54ed9dd866b4003@sentry.io/1225921'
 
 configure_uploads(app, avatars)
 login_manager = LoginManager(app)

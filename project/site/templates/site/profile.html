@@ -162,7 +162,7 @@
                                 {% if not dinner.accounted %}
                                     <tr class="clickable-row"
                                         data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
-                                        <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                        <td class="text-muted">{{ Dinner.datetime.strftime("%d/%m/%Y") }}</td>
                                         <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
                                         <td class="text-muted">{{ dinner.guests|length + dinner.participants|length }}
                                             attended

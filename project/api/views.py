@@ -27,8 +27,8 @@ def dinners():
         label("title", User.name),
         label("url", Dinner.id)
     ).filter(
-        Dinner.date >= start,
-        Dinner.date <= end,
+        Dinner.datetime >= start,
+        Dinner.datetime <= end,
         Dinner.payee_id.is_(User.id)
     ).group_by(Dinner.id).all()
     return jsonify(dinners=dinners)

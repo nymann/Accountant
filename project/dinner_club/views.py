@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from flask import render_template, request, abort
 from flask_login import login_required
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.sql import label
 
 import project
 from project.dinner_club import dinner_club
@@ -95,43 +96,42 @@ def index():
     # Latest dinner
     latest_dinner = Dinner.query.filter(
         Dinner.accounted.is_(False),
-        Dinner.date < curDate
+        Dinner.datetime < curDate
     ).order_by(
-        Dinner.date.desc()
+        Dinner.datetime.desc()
     ).first()
 
     time_limit = datetime.now() + relativedelta(hours=36)
     # Future dinners
-    # dinners_future = db.session.query(
-    #     Dinner.datetime.label('datetime'),
-    #     User.name.label('payee'),
-    #     Dinner.dish_name.label('dish_name'),
-    #     label()
-    # ).join(
-    #     User
-    # ).filter(
-    #     Dinner.accounted.is_(False),
-    #     Dinner.date >= curDate
-    # ).order_by(
-    #     Dinner.date.desc()
-    # ).all()
+    dinners_future = db.session.query(
+        Dinner.id.label('id'),
+        Dinner.datetime.label('datetime'),
+        User.name.label('payee'),
+        Dinner.dish_name.label('dish_name'),
+        label("can_participate", Dinner.datetime >= time_limit)
+    ).join(
+        User
+    ).filter(
+        Dinner.accounted.is_(False),
+        Dinner.datetime >= curDate
+    ).order_by(
+        Dinner.datetime.desc()
+    ).all()
 
     # Past dinners
     dinners_past = Dinner.query.filter(
         Dinner.accounted.is_(False),
-        Dinner.date < curDate
+        Dinner.datetime < curDate
     ).order_by(
-        Dinner.date.desc()
+        Dinner.datetime.desc()
     ).all()
 
-    dinners_future = Dinner.query.filter(
-        Dinner.accounted.is_(False),
-        Dinner.date >= curDate
-    ).order_by(
-        Dinner.date.desc()
-    ).all()
-
-    # can_participate = dinner.datetime <
+    # dinners_future = Dinner.query.filter(
+    #     Dinner.accounted.is_(False),
+    #     Dinner.datetime >= curDate
+    # ).order_by(
+    #     Dinner.datetime.desc()
+    # ).all()
 
     return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_past=dinners_past,
                            latest_dinner=latest_dinner, form=form)
@@ -159,7 +159,7 @@ def edit(dinner_id):
             return redirect(url_for('dinner_club.new'))
         dinner.price = price
         dinner.dish_name = form.dish_name.data
-        dinner.date = datetime.strptime(form.date.data, "%d/%m/%Y")
+        Dinner.datetime = datetime.strptime(form.date.data, "%d/%m/%Y")
         dinner.payee_id = form.payee.data if current_user.admin else dinner.payee_id
 
         # Participants

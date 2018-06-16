@@ -2,7 +2,6 @@ from datetime import date, datetime
 
 from flask import render_template, flash, abort, redirect, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import desc
 from sqlalchemy.exc import DBAPIError
 
 import project

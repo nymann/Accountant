@@ -21,9 +21,9 @@ from project.utils.uploadsets import avatars, process_user_avatar
 def index():
     # next meal
     next_dinner = Dinner.query.filter(
-        Dinner.date >= datetime.now()
+        Dinner.datetime >= datetime.now()
     ).order_by(
-        Dinner.date.asc()
+        Dinner.datetime.asc()
     ).first()
 
     # next meeting
@@ -181,7 +181,7 @@ def do_accounting():
     # Dinner
     dinners = Dinner.query.filter(
         Dinner.accounted.is_(False),
-        Dinner.date < datetime.now()
+        Dinner.datetime < datetime.now()
     ).all()
     for dinner in dinners:
         dinner.accounted = True

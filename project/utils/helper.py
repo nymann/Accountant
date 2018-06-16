@@ -57,14 +57,14 @@ class UserHelper:
         ).filter(
             Dinner.payee_id.is_(self.user.id),
             Dinner.accounted.is_(False),
-            Dinner.date < datetime.now()
+            Dinner.datetime < datetime.now()
         ).scalar()
         return dinner_income if dinner_income else 0.0
 
     def dinner_expenses(self):
         non_accounted_dinners = Dinner.query.filter(
             Dinner.accounted.is_(False),
-            Dinner.date < datetime.now()
+            Dinner.datetime < datetime.now()
         ).all()
         dinner_expenses = 0.0
         if self.user.active:

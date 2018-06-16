@@ -49,14 +49,13 @@ class Dinner(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     payee_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
     price = db.Column(db.Float, default=0.0)
-    # datetime = db.Column(db.DateTime, nullable=False)
-    date = db.Column(db.Date, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
     participants = db.relationship("User", secondary=participants, backref=db.backref("dinners", lazy="dynamic"))
     guests = db.relationship("GuestAssociation", back_populates="dinner")
     chefs = db.relationship("User", secondary=chefs, backref=db.backref("dinners_where_cooked", lazy="dynamic"))
     dish_name = db.Column(db.String)
     accounted = db.Column(db.Boolean, default=False)
-    # picture_url = db.Column(db.String)
+    picture_url = db.Column(db.String)
 
 
 class GuestAssociation(db.Model):

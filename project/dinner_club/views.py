@@ -37,7 +37,7 @@ def new():
         else:
             price = None
 
-        date = datetime.strptime(form.date.data, "%d/%m/%Y").date()
+        start = datetime.strptime("%s %s" % (form.date.data, form.time.data), "%d/%m/%Y %H:%M")
 
         participants = list()
         for user_id in request.form.getlist('participants'):
@@ -47,7 +47,7 @@ def new():
         for user_id in request.form.getlist('chefs'):
             chefs.append(User.query.get(int(user_id)))
 
-        d = Dinner(payee_id=payee_id, price=price, date=date, participants=participants, chefs=chefs,
+        d = Dinner(payee_id=payee_id, price=price, datetime=start, participants=participants, chefs=chefs,
                    dish_name=dish_name)
 
         try:

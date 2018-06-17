@@ -11,11 +11,6 @@ beverage = api.model('Beverage', {
     'name': fields.String(required=True, description='The Beverage name'),
 })
 
-# NO!
-CATS = [
-    {'id': 'felix', 'name': 'Felix'},
-]
-
 
 @api.route('/')
 class BeverageList(Resource):

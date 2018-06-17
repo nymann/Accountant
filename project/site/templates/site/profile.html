@@ -191,7 +191,6 @@
                         <h6 class="card-subtitle text-muted">Since the last report</h6>
                     </div>
                     <div class="card-body">
-
                         <p class="card-text green">Income: {{ user_helper.shopping_income()|round(2) }} DKK</p>
                         {% set shopping_expenses = user_helper.shopping_expenses()|round(2) %}
                         {% if shopping_expenses > 0 %}

@@ -238,20 +238,16 @@ def delete(dinner_id):
 def participate(user_id, dinner_id):
     dinner = Dinner.query.get_or_404(dinner_id)
 
-    # if dinner.datetime < datetime.now() + relativedelta(hours=36):
-    #     return abort(502)
-    if dinner.date.datetime() < (datetime.now() + relativedelta(day=1)) and datetime.now().time().hour > 7:
+    if dinner.datetime < (datetime.now() + relativedelta(hours=36)):
         return abort(502)
 
+    dinner = Dinner.query.get(dinner_id)
     if current_user in dinner.participants:
-        dinner = Dinner.query.get(int(dinner_id))
-        dinner.participants.remove(User.query.get(int(user_id)))
-        msg = "You are successfully removed from the dinner!"
+        dinner.participants.remove(User.query.get(user_id))
+        msg = "You have successfully been removed from the dinner!"
     else:
-        dinner = Dinner.query.get(int(dinner_id))
-        dinner.participants.append(User.query.get(int(user_id)))
-        msg = "You are successfully added to the dinner!"
-
+        dinner.participants.append(User.query.get(user_id))
+        msg = "You have successfully been added to the dinner!"
     try:
         db.session.commit()
         flash(msg, "alert alert-info")

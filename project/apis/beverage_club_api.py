@@ -1,5 +1,6 @@
-from project import api
-from flask_restplus import Resource
+from flask_restplus import Resource, Namespace
+
+api = Namespace('beverage_club', description='Beverage Clubs')
 
 
 @api.route('/hello', methods=['GET'])

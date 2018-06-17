@@ -6,10 +6,10 @@ from flask_dance.contrib.github import make_github_blueprint
 from flask_dance.contrib.twitter import make_twitter_blueprint
 from flask_login import LoginManager, current_user, login_required, logout_user
 from flask_uploads import configure_uploads
-from flask_restplus import Api, Resource
 from werkzeug.contrib.fixers import ProxyFix
 from raven.contrib.flask import Sentry
 
+# Site imports
 from project.beverage_club import beverage_club
 from project.dinner_club import dinner_club
 from project.feedback import feedback
@@ -17,6 +17,9 @@ from project.kitchen_meeting import kitchen_meeting
 from project.models import db, User, OAuth
 from project.shopping_list import shopping_list
 from project.site import site
+# API import
+from project.apis import apis
+
 from project.utils.login import general_logged_in, general_error
 from project.utils.uploadsets import avatars
 
@@ -25,7 +28,7 @@ import logging
 app = Flask(__name__)
 app.config.from_pyfile('../config.cfg', silent=False)
 app.wsgi_app = ProxyFix(app.wsgi_app)
-api = Api(app)
+
 
 facebook_blueprint = make_facebook_blueprint(
     backend=SQLAlchemyBackend(OAuth, db.session, user=current_user, user_required=False)
@@ -38,7 +41,7 @@ twitter_blueprint = make_twitter_blueprint(
 github_blueprint = make_github_blueprint(
     backend=SQLAlchemyBackend(OAuth, db.session, user=current_user, user_required=False)
 )
-
+# Site blueprints
 app.register_blueprint(facebook_blueprint, url_prefix='/login')
 app.register_blueprint(twitter_blueprint, url_prefix='/login')
 app.register_blueprint(github_blueprint, url_prefix='/login')
@@ -48,6 +51,8 @@ app.register_blueprint(dinner_club, url_prefix='/dinner_club')
 app.register_blueprint(feedback, url_prefix='/feedback')
 app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 app.register_blueprint(shopping_list, url_prefix='/shopping_list')
+# API blueprints
+app.register_blueprint(apis, url_prefix='/api')
 
 # sentry = Sentry(
 #     app, logging=True, level=logging.ERROR,

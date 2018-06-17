@@ -1,6 +1,5 @@
 from flask_restplus import Namespace, Resource, fields, reqparse
-from project.models import Beverage, db
-
+from project.models import Beverage
 
 # Creating the Namspace with desciption
 api = Namespace('beverage_club', description='Beverage Club related operations')
@@ -19,15 +18,15 @@ class BeverageList(Resource):
     def get(self):
         '''List all Beverages'''
         return Beverage.query.all()
-        # return db.session.query(Beverage).query.all()
 
-@api.route('/byid')
-class Beverage(Resource):
-    @api.doc('beverages')
-    @api.marshal_list_with(beverage)
-    def post(self):
+
+@api.route('/<int:beverage_id>')
+@api.response(404, 'Cat not found')
+@api.param('beverage_id', 'The beverage identifier')
+class BeverageOne(Resource):
+    @api.doc('get_beverages')
+    @api.marshal_with(beverage)
+    def get(self, beverage_id):
         '''Get one Beverage'''
-        parser = reqparse.RequestParser()
-        parser.add_argument('beverage_id', type=int, help='The id of the beverage you want')
-        beverage_id = parser.parse_args()
+
         return Beverage.query.get(beverage_id)

@@ -18,7 +18,7 @@ from project.models import db, User, OAuth
 from project.shopping_list import shopping_list
 from project.site import site
 # API import
-from project.apis import apis
+from project.apis import api_blueprint as api
 
 from project.utils.login import general_logged_in, general_error
 from project.utils.uploadsets import avatars
@@ -52,7 +52,7 @@ app.register_blueprint(feedback, url_prefix='/feedback')
 app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 # API blueprints
-app.register_blueprint(apis, url_prefix='/api')
+app.register_blueprint(api, url_prefix='/api')
 
 # sentry = Sentry(
 #     app, logging=True, level=logging.ERROR,

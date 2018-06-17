@@ -1,10 +1,11 @@
 from flask import Blueprint
+from flask_restplus import Api
 
-apis = Blueprint(
+api_blueprint = Blueprint(
     'beverage_club_api',
-    __name__,
-    template_folder='templates',
-    static_folder='static',
+    __name__
 )
+
+api = Api(api_blueprint)
 
 from . import beverage_club_api

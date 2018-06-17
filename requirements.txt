@@ -14,3 +14,4 @@ sqlalchemy_utils
 blinker
 python-dateutil
 raven[flask]
+flask-restplus

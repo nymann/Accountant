@@ -1,4 +1,6 @@
-from flask import Blueprint
+from functools import wraps
+
+from flask import Blueprint, request
 from flask_restplus import Api
 
 # Creating bluerpint
@@ -7,8 +9,34 @@ api_blueprint = Blueprint(
     __name__
 )
 
+# Security
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-API-KEU'
+    }
+}
+
 # Assigning blueprint to API
-api = Api(api_blueprint)
+api = Api(api_blueprint, authorization=authorizations)
+
+
+# Decorations
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+
+        if 'X-API-KEY' in request.headers:
+            token = request.headers['X-API-KEY']
+
+        if not token:
+            return {'message': 'Token is missing.'}
+
+        return f(*args, **kwargs)
+
+    return decorated()
 
 
 # Beverage Club Namespace

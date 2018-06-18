@@ -1,4 +1,6 @@
 from flask_restplus import Namespace, Resource, fields
+
+from project.apis import token_required
 from project.models import User
 
 api = Namespace('user', description='User related operations')

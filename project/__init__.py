@@ -53,6 +53,7 @@ app.register_blueprint(kitchen_meeting, url_prefix='/kitchen_meeting')
 app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 # API blueprints
 app.register_blueprint(api, url_prefix='/api')
+# app.register_blueprint(api, subdomain='api')
 
 sentry = Sentry(
     app, logging=True, level=logging.ERROR,

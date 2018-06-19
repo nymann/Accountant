@@ -196,3 +196,16 @@ def do_accounting():
     return redirect(url_for('site.reports'))
 
 
+@site.route('/developer')
+@login_required
+def developer():
+    username = current_user.name
+    userid = current_user.id
+    # apitoken = current_user.token
+    apitoken = OAuth.query.filter(
+        OAuth.user_id == userid
+    ).first().token
+    print(apitoken)
+
+    # return render_template('site/developer.html', username=username, apitoken=apitoken)
+    return render_template('site/developer.html', username=username)

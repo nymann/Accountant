@@ -1,0 +1,27 @@
+{% extends 'site/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">Accountant developer site</h1>
+    <p class="lead">This site is under 'development' ;-)</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title">API token for {{ username }}</h5>
+                    </div>
+                    <div class="card-body bg-white">
+                        {{ apitoken }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

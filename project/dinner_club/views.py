@@ -261,3 +261,4 @@ def participate(user_id, dinner_id):
         flash(str(e), "alert alert-danger")
 
     return index()
+

@@ -201,11 +201,22 @@ def do_accounting():
 def developer():
     username = current_user.name
     userid = current_user.id
-    # apitoken = current_user.token
-    apitoken = OAuth.query.filter(
+
+    oauthtoken = OAuth.query.filter(
         OAuth.user_id == userid
     ).first().token
-    print(apitoken)
 
-    # return render_template('site/developer.html', username=username, apitoken=apitoken)
-    return render_template('site/developer.html', username=username)
+    apitoken = None
+
+    if not apitoken:
+        try:
+            apitoken = oauthtoken['access_token']
+        except KeyError as e:
+            print(str(e))
+    if not apitoken:
+        try:
+            apitoken = oauthtoken['oauth_token_secret']
+        except KeyError as e:
+            print(str(e))
+
+    return render_template('site/developer.html', username=username, apitoken=apitoken)

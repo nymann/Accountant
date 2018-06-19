@@ -54,8 +54,8 @@ class Dinner(db.Model):
     guests = db.relationship("GuestAssociation", back_populates="dinner")
     chefs = db.relationship("User", secondary=chefs, backref=db.backref("dinners_where_cooked", lazy="dynamic"))
     dish_name = db.Column(db.String)
-    accounted = db.Column(db.Boolean, default=False)
     picture_url = db.Column(db.String)
+    accounting_id = db.Column(db.ForeignKey("accounting_report.id"), nullable=True)
 
 
 class GuestAssociation(db.Model):
@@ -74,7 +74,7 @@ class Shopping(db.Model):
     payee = db.relationship(User)
     date = db.Column(db.Date, nullable=False)
     items = db.relationship("Items", back_populates="shopping")
-    accounted = db.Column(db.Boolean, default=False)
+    accounting_id = db.Column(db.ForeignKey("accounting_report.id"), nullable=True)
 
 
 class Items(db.Model):
@@ -131,7 +131,7 @@ class BeverageBatch(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     price_per_can = db.Column(db.Float, nullable=False)
     payee_id = db.Column(db.ForeignKey(User.id), nullable=False)
-    accounted = db.Column(db.Boolean, default=False)
+    accounting_id = db.Column(db.ForeignKey("accounting_report.id"), nullable=True)
 
 
 class BeverageID(db.Model):

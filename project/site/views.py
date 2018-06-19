@@ -40,7 +40,7 @@ def index():
 
     # most recent purchase
     purchase = Shopping.query.filter(
-        Shopping.accounted.is_(False)
+        Shopping.accounting_id.is_(None)
     ).order_by(
         Shopping.date.desc()
     ).first()
@@ -66,7 +66,7 @@ def profile(user_id):
     ).all()
 
     shopping_list_entries = Shopping.query.filter(
-        Shopping.accounted.is_(False),
+        Shopping.accounting_id.is_(None),
         Shopping.payee_id.is_(user_id)
     ).order_by(Shopping.date).all()
 
@@ -76,7 +76,7 @@ def profile(user_id):
         Beverage.name.label("name"),
         label("count", func.count(Beverage.id))
     ).join(BeverageUser).join(Beverage).join(BeverageTypes).group_by(Beverage.name).filter(
-        BeverageBatch.accounted.is_(False),
+        BeverageBatch.accounting_id.is_(None),
         BeverageUser.user_id == user.id
     ).all()
 
@@ -147,7 +147,6 @@ def reports():
 @site.route('/reports/do_accounting')
 @login_required
 def do_accounting():
-
     if not current_user.admin:
         return abort(403)
     users = User.query.filter(
@@ -171,26 +170,26 @@ def do_accounting():
             db.session.rollback()
             flash(str(e), "alert alert-danger")
 
-    beverageBatches = BeverageBatch.query.filter(BeverageBatch.accounted.is_(False)).all()
+    beverageBatches = BeverageBatch.query.filter(BeverageBatch.accounting_id.is_(None)).all()
 
     # Beverage
     for beverageBatch in beverageBatches:
-        beverageBatch.accounted = True
+        beverageBatch.accounting_id = accounting_report.id
         db.session.commit()
 
     # Dinner
     dinners = Dinner.query.filter(
-        Dinner.accounted.is_(False),
+        Dinner.accounting_id.is_(None),
         Dinner.datetime < datetime.now()
     ).all()
     for dinner in dinners:
-        dinner.accounted = True
+        dinner.accounting_id = accounting_report.id
         db.session.commit()
 
     # Shopping
-    shoppings = Shopping.query.filter(Shopping.accounted.is_(False)).all()
+    shoppings = Shopping.query.filter(Shopping.accounting_id.is_(None)).all()
     for shopping in shoppings:
-        shopping.accounted = True
+        shopping.accounting_id = accounting_report.id
         db.session.commit()
 
     return redirect(url_for('site.reports'))

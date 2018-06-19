@@ -16,7 +16,7 @@ def index():
     form = NeededItemForm()
 
     shopping_list_entries = Shopping.query.filter(
-        Shopping.accounted.is_(False)
+        Shopping.accounting_id.is_(None)
     ).order_by(Shopping.date).all()
 
     needed_items = NeededItems.query.filter(

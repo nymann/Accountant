@@ -96,7 +96,7 @@ def index():
 
     # Latest dinner
     latest_dinner = Dinner.query.filter(
-        Dinner.accounted.is_(False),
+        Dinner.accounting_id.is_(None),
         Dinner.datetime < curDate
     ).order_by(
         Dinner.datetime.desc()
@@ -113,7 +113,7 @@ def index():
     ).join(
         User
     ).filter(
-        Dinner.accounted.is_(False),
+        Dinner.accounting_id.is_(None),
         Dinner.datetime >= curDate
     ).order_by(
         Dinner.datetime.desc()
@@ -121,14 +121,14 @@ def index():
 
     # Past dinners
     dinners_past = Dinner.query.filter(
-        Dinner.accounted.is_(False),
+        Dinner.accounting_id.is_(None),
         Dinner.datetime < curDate
     ).order_by(
         Dinner.datetime.desc()
     ).all()
 
     # dinners_future = Dinner.query.filter(
-    #     Dinner.accounted.is_(False),
+    #     Dinner.accounting_id.is_(None),
     #     Dinner.datetime >= curDate
     # ).order_by(
     #     Dinner.datetime.desc()

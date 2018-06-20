@@ -131,7 +131,6 @@ class BeverageBatch(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     price_per_can = db.Column(db.Float, nullable=False)
     payee_id = db.Column(db.ForeignKey(User.id), nullable=False)
-    accounting_id = db.Column(db.ForeignKey("accounting_report.id"), nullable=True)
 
 
 class BeverageID(db.Model):
@@ -144,6 +143,7 @@ class BeverageUser(db.Model):
     beverage_batch_id = db.Column(db.Integer, db.ForeignKey(BeverageBatch.id))
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     timestamp = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+    accounting_id = db.Column(db.ForeignKey("accounting_report.id"), nullable=True)
 
 
 class UserReport(db.Model):

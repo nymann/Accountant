@@ -170,11 +170,11 @@ def do_accounting():
             db.session.rollback()
             flash(str(e), "alert alert-danger")
 
-    beverageBatches = BeverageBatch.query.filter(BeverageBatch.accounting_id.is_(None)).all()
+    beverages_bought = BeverageBatch.query.filter(BeverageUser.accounting_id.is_(None)).all()
 
     # Beverage
-    for beverageBatch in beverageBatches:
-        beverageBatch.accounting_id = accounting_report.id
+    for beverage in beverages_bought:
+        beverage.accounting_id = accounting_report.id
         db.session.commit()
 
     # Dinner

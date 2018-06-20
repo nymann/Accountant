@@ -91,7 +91,7 @@ class UserHelper:
             func.sum(BeverageBatch.price_per_can)
         ).join(BeverageUser).filter(
             BeverageBatch.payee_id == self.user.id,
-            BeverageBatch.accounting_id.is_(None)
+            BeverageUser.accounting_id.is_(None)
         ).scalar()
         return beverage_income if beverage_income else 0.0
 
@@ -102,7 +102,7 @@ class UserHelper:
             BeverageUser
         ).filter(
             BeverageUser.user_id == self.user.id,
-            BeverageBatch.accounting_id.is_(None)
+            BeverageUser.accounting_id.is_(None)
         ).scalar()
         return beverage_expenses if beverage_expenses else 0.0
 

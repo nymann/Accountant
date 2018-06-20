@@ -76,7 +76,7 @@ def profile(user_id):
         Beverage.name.label("name"),
         label("count", func.count(Beverage.id))
     ).join(BeverageUser).join(Beverage).join(BeverageTypes).group_by(Beverage.name).filter(
-        BeverageBatch.accounting_id.is_(None),
+        BeverageUser.accounting_id.is_(None),
         BeverageUser.user_id == user.id
     ).all()
 

@@ -43,7 +43,7 @@ def new():
         participants = list()
         for user_id in request.form.getlist('participants'):
             participants.append(User.query.get(int(user_id)))
-
+            
         chefs = list()
         for user_id in request.form.getlist('chefs'):
             chefs.append(User.query.get(int(user_id)))
@@ -138,18 +138,18 @@ def index():
                            latest_dinner=latest_dinner, form=form)
 
 
-@dinner_club.route('/meal/<dinner_id>')
+@dinner_club.route('/meal/<int:dinner_id>')
 @login_required
 def meal(dinner_id):
-    dinner = Dinner.query.get_or_404(int(dinner_id))
+    dinner = Dinner.query.get_or_404(dinner_id)
     return render_template('dinner_club/meal.html', dinner=dinner)
 
 
-@dinner_club.route('/meal/edit/<dinner_id>', methods=['GET', 'POST'])
+@dinner_club.route('/meal/edit/<int:dinner_id>', methods=['GET', 'POST'])
 @login_required
 def edit(dinner_id):
     form = DinnerForm()
-    dinner = Dinner.query.get(int(dinner_id))
+    dinner = Dinner.query.get(dinner_id)
     if dinner.payee_id is not current_user.id and not is_admin():
         return abort(403)
     if form.validate_on_submit():

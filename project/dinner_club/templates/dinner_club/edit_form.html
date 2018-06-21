@@ -1,12 +1,12 @@
 <form action="{{ url_for('dinner_club.edit', dinner_id=dinner.id) }}" method="POST">
 
     {#CSRF token#}
-    <div class="form-group row">
+    <div class="form-group">
         {{ form.hidden_tag() }}
     </div>
 
     {#Price#}
-    <div class="form-group row">
+    <div class="form-group">
         <label for="price" class="col-lg-3 col-form-label">Price</label>
         <div class="col-lg-9">
             <input type="number" name="price" placeholder="price" class="form-control" id="price"
@@ -16,17 +16,26 @@
     </div>
 
     {#Date#}
-    <div class="form-group row">
+    <div class="form-group">
         <label for="date" class="col-lg-3 col-form-label">Date</label>
         <div class="col-lg-9">
             <input type="text" name="date" placeholder="date" class="form-control" id="date"
-                   value="{{ dinner.date.strftime("%d/%m/%Y") }}">
+                   value="{{ dinner.datetime.strftime("%d/%m/%Y") }}">
             <span id="dateHelpBlock" class="form-text text-muted">The date that the dinner took place.</span>
         </div>
     </div>
 
+    <div class="form-group">
+        <label for="time" class="col-lg-3 col-form-label">Time</label>
+        <div class="col-lg-9">
+            <input type="text" name="time" placeholder="HH:MM" class="form-control" id="time"
+                   value="{{ dinner.datetime.strftime("%H:%M") }}" required="required">
+            <span id="dateHelpBlock" class="form-text text-muted">At what time did the dinner take place?</span>
+        </div>
+    </div>
+
     {#Participants#}
-    <div class="form-group row">
+    <div class="form-group">
         <label for="participants" class="col-lg-3 col-form-label">Participants</label>
         <div class="col-lg-9">
             <div class="form-group">
@@ -45,7 +54,7 @@
 
     {#Guests#}
     {#Dropdown of all Users#}
-    <div class="form-group row">
+    <div class="form-group">
         <label for="dropdown" class="col-lg-3 col-form-label">Add Guests</label>
         <div class="col-lg-9">
             <div class="form-group">
@@ -59,8 +68,8 @@
         </div>
     </div>
     {# Textarea that gets appended with the name of the user selected in the dropdown list. #}
-    <div class="form-group row">
-        <div class="offset-lg-3 col-lg-9">
+    <div class="form-group">
+        <div class="col-lg-9">
             <div class="form-group">
                 <textarea name="guests" id="guests" cols="30" rows="10" class="form-control"
                           title="">{% for user in dinner.guests %}{{ user.name }}{% endfor %}</textarea>
@@ -69,7 +78,7 @@
     </div>
 
     {#Chefs#}
-    <div class="form-group row">
+    <div class="form-group">
         <label for="chefs" class="col-lg-3 col-form-label">Chefs</label>
         <div class="col-lg-9">
             <div class="form-group">
@@ -87,7 +96,7 @@
     </div>
 
     {#Dish Name#}
-    <div class="form-group row">
+    <div class="form-group">
         <label for="dish_name" class="col-lg-3 col-form-label">Dish Name</label>
         <div class="col-lg-9">
             <input type="text" name="dish_name" placeholder="dish name" class="form-control" id="dish_name"
@@ -99,7 +108,7 @@
     {#Admin Menu#}
     {% if current_user.admin %}
         {#Payee#}
-        <div class="form-group row">
+        <div class="form-group">
             <label for="payee" class="col-lg-3 col-form-label">Payee</label>
             <div class="col-lg-9">
                 <select class="form-control" id="payee" name="payee">
@@ -117,8 +126,8 @@
     {% endif %}
 
     {# Submit #}
-    <div class="form-group row">
-        <div class="offset-lg-3 col-lg-9">
+    <div class="form-group">
+        <div class="col-lg-9">
             <button class="btn btn-lg btn-block btn-info" type="submit">Update</button>
         </div>
     </div>

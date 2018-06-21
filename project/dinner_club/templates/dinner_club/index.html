@@ -31,7 +31,7 @@
                                                     class="clickable-row"
                                                 {% endif %}
                                                     data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
-                                            <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.payee.name }}</td>
                                             {% if dinner.dish_name|length < 1 %}
                                                 <td class="text-muted">No name yet.</td>
@@ -39,8 +39,9 @@
                                                 <td class="text-muted">{{ dinner.dish_name }}</td>
                                             {% endif %}
                                             <td class="text-muted text-right">
-
-                                                {% if current_user in dinner.participants %}
+                                                {% if not dinners_future.can_participate %}
+                                                    <p></p>
+                                                {% elif current_user in dinner.participants %}
                                                     <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
                                                             dinner_id=dinner.id) }}"
                                                        class="btn btn-danger" name="dinner_id" id="dinner_id">
@@ -57,7 +58,7 @@
                                         </tr>
                                     {% else %}
                                         <tr>
-                                            <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ Dinner.datetime.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
                                             <td class="text-muted">{{ g + dinner.participants|length }}
                                                 attended
@@ -95,8 +96,8 @@
                     {% if latest_dinner %}
                         <div class="card-body">
                             {% set g = latest_dinner.guests | sum(attribute='number_of_guests') %}
-                            <h6 class="card-subtitle text-muted">{{ latest_dinner.date.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
-                            <p class="card-text">On {{ latest_dinner.date.strftime('%A the %d. of %b') }}, we had
+                            <h6 class="card-subtitle text-muted">{{ latest_dinner.datetime.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
+                            <p class="card-text">On {{ latest_dinner.datetime.strftime('%A the %d. of %b') }}, we had
                                 <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
                             <p class="card-text">{{ g + latest_dinner.participants|length }}
                                 attended ({{ g }} guests).</p>
@@ -135,7 +136,7 @@
                                                     class="clickable-row"
                                                 {% endif %}
                                                     data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
-                                            <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
                                             <td class="text-muted">{{ g + dinner.participants|length }}
                                                 attended
@@ -145,7 +146,7 @@
                                         </tr>
                                     {% else %}
                                         <tr>
-                                            <td class="text-muted">{{ dinner.date.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
                                             <td class="text-muted">{{ g + dinner.participants|length }}
                                                 attended

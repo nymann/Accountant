@@ -22,14 +22,14 @@ class UserHelper:
         shopping_income = db.session.query(
             func.sum(Items.price * Items.amount)
         ).join(Shopping).filter(
-            Shopping.accounted.is_(False),
+            Shopping.accounting_id.is_(None),
             Shopping.payee_id.is_(self.user.id),
         ).scalar()
         return shopping_income if shopping_income else 0.0
 
     def shopping_expenses(self):
         non_accounted_shopping_entries = Shopping.query.filter(
-            Shopping.accounted.is_(False)
+            Shopping.accounting_id.is_(None)
         ).all()
 
         shopping_expenses = 0.0
@@ -56,15 +56,15 @@ class UserHelper:
             func.sum(Dinner.price)
         ).filter(
             Dinner.payee_id.is_(self.user.id),
-            Dinner.accounted.is_(False),
-            Dinner.date < datetime.now()
+            Dinner.accounting_id.is_(None),
+            Dinner.datetime < datetime.now()
         ).scalar()
         return dinner_income if dinner_income else 0.0
 
     def dinner_expenses(self):
         non_accounted_dinners = Dinner.query.filter(
-            Dinner.accounted.is_(False),
-            Dinner.date < datetime.now()
+            Dinner.accounting_id.is_(None),
+            Dinner.datetime < datetime.now()
         ).all()
         dinner_expenses = 0.0
         if self.user.active:
@@ -91,7 +91,7 @@ class UserHelper:
             func.sum(BeverageBatch.price_per_can)
         ).join(BeverageUser).filter(
             BeverageBatch.payee_id == self.user.id,
-            BeverageBatch.accounted.is_(False)
+            BeverageUser.accounting_id.is_(None)
         ).scalar()
         return beverage_income if beverage_income else 0.0
 
@@ -102,7 +102,7 @@ class UserHelper:
             BeverageUser
         ).filter(
             BeverageUser.user_id == self.user.id,
-            BeverageBatch.accounted.is_(False)
+            BeverageUser.accounting_id.is_(None)
         ).scalar()
         return beverage_expenses if beverage_expenses else 0.0
 

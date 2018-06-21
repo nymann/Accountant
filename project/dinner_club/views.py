@@ -5,6 +5,7 @@ from datetime import time
 from flask import render_template, request, abort
 from flask_login import login_required
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.sql import label
 
 import project
 from project.dinner_club import dinner_club
@@ -37,17 +38,17 @@ def new():
         else:
             price = None
 
-        date = datetime.strptime(form.date.data, "%d/%m/%Y").date()
+        start = datetime.strptime("%s %s" % (form.date.data, form.time.data), "%d/%m/%Y %H:%M")
 
         participants = list()
         for user_id in request.form.getlist('participants'):
             participants.append(User.query.get(int(user_id)))
-
+            
         chefs = list()
         for user_id in request.form.getlist('chefs'):
             chefs.append(User.query.get(int(user_id)))
 
-        d = Dinner(payee_id=payee_id, price=price, date=date, participants=participants, chefs=chefs,
+        d = Dinner(payee_id=payee_id, price=price, datetime=start, participants=participants, chefs=chefs,
                    dish_name=dish_name)
 
         try:
@@ -95,61 +96,60 @@ def index():
 
     # Latest dinner
     latest_dinner = Dinner.query.filter(
-        Dinner.accounted.is_(False),
-        Dinner.date < curDate
+        Dinner.accounting_id.is_(None),
+        Dinner.datetime < curDate
     ).order_by(
-        Dinner.date.desc()
+        Dinner.datetime.desc()
     ).first()
 
     time_limit = datetime.now() + relativedelta(hours=36)
     # Future dinners
-    # dinners_future = db.session.query(
-    #     Dinner.datetime.label('datetime'),
-    #     User.name.label('payee'),
-    #     Dinner.dish_name.label('dish_name'),
-    #     label()
-    # ).join(
-    #     User
-    # ).filter(
-    #     Dinner.accounted.is_(False),
-    #     Dinner.date >= curDate
-    # ).order_by(
-    #     Dinner.date.desc()
-    # ).all()
+    dinners_future = db.session.query(
+        Dinner.id.label('id'),
+        Dinner.datetime.label('datetime'),
+        User.name.label('payee'),
+        Dinner.dish_name.label('dish_name'),
+        label("can_participate", Dinner.datetime >= time_limit)
+    ).join(
+        User
+    ).filter(
+        Dinner.accounting_id.is_(None),
+        Dinner.datetime >= curDate
+    ).order_by(
+        Dinner.datetime.desc()
+    ).all()
 
     # Past dinners
     dinners_past = Dinner.query.filter(
-        Dinner.accounted.is_(False),
-        Dinner.date < curDate
+        Dinner.accounting_id.is_(None),
+        Dinner.datetime < curDate
     ).order_by(
-        Dinner.date.desc()
+        Dinner.datetime.desc()
     ).all()
 
-    dinners_future = Dinner.query.filter(
-        Dinner.accounted.is_(False),
-        Dinner.date >= curDate
-    ).order_by(
-        Dinner.date.desc()
-    ).all()
-
-    # can_participate = dinner.datetime <
+    # dinners_future = Dinner.query.filter(
+    #     Dinner.accounting_id.is_(None),
+    #     Dinner.datetime >= curDate
+    # ).order_by(
+    #     Dinner.datetime.desc()
+    # ).all()
 
     return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_past=dinners_past,
                            latest_dinner=latest_dinner, form=form)
 
 
-@dinner_club.route('/meal/<dinner_id>')
+@dinner_club.route('/meal/<int:dinner_id>')
 @login_required
 def meal(dinner_id):
-    dinner = Dinner.query.get_or_404(int(dinner_id))
+    dinner = Dinner.query.get_or_404(dinner_id)
     return render_template('dinner_club/meal.html', dinner=dinner)
 
 
-@dinner_club.route('/meal/edit/<dinner_id>', methods=['GET', 'POST'])
+@dinner_club.route('/meal/edit/<int:dinner_id>', methods=['GET', 'POST'])
 @login_required
 def edit(dinner_id):
     form = DinnerForm()
-    dinner = Dinner.query.get(int(dinner_id))
+    dinner = Dinner.query.get(dinner_id)
     if dinner.payee_id is not current_user.id and not is_admin():
         return abort(403)
     if form.validate_on_submit():
@@ -160,7 +160,7 @@ def edit(dinner_id):
             return redirect(url_for('dinner_club.new'))
         dinner.price = price
         dinner.dish_name = form.dish_name.data
-        dinner.date = datetime.strptime(form.date.data, "%d/%m/%Y")
+        Dinner.datetime = datetime.strptime(form.date.data, "%d/%m/%Y")
         dinner.payee_id = form.payee.data if current_user.admin else dinner.payee_id
 
         # Participants
@@ -238,20 +238,16 @@ def delete(dinner_id):
 def participate(user_id, dinner_id):
     dinner = Dinner.query.get_or_404(dinner_id)
 
-    # if dinner.datetime < datetime.now() + relativedelta(hours=36):
-    #     return abort(502)
-    if dinner.date.datetime() < (datetime.now() + relativedelta(day=1)) and datetime.now().time().hour > 7:
+    if dinner.datetime < (datetime.now() + relativedelta(hours=36)):
         return abort(502)
 
+    dinner = Dinner.query.get(dinner_id)
     if current_user in dinner.participants:
-        dinner = Dinner.query.get(int(dinner_id))
-        dinner.participants.remove(User.query.get(int(user_id)))
-        msg = "You are successfully removed from the dinner!"
+        dinner.participants.remove(User.query.get(user_id))
+        msg = "You have successfully been removed from the dinner!"
     else:
-        dinner = Dinner.query.get(int(dinner_id))
-        dinner.participants.append(User.query.get(int(user_id)))
-        msg = "You are successfully added to the dinner!"
-
+        dinner.participants.append(User.query.get(user_id))
+        msg = "You have successfully been added to the dinner!"
     try:
         db.session.commit()
         flash(msg, "alert alert-info")

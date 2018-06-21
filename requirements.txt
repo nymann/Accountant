@@ -15,3 +15,5 @@ blinker
 python-dateutil
 raven[flask]
 flask-restplus
+flask_migrate
+flask_script

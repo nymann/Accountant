@@ -9,8 +9,8 @@ from sqlalchemy.sql import label
 from project.forms import UserForm
 from project.models import (
     User, Dinner, MeetingEvent, Shopping, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
-    BeverageTypes, UserReport, AccountingReport
-)
+    BeverageTypes, UserReport, AccountingReport,
+    chefs)
 from project.site import site
 from project.utils.helper import UserHelper
 from project.utils.uploadsets import avatars, process_user_avatar
@@ -21,9 +21,9 @@ from project.utils.uploadsets import avatars, process_user_avatar
 def index():
     # next meal
     next_dinner = Dinner.query.filter(
-        Dinner.date >= datetime.now()
+        Dinner.datetime >= datetime.now()
     ).order_by(
-        Dinner.date.asc()
+        Dinner.datetime.asc()
     ).first()
 
     # next meeting
@@ -40,7 +40,7 @@ def index():
 
     # most recent purchase
     purchase = Shopping.query.filter(
-        Shopping.accounted.is_(False)
+        Shopping.accounting_id.is_(None)
     ).order_by(
         Shopping.date.desc()
     ).first()
@@ -66,7 +66,7 @@ def profile(user_id):
     ).all()
 
     shopping_list_entries = Shopping.query.filter(
-        Shopping.accounted.is_(False),
+        Shopping.accounting_id.is_(None),
         Shopping.payee_id.is_(user_id)
     ).order_by(Shopping.date).all()
 
@@ -76,7 +76,7 @@ def profile(user_id):
         Beverage.name.label("name"),
         label("count", func.count(Beverage.id))
     ).join(BeverageUser).join(Beverage).join(BeverageTypes).group_by(Beverage.name).filter(
-        BeverageBatch.accounted.is_(False),
+        BeverageUser.accounting_id.is_(None),
         BeverageUser.user_id == user.id
     ).all()
 
@@ -139,15 +139,43 @@ def private_policy():
 @site.route('/reports')
 @login_required
 def reports():
-    latest_report = AccountingReport.query.order_by(desc(AccountingReport.date)).first()
-    older_reports = AccountingReport.query.order_by(desc(AccountingReport.date)).offset(1).all()
-    return render_template('site/reports.html', report=latest_report, older_reports=older_reports)
+    reports = AccountingReport.query.order_by(desc(AccountingReport.date)).all()
+    return render_template('site/reports.html', reports=reports)
+
+
+@site.route('/report/<int:report_id>')
+@login_required
+def report(report_id):
+    accounting_report = AccountingReport.query.get(report_id)
+    if not accounting_report:
+        return abort(404)
+
+    # Beverages consumed pr. inhabitant.
+    beverage_stats = db.session.query(
+        label("consumed", func.count(BeverageUser.user_id)),
+        label("user_name", User.name),
+        label("user_id", User.id)
+    ).join(User).filter(
+        BeverageUser.accounting_id.is_(report_id)
+    ).group_by(BeverageUser.user_id).order_by(desc("consumed")).all()
+
+    # Times paid for dinner_club
+    dinners_paid = db.session.query(
+        label("paid", func.count(Dinner.payee_id)),
+        label("user_name", User.name),
+        label("user_id", User.id)
+    ).join(User).filter(
+        Dinner.accounting_id.is_(report_id),
+    ).group_by(Dinner.payee_id).order_by(desc("paid")).all()
+
+    return render_template(
+        'site/report.html', report=accounting_report, beverage_stats=beverage_stats, dinners_paid=dinners_paid
+    )
 
 
 @site.route('/reports/do_accounting')
 @login_required
 def do_accounting():
-
     if not current_user.admin:
         return abort(403)
     users = User.query.filter(
@@ -171,26 +199,26 @@ def do_accounting():
             db.session.rollback()
             flash(str(e), "alert alert-danger")
 
-    beverageBatches = BeverageBatch.query.filter(BeverageBatch.accounted.is_(False)).all()
+    beverages_bought = BeverageUser.query.filter(BeverageUser.accounting_id.is_(None)).all()
 
     # Beverage
-    for beverageBatch in beverageBatches:
-        beverageBatch.accounted = True
+    for beverage in beverages_bought:
+        beverage.accounting_id = accounting_report.id
         db.session.commit()
 
     # Dinner
     dinners = Dinner.query.filter(
-        Dinner.accounted.is_(False),
-        Dinner.date < datetime.now()
+        Dinner.accounting_id.is_(None),
+        Dinner.datetime < datetime.now()
     ).all()
     for dinner in dinners:
-        dinner.accounted = True
+        dinner.accounting_id = accounting_report.id
         db.session.commit()
 
     # Shopping
-    shoppings = Shopping.query.filter(Shopping.accounted.is_(False)).all()
+    shoppings = Shopping.query.filter(Shopping.accounting_id.is_(None)).all()
     for shopping in shoppings:
-        shopping.accounted = True
+        shopping.accounting_id = accounting_report.id
         db.session.commit()
 
     return redirect(url_for('site.reports'))

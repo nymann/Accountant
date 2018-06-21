@@ -1,0 +1,78 @@
+{% extends 'site/base.html' %}
+
+{% block title %}Reports{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">Reports</h1>
+    <p class="lead">See the latest financial report for KK24</p>
+    {% if current_user.admin %}
+        <a href="{{ url_for('site.do_accounting') }}" class="btn btn-info">Do Accounting</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Dinner Balance</th>
+                <th>Shopping Balance</th>
+                <th>Beverage Balance</th>
+                <th>Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if report %}
+                {% for report in report.user_reports %}
+                    <tr>
+                        <td><a href="{{ url_for('site.profile', user_id=report.user_id) }}">{{ report.user.name }}</a>
+                        </td>
+                        <td>{{ report.dinner_balance|round(2) }} DKK</td>
+                        <td>{{ report.shopping_balance|round(2) }} DKK</td>
+                        <td>{{ report.beverage_balance|round(2) }} DKK</td>
+                        {% set total_balance = report.total_balance|round(2) %}
+                        <td class="{% if total_balance >= 0 %}green{% else %}text-danger{% endif %}">
+                            <b>{{ total_balance }} DKK</b></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+        <hr>
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Beverages Consumed</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for stat in beverage_stats %}
+                <tr>
+                    <td><a href="{{ url_for('site.profile', user_id=stat.user_id) }}">{{ stat.user_name }}</a></td>
+                    <td>{{ stat.consumed }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Dinners paid</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for dinner in dinners_paid %}
+                <tr>
+                    <td><a href="{{ url_for('site.profile', user_id=dinner.user_id) }}">{{ dinner.user_name }}</a></td>
+                    <td>{{ dinner.paid }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

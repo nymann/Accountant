@@ -33,8 +33,8 @@
                             </div>
                             <div class="card-body">
                                 {% set g = dinner.guests | sum(attribute='number_of_guests') %}
-                                <h6 class="card-subtitle text-muted">{{ dinner.date.strftime('%d/%m/%Y') }}, {{ dinner.payee.name|truncate(20, True) }}</h6>
-                                <p class="card-text">On {{ dinner.date.strftime('%A the %d. of %b') }}, we had
+                                <h6 class="card-subtitle text-muted">{{ dinner.datetime.strftime('%d/%m/%Y') }}, {{ dinner.payee.name|truncate(20, True) }}</h6>
+                                <p class="card-text">On {{ dinner.datetime.strftime('%A the %d. of %b') }}, we had
                                     <b>{{ dinner.dish_name }}</b> for dinner.</p>
                                 <p class="card-text">{{ g + dinner.participants|length }}
                                     attended ({{ g }} guests).</p>

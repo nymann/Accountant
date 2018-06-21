@@ -55,10 +55,12 @@ app.register_blueprint(shopping_list, url_prefix='/shopping_list')
 app.register_blueprint(api, url_prefix='/api')
 # app.register_blueprint(api, subdomain='api')
 
-# sentry = Sentry(
-#     app, logging=True, level=logging.ERROR,
-#     dsn='https://c4c6b980a7514f4ea7fbd9c83f7fecf8:831d751b5b1e469ea54ed9dd866b4003@sentry.io/1225921'
-# )
+sentry = Sentry(
+    app, logging=True, level=logging.ERROR,
+)
+
+if not app.debug:
+    sentry.dsn = 'https://c4c6b980a7514f4ea7fbd9c83f7fecf8:831d751b5b1e469ea54ed9dd866b4003@sentry.io/1225921'
 
 configure_uploads(app, avatars)
 login_manager = LoginManager(app)
@@ -68,14 +70,24 @@ login_manager.login_message_category = 'alert alert-danger'
 db.app = app
 
 
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('404_not_found.html', msg=error)
-
-
 @app.errorhandler(403)
 def forbidden(error):
-    return render_template('403_forbidden.html', msg=error)
+    return render_template('403.html', msg=error)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html', msg=error)
+
+
+@app.errorhandler(500)
+def bad_request(error):
+    return render_template('500.html', msg=error)
+
+
+@app.errorhandler(502)
+def bad_request(error):
+    return render_template('502.html', msg=error)
 
 
 @oauth_authorized.connect_via(twitter_blueprint)

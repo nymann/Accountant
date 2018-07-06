@@ -1,5 +1,7 @@
 from flask_restplus import Namespace, Resource, fields, reqparse
-from project.models import Beverage
+from project.models import Beverage, BeverageBatch, User, BeverageUser, db
+from sqlalchemy.exc import DBAPIError
+
 
 # Creating the Namspace with desciption
 api = Namespace('beverage_club', description='Beverage Club related operations')
@@ -21,7 +23,7 @@ class BeverageList(Resource):
 
 
 @api.route('/<int:beverage_id>')
-@api.response(404, 'Cat not found')
+@api.response(404, 'Beverage not found')
 @api.param('beverage_id', 'The beverage identifier')
 class BeverageOne(Resource):
     @api.doc('get_beverages')
@@ -30,3 +32,48 @@ class BeverageOne(Resource):
         '''Get one Beverage'''
 
         return Beverage.query.get(beverage_id)
+
+
+# Purchase a Beverage
+@api.route('/<int:user_id>-<int:beverage_id>')
+@api.response(404, 'Purchase cannot be made')
+@api.param('user_id', 'The user identifier')
+@api.param('beverage_id', 'The beverage identifier')
+class PurchaseBeverage(Resource):
+    @api.doc('purchase_beverage')
+    @api.marshal_with(beverage)
+    def post(self, user_id, beverage_id):
+        # Checks if the user is in our DB
+        results = User.query.get(user_id)
+        if results:
+
+            # Check if beverage exists
+            beverage = Beverage.query.get(beverage_id)
+            if beverage:
+
+                # Check if there are any left
+                beverage_batch = BeverageBatch.query.filter(
+                    BeverageBatch.quantity != 0
+                ).filter_by(
+                    beverage_id=beverage_id
+                ).first()
+                if beverage_batch:
+                    # Handling beverage transaction
+                    try:
+                        # decrementing quantity
+                        beverage_batch.quantity = beverage_batch.quantity - 1
+
+                        # assigning beer
+                        bought_beverage = BeverageUser(beverage_batch_id=beverage_batch.id, user_id=user_id)
+                        db.session.add(bought_beverage)
+                        db.session.commit()
+                        return beverage
+                    except DBAPIError as e:
+                        db.session.rollback()
+                        return "Error: A beverage could not be bought. Try again or contact an admin"
+                else:
+                    return "Error: It appears that there are no more beers left. Contact an admin."
+            else:
+                return "Error: Beverage does not exist."
+        else:
+            return "Error: User does not exist. Try again or contact an admin."

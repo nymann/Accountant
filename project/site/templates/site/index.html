@@ -33,7 +33,7 @@
                     <div class="card-body">
                         <h6 class="card-subtitle text-muted">
                             {% if event and current_user.active %}
-                                {{ event.date }}
+                                {{ event.date|datetime() }}
                             {% else %}
                                 Nothing scheduled
                             {% endif %}

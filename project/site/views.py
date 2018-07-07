@@ -45,8 +45,10 @@ def index():
         Shopping.date.desc()
     ).first()
 
+    report = AccountingReport.query.order_by(AccountingReport.date.desc()).first()
+
     return render_template('site/index.html', next_dinner=next_dinner, event=event, topics=topics,
-                           purchase=purchase)
+                           purchase=purchase, report=report)
 
 
 @site.route('/login')

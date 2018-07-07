@@ -51,7 +51,7 @@
                             <b>{{ total_balance }} DKK</b></td>
                         <td>
                             {% if current_user.admin %}
-                                <a href="{{ url_for('site.change_paid_status', report_id=user_report.id, user_id=user_report.user_id) }}">
+                                <a href="{{ url_for('site.change_paid_status', report_id=report.id, user_id=user_report.user_id) }}">
                                     {% if user_report.paid %}<i class="far fa-check-square"></i>{% else %}
                                         <i class="far fa-square"></i>{% endif %}
                                 </a>
@@ -61,7 +61,6 @@
                                 </a>
                             {% endif %}
                         </td>
-
                     </tr>
                 {% endfor %}
             {% endif %}

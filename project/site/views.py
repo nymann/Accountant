@@ -5,12 +5,12 @@ from flask_login import current_user, login_required
 from sqlalchemy import or_, func, desc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
+from sqlalchemy.sql.operators import is_
 
 from project.forms import UserForm
 from project.models import (
     User, Dinner, MeetingEvent, Shopping, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
-    BeverageTypes, UserReport, AccountingReport,
-    chefs)
+    BeverageTypes, UserReport, AccountingReport)
 from project.site import site
 from project.utils.helper import UserHelper
 from project.utils.uploadsets import avatars, process_user_avatar
@@ -222,3 +222,48 @@ def do_accounting():
         db.session.commit()
 
     return redirect(url_for('site.reports'))
+
+
+@site.route('/change_paid_status/<int:report_id>/<int:user_id>')
+def change_paid_status(report_id, user_id):
+    if not current_user.admin:
+        return abort(403)
+    report = UserReport.query.filter(
+        UserReport.accounting_report_id == report_id,
+        UserReport.user_id == user_id
+    ).one()
+    report.paid = not report.paid
+    db.session.commit()
+    return redirect(url_for('site.report', report_id=report_id))
+
+
+@site.route('/dinner_history/<int:report_id>/<int:user_id>')
+def dinner_history(report_id, user_id):
+    user = User.query.get(user_id)
+    report = AccountingReport.query.get(report_id)
+    dinners = Dinner.query.filter(Dinner.accounting_id == report_id)
+    user_helper = UserHelper(user)
+    return render_template(
+        'site/dinner_history.html', user=user, report=report, dinners=dinners, user_helper=user_helper
+    )
+
+
+@site.route('/shopping_history/<int:report_id>/<int:user_id>')
+def shopping_history(report_id, user_id):
+    user = User.query.get(user_id)
+    user_helper = UserHelper(user)
+    report = AccountingReport.query.get(report_id)
+    move_out_date = user.move_out_date if user.move_out_date else datetime.strptime('01-01-3000', '%d-%m-%Y')
+    move_in_date = user.move_in_date if user.move_in_date else datetime.strptime('01-01-2000', '%d-%m-%Y')
+    shopping_entries = Shopping.query.filter(
+        Shopping.accounting_id == report_id,
+        move_out_date >= Shopping.date,
+        move_in_date <= Shopping.date
+    ).order_by(
+        Shopping.date.asc()
+    ).all()
+
+    return render_template(
+        'site/shopping_history.html', user=user, report=report, shopping_entries=shopping_entries,
+        user_helper=user_helper
+    )

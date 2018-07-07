@@ -1,0 +1,93 @@
+{% extends 'site/base.html' %}
+
+{% block title %}Shopping History{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">{{ user.name }}</h1>
+    <p class="lead">Overview of shopping list entries for report {{ report.id }} created
+        on {{ report.date|datetime() }}</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-4">
+                <h5><i class="fas fa-shopping-cart"></i> Income</h5>
+                <h3 class="green">{{ user_helper.shopping_income(report.id)|round(2) }} DKK</h3>
+            </div>
+            <div class="col-lg-4">
+                <h5><i class="fas fa-shopping-cart"></i> Expenses</h5>
+                <h3 class="text-danger">{{ user_helper.shopping_expenses(report.id)|round(2) }} DKK</h3>
+            </div>
+            <div class="col-lg-4">
+                <h5><i class="fas fa-shopping-cart"></i> Balance</h5>
+                {% set balance = user_helper.shopping_balance(report.id)|round(2) %}
+                {% if balance >= 0 %}
+                    <h3 class="green">{{ balance }} DKK</h3>
+                {% else %}
+                    <h3 class="text-danger">{{ balance }} DKK</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-3">
+                    <h6>Items</h6>
+                </div>
+                <div class="col-lg-3">
+                    <h6>Effect on balance</h6>
+                </div>
+                <div class="col-lg-3">
+                    <h6>Date</h6>
+                </div>
+                <div class="col-lg-3">
+                    <h6>Payee</h6>
+                </div>
+            </div>
+            <hr>
+            {% for shopping_entry in shopping_entries %}
+                <div class="row clickable-row"
+                     data-href="{{ url_for("shopping_list.entry", shopping_id=shopping_entry.id) }}">
+                    <div class="col-lg-3">
+                        <p>
+                            {% for item in shopping_entry.items %}
+                                {{ item.name }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <div class="col-lg-3">
+                        {% set no_of_attendants = user_helper.active_members(shopping_entry) %}
+                        {% set eob = user_helper.shopping_entry_effect_on_balance(shopping_entry) %}
+                        {% if eob > 0 %}
+                            <p class="green">{{ eob|round(2) }} DKK</p>
+                        {% else %}
+                            <p class="text-danger">{{ eob|round(2) }} DKK</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-3">
+                        <p>{{ shopping_entry.date|datetime() }}</p>
+                    </div>
+                    <div class="col-lg-3">
+                        <p>{{ shopping_entry.payee.name }}</p>
+                    </div>
+                </div>
+                {% if not loop.last %}
+                    <hr>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+{% endblock %}

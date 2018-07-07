@@ -18,23 +18,23 @@ class UserHelper:
     def __init__(self, user):
         self.user = user
 
-    def shopping_income(self):
+    def shopping_income(self, accounting_id=None):
         shopping_income = db.session.query(
             func.sum(Items.price * Items.amount)
         ).join(Shopping).filter(
-            Shopping.accounting_id.is_(None),
+            Shopping.accounting_id.is_(accounting_id),
             Shopping.payee_id.is_(self.user.id),
         ).scalar()
         return shopping_income if shopping_income else 0.0
 
-    def shopping_expenses(self):
-        non_accounted_shopping_entries = Shopping.query.filter(
-            Shopping.accounting_id.is_(None)
+    def shopping_expenses(self, accounting_id=None):
+        shopping_entries = Shopping.query.filter(
+            Shopping.accounting_id.is_(accounting_id)
         ).all()
 
         shopping_expenses = 0.0
         if self.user.active:
-            for shopping in non_accounted_shopping_entries:
+            for shopping in shopping_entries:
                 active_members = db.session.query(
                     func.count(User.id)
                 ).filter(
@@ -48,27 +48,27 @@ class UserHelper:
                         shopping_expenses += (item.price * item.amount) / active_members
         return shopping_expenses
 
-    def shopping_balance(self):
-        return self.shopping_income() - self.shopping_expenses()
+    def shopping_balance(self, accounting_id=None):
+        return self.shopping_income(accounting_id) - self.shopping_expenses(accounting_id)
 
-    def dinner_income(self):
+    def dinner_income(self, accounting_id=None):
         dinner_income = db.session.query(
             func.sum(Dinner.price)
         ).filter(
             Dinner.payee_id.is_(self.user.id),
-            Dinner.accounting_id.is_(None),
+            Dinner.accounting_id.is_(accounting_id),
             Dinner.datetime < datetime.now()
         ).scalar()
         return dinner_income if dinner_income else 0.0
 
-    def dinner_expenses(self):
-        non_accounted_dinners = Dinner.query.filter(
-            Dinner.accounting_id.is_(None),
+    def dinner_expenses(self, accounting_id=None):
+        dinners = Dinner.query.filter(
+            Dinner.accounting_id.is_(accounting_id),
             Dinner.datetime < datetime.now()
         ).all()
         dinner_expenses = 0.0
         if self.user.active:
-            for dinner in non_accounted_dinners:
+            for dinner in dinners:
                 if self.user not in dinner.participants:
                     continue
                 # How many participated?
@@ -83,42 +83,65 @@ class UserHelper:
                         dinner_expenses += guest.number_of_guests * dinner.price / number_of_participants
         return dinner_expenses
 
-    def dinner_balance(self):
-        return self.dinner_income() - self.dinner_expenses()
+    def dinner_balance(self, accounting_id=None):
+        return self.dinner_income(accounting_id) - self.dinner_expenses(accounting_id)
 
-    def beverage_income(self):
+    def beverage_income(self, accounting_id=None):
         beverage_income = db.session.query(
             func.sum(BeverageBatch.price_per_can)
         ).join(BeverageUser).filter(
             BeverageBatch.payee_id == self.user.id,
-            BeverageUser.accounting_id.is_(None)
+            BeverageUser.accounting_id.is_(accounting_id)
         ).scalar()
         return beverage_income if beverage_income else 0.0
 
-    def beverage_expenses(self):
+    def beverage_expenses(self, accounting_id=None):
         beverage_expenses = db.session.query(
             func.sum(BeverageBatch.price_per_can)
         ).join(
             BeverageUser
         ).filter(
             BeverageUser.user_id == self.user.id,
-            BeverageUser.accounting_id.is_(None)
+            BeverageUser.accounting_id.is_(accounting_id)
         ).scalar()
         return beverage_expenses if beverage_expenses else 0.0
 
-    def beverage_balance(self):
-        return self.beverage_income() - self.beverage_expenses()
+    def beverage_balance(self, accounting_id=None):
+        return self.beverage_income(accounting_id) - self.beverage_expenses(accounting_id)
 
-    def total_expenses(self):
-        return self.shopping_expenses() + self.dinner_expenses() + self.beverage_expenses()
+    def total_expenses(self, accounting_id=None):
+        return self.shopping_expenses(accounting_id) + self.dinner_expenses(accounting_id) + self.beverage_expenses(
+            accounting_id)
 
-    def total_income(self):
-        return self.shopping_income() + self.dinner_income() + self.beverage_income()
+    def total_income(self, accounting_id=None):
+        return self.shopping_income(accounting_id) + self.dinner_income(accounting_id) + self.beverage_income(
+            accounting_id)
 
-    def total_balance(self):
-        return self.total_income() - self.total_expenses()
+    def total_balance(self, accounting_id=None):
+        return self.total_income(accounting_id) - self.total_expenses(accounting_id)
 
-    def __str__(self):
+    @staticmethod
+    def active_members(shopping):
+        active_members = db.session.query(
+            func.count(User.id)
+        ).filter(
+            User.active,
+            or_(User.move_out_date.is_(None), User.move_out_date >= shopping.date),
+            or_(User.move_in_date.is_(None), User.move_in_date <= shopping.date)
+        ).scalar()
+        return active_members
+
+    def shopping_entry_effect_on_balance(self, shopping):
+        active_members = self.active_members(shopping)
+        shopping_entry_price_total = 0
+        for item in shopping.items:
+            shopping_entry_price_total += item.price * item.amount
+        if shopping.payee_id == self.user.id:
+            return shopping_entry_price_total - (shopping_entry_price_total / active_members)
+        else:
+            return -(shopping_entry_price_total / active_members)
+
+    def __str__(self, accounting_id=None):
         return "_________________________\n" \
                "%s:\n" % self.user.name + \
                "total income: {0}\n" \
@@ -129,6 +152,14 @@ class UserHelper:
                "\tdinner {5} DKK\n" \
                "\tshopping {6} DKK\n" \
                "\tbeverage {7} DKK\n" \
-               "TOTAL BALANCE: {8} DKK".format(self.total_income(), self.dinner_income(), self.shopping_income(),
-                                               self.beverage_income(), self.total_expenses(), self.dinner_expenses(),
-                                               self.shopping_expenses(), self.beverage_expenses(), self.total_balance())
+               "TOTAL BALANCE: {8} DKK".format(
+                   self.total_income(accounting_id),
+                   self.dinner_income(accounting_id),
+                   self.shopping_income(accounting_id),
+                   self.beverage_income(accounting_id),
+                   self.total_expenses(accounting_id),
+                   self.dinner_expenses(accounting_id),
+                   self.shopping_expenses(accounting_id),
+                   self.beverage_expenses(accounting_id),
+                   self.total_balance(accounting_id)
+               )

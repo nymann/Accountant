@@ -159,7 +159,7 @@
                         <table class="table" id="dinnerTable">
                             <tbody>
                             {% for dinner in user.dinners %}
-                                {% if not dinner.accounted %}
+                                {% if dinner.accounting_id == None %}
                                     <tr class="clickable-row"
                                         data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
                                         <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y") }}</td>

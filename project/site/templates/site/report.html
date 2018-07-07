@@ -3,11 +3,9 @@
 {% block title %}Reports{% endblock %}
 
 {% block jumbocontent %}
-    <h1 class="display-4">Reports</h1>
-    <p class="lead">See the latest financial report for KK24</p>
-    {% if current_user.admin %}
-        <a href="{{ url_for('site.do_accounting') }}" class="btn btn-info">Do Accounting</a>
-    {% endif %}
+    <h1 class="display-4">Report filed on {{ report.date|datetime() }}</h1>
+    <p class="lead">If you wanna check what you paid for, then click on the Dinner Balance - or Shopping Balance amount
+        next to your name.</p>
 {% endblock %}
 
 {% block content %}
@@ -20,26 +18,57 @@
                 <th>Shopping Balance</th>
                 <th>Beverage Balance</th>
                 <th>Total</th>
+                <th>Paid?</th>
             </tr>
             </thead>
             <tbody>
             {% if report %}
-                {% for report in report.user_reports %}
+                {% for user_report in report.user_reports %}
                     <tr>
-                        <td><a href="{{ url_for('site.profile', user_id=report.user_id) }}">{{ report.user.name }}</a>
+                        <td>
+                            <a href="{{ url_for('site.profile', user_id=user_report.user_id) }}" class="text-muted">
+                                {% if current_user.name == user_report.user.name %}
+                                    <strong>{{ user_report.user.name }}</strong>
+                                {% else %}
+                                    <p>{{ user_report.user.name }}</p>
+                                {% endif %}
+                            </a>
                         </td>
-                        <td>{{ report.dinner_balance|round(2) }} DKK</td>
-                        <td>{{ report.shopping_balance|round(2) }} DKK</td>
-                        <td>{{ report.beverage_balance|round(2) }} DKK</td>
-                        {% set total_balance = report.total_balance|round(2) %}
+                        <td>
+                            <a href="{{ url_for('site.dinner_history', report_id=report.id, user_id=user_report.user_id) }}"
+                               class="text-muted">
+                                {{ user_report.dinner_balance|round(2) }} DKK</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('site.shopping_history', report_id=report.id, user_id=user_report.user_id) }}"
+                               class="text-muted">
+                                {{ user_report.shopping_balance|round(2) }} DKK
+                            </a>
+                        </td>
+                        <td><p class="text-muted">{{ user_report.beverage_balance|round(2) }} DKK</p></td>
+                        {% set total_balance = user_report.total_balance|round(2) %}
                         <td class="{% if total_balance >= 0 %}green{% else %}text-danger{% endif %}">
                             <b>{{ total_balance }} DKK</b></td>
+                        <td>
+                            {% if current_user.admin %}
+                                <a href="{{ url_for('site.change_paid_status', report_id=user_report.id, user_id=user_report.user_id) }}">
+                                    {% if user_report.paid %}<i class="far fa-check-square"></i>{% else %}
+                                        <i class="far fa-square"></i>{% endif %}
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('site.change_paid_status', report_id=user_report.id, user_id=user_report.user_id) }}">
+                                    {% if user_report.paid %}Yes{% else %}No{% endif %}
+                                </a>
+                            {% endif %}
+                        </td>
+
                     </tr>
                 {% endfor %}
             {% endif %}
             </tbody>
         </table>
         <hr>
+        <h3>Leaderboard</h3>
         <table class="table table-hover table-bordered">
             <thead>
             <tr>
@@ -50,7 +79,13 @@
             <tbody>
             {% for stat in beverage_stats %}
                 <tr>
-                    <td><a href="{{ url_for('site.profile', user_id=stat.user_id) }}">{{ stat.user_name }}</a></td>
+                    <td>
+                        <a href="{{ url_for('site.profile', user_id=stat.user_id) }}">
+                            {% if loop.first %}
+                                <i class="fas fa-trophy"></i>
+                            {% endif %}{{ stat.user_name }}
+                        </a>
+                    </td>
                     <td>{{ stat.consumed }}</td>
                 </tr>
             {% endfor %}
@@ -67,7 +102,13 @@
             <tbody>
             {% for dinner in dinners_paid %}
                 <tr>
-                    <td><a href="{{ url_for('site.profile', user_id=dinner.user_id) }}">{{ dinner.user_name }}</a></td>
+                    <td>
+                        <a href="{{ url_for('site.profile', user_id=dinner.user_id) }}">
+                            {% if loop.first %}
+                                <i class="fas fa-trophy"></i>
+                            {% endif %}{{ dinner.user_name }}
+                        </a>
+                    </td>
                     <td>{{ dinner.paid }}</td>
                 </tr>
             {% endfor %}

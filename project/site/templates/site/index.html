@@ -16,7 +16,7 @@
                         <h5 class="card-title">Latest accountant report</h5>
                     </div>
                     <div class="card-body">
-                        Some cools stuff will appear here
+                        <a href="{{ url_for('site.report', report_id=report.id) }}">{{ report.date|datetime() }}</a>
                     </div>
                 </div>
             </div>
@@ -33,7 +33,7 @@
                     <div class="card-body">
                         <h6 class="card-subtitle text-muted">
                             {% if event and current_user.active %}
-                                {{ event.date }}
+                                {{ event.date|datetime() }}
                             {% else %}
                                 Nothing scheduled
                             {% endif %}

@@ -1,0 +1,89 @@
+{% extends 'site/base.html' %}
+
+{% block title %}Dinner History{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">{{ user.name }}</h1>
+    <p class="lead">Overview of dinners participated in for the report created on {{ report.date|datetime() }}</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-4">
+                <h5><i class="fas fa-utensils"></i> Income</h5>
+                <h3 class="green">{{ user_helper.dinner_income(report.id)|round(2) }} DKK</h3>
+            </div>
+            <div class="col-lg-4">
+                <h5><i class="fas fa-utensils"></i> Expenses</h5>
+                <h3 class="text-danger">{{ user_helper.dinner_expenses(report.id)|round(2) }} DKK</h3>
+            </div>
+            <div class="col-lg-4">
+                <h5><i class="fas fa-utensils"></i> Balance</h5>
+                {% set balance = user_helper.dinner_balance(report.id)|round(2) %}
+                {% if balance >= 0 %}
+                    <h3 class="green">{{ balance }} DKK</h3>
+                {% else %}
+                    <h3 class="text-danger">{{ balance }} DKK</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-3">
+                    <h6>Dish Name</h6>
+                </div>
+                <div class="col-lg-3">
+                    <h6>Effect on balance</h6>
+                </div>
+                <div class="col-lg-3">
+                    <h6>Date</h6>
+                </div>
+                <div class="col-lg-3">
+                    <h6>Payee</h6>
+                </div>
+            </div>
+            <hr>
+            {% for dinner in dinners %}
+                {% if user in dinner.participants %}
+                    <div class="row clickable-row" data-href="{{ url_for("dinner_club.meal", dinner_id=dinner.id) }}">
+                        <div class="col-lg-3">
+                            <p>{{ dinner.dish_name }}</p>
+                        </div>
+                        <div class="col-lg-3">
+                            {% set no_of_attendants = dinner.guests|length + dinner.participants|length %}
+                            {% set ppp =  dinner.price / no_of_attendants %}
+                            {% if dinner.payee_id == user.id %}
+                                <p class="green">+ {{ (dinner.price - ppp)|round(2) }} DKK</p>
+                            {% else %}
+                                <p class="text-danger">- {{ ppp|round(2) }} DKK</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-3">
+                            <p>{{ dinner.datetime|datetime() }}</p>
+                        </div>
+                        <div class="col-lg-3">
+                            <p>{{ dinner.payee.name }}</p>
+                        </div>
+                    </div>
+                    {% if not loop.last %}
+                        <hr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+{% endblock %}

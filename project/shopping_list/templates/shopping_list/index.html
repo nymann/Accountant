@@ -48,7 +48,9 @@
             <div class="col-lg-9">
                 <div class="card">
                     <div class="card-header bg-white">
-                        <h5 class="card-title">Bought Items</h5>
+                        
+                        <h5 style="float: left" class="card-title">Bought Items</h5>
+                        <h3 style="float: right"><a href="{{ url_for('shopping_list.new') }}" class="btn btn-info">Add Items</a></h3>
                     </div>
                     <div class="card-body">
                         {% if shopping_list_entries and shopping_list_entries|length > 0 %}

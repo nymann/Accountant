@@ -17,7 +17,7 @@ def index():
 
     shopping_list_entries = Shopping.query.filter(
         Shopping.accounting_id.is_(None)
-    ).order_by(Shopping.date).all()
+    ).order_by(Shopping.date.desc()).all()
 
     needed_items = NeededItems.query.filter(
         NeededItems.item_bought.is_(False)

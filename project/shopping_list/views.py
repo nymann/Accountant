@@ -9,10 +9,13 @@ from project.forms import ShoppingForm, ItemForm, NeededItemForm
 from project.models import Shopping, User, db, Items, NeededItems
 from project.shopping_list import shopping_list
 
+# from flask.ext.mobility.decorators import mobile_template
+from flask_mobility.decorators import mobile_template
 
 @shopping_list.route('/')
 @login_required
-def index():
+@mobile_template('shopping_list/{mobile/}index.html')
+def index(template):
     form = NeededItemForm()
 
     shopping_list_entries = Shopping.query.filter(
@@ -23,7 +26,7 @@ def index():
         NeededItems.item_bought.is_(False)
     ).all()
 
-    return render_template('shopping_list/index.html', shopping_list_entries=shopping_list_entries,
+    return render_template(template, shopping_list_entries=shopping_list_entries,
                            needed_items=needed_items, form=form)
 
 

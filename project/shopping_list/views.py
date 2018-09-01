@@ -8,6 +8,7 @@ import project
 from project.forms import ShoppingForm, ItemForm, NeededItemForm
 from project.models import Shopping, User, db, Items, NeededItems
 from project.shopping_list import shopping_list
+from project.utils.helper import *
 
 # from flask.ext.mobility.decorators import mobile_template
 from flask_mobility.decorators import mobile_template
@@ -34,7 +35,7 @@ def index(template):
 @login_required
 def entry(shopping_id):
     entry = Shopping.query.get_or_404(int(shopping_id))
-    return render_template('shopping_list/shopping_entry.html', entry=entry)
+    return render_template('shopping_list/shopping_entry.html', entry=entry, current_user=current_user)
 
 
 @shopping_list.route('/new', methods=['GET', 'POST'])
@@ -69,6 +70,8 @@ def new():
 def edit(shopping_id):
     form = ShoppingForm()
     shopping = Shopping.query.get_or_404(int(shopping_id))
+    if shopping.payee_id is not current_user.id and not is_admin():
+        return abort(403)
     if form.validate_on_submit():
         try:
             shopping.payee_id = form.payee.data if (
@@ -89,7 +92,7 @@ def edit(shopping_id):
 @login_required
 def delete(shopping_id):
     shopping = Shopping.query.get_or_404(int(shopping_id))
-    if current_user is not shopping.payee and not current_user.admin:
+    if current_user is not shopping.payee and not is_admin():
         return abort(403)
 
     try:

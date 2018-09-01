@@ -11,11 +11,34 @@
     <div class="container">
         {% if active_residents %}
             <h5>Active residents</h5>
-            <ul class="list-unstyled">
+            <div class="row">
                 {% for user in active_residents %}
-                    <li><a href="{{ url_for('site.profile', user_id=user.id) }}">{{ user.name }}</a></li>
+                    <div class="col-lg-6 mb-2">
+                        <div class="card h-100">
+                            <div class="row no-gutters">
+                                <div class="col-auto">
+                                    {% if user.picture_url %}
+                                        <img src="{{ url_for('static', filename='avatars/' + user.picture_url) }}"
+                                             alt="Profile picture for {{ user.name }}" class="img-thumbnail">
+                                    {% else %}
+                                        <img src="http://via.placeholder.com/150x150" class="img-thumbnail">
+                                    {% endif %}
+                                </div>
+                                <div class="col">
+                                    <div class="card-block px-4">
+                                        <h5 class="card-title"><a
+                                                href="{{ url_for('site.profile', user_id=user.id) }}">{{ user.name }}</a>
+                                        </h5>
+                                        <p class="card-text">Lives in room no. {{ user.room_number }}</p>
+                                        <p class="card-text">{{ user.move_in_date.strftime("%d. of %B %Y") }}
+                                            <i class="fas fa-home ml-lg-2 mt-lg-2"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
             <h5>There's no active residents</h5>
             <p>Do you think this is a mistake? </p>
@@ -25,10 +48,33 @@
     <hr/>
     <div class="container">
         <h5>In-active residents</h5>
-        <ul class="list-unstyled">
+        <div class="row">
             {% for user in inactive_residents %}
-                <li><a href="{{ url_for('site.profile', user_id=user.id) }}">{{ user.name }}</a></li>
+                <div class="col-lg-6 mb-2">
+                    <div class="card">
+                        <div class="row no-gutters">
+                            <div class="col-auto">
+                                {% if user.picture_url %}
+                                    <img src="{{ url_for('static', filename='avatars/' + user.picture_url) }}"
+                                         alt="Profile picture for {{ user.name }}" class="img-thumbnail">
+                                {% else %}
+                                    <img src="http://via.placeholder.com/150x150" class="img-thumbnail">
+                                {% endif %}
+                            </div>
+                            <div class="col">
+                                <div class="card-block px-4">
+                                    <h5 class="card-title"><a
+                                            href="{{ url_for('site.profile', user_id=user.id) }}">{{ user.name }}</a>
+                                    </h5>
+                                    <p class="card-text">Lives in room no. {{ user.room_number }}</p>
+                                    <p class="card-text">{{ user.move_in_date.strftime("%d. of %B %Y") }}
+                                        <i class="fas fa-home ml-lg-2 mt-lg-2"></i></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 {% endblock %}

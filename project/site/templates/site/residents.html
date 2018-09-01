@@ -18,7 +18,7 @@
                             <div class="row no-gutters">
                                 <div class="col-auto">
                                     {% if user.picture_url %}
-                                        <img src="{{ url_for('static', filename='avatars/' + user.picture_url) }}"
+                                        <img class="card-img-custom" src="{{ url_for('static', filename='avatars/' + user.picture_url) }}"
                                              alt="Profile picture for {{ user.name }}" class="img-thumbnail">
                                     {% else %}
                                         <img src="http://via.placeholder.com/150x150" class="img-thumbnail">
@@ -55,7 +55,7 @@
                         <div class="row no-gutters">
                             <div class="col-auto">
                                 {% if user.picture_url %}
-                                    <img src="{{ url_for('static', filename='avatars/' + user.picture_url) }}"
+                                    <img class="card-img-custom" src="{{ url_for('static', filename='avatars/' + user.picture_url) }}"
                                          alt="Profile picture for {{ user.name }}" class="img-thumbnail">
                                 {% else %}
                                     <img src="http://via.placeholder.com/150x150" class="img-thumbnail">

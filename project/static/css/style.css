@@ -47,28 +47,34 @@ body, html {
     width: 45px;
 }
 
-.append-text{
+.append-text {
     width: 15ex;
 }
-
 
 .input-group {
     width: 100%;
 }
 
-.sticky-top { top: 0.5em; }
+.sticky-top {
+    top: 0.5em;
+}
 
 /*.popover-select-wrapper{*/
-    /*width: 100%;*/
+/*width: 100%;*/
 /*}*/
 
-textarea.full_width{
-  display: block;
-  box-sizing: padding-box;
-  overflow: hidden;
+textarea.full_width {
+    display: block;
+    box-sizing: padding-box;
+    overflow: hidden;
 
-  width: 100%;
-  margin: 10px auto;
-  border-radius: 6px;
-  border: #17a2b8 solid 1px;
+    width: 100%;
+    margin: 10px auto;
+    border-radius: 6px;
+    border: #17a2b8 solid 1px;
+}
+
+.card-img-custom {
+    height: 150px;
+    width: 150px;
 }

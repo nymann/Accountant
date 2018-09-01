@@ -8,7 +8,7 @@
     <h1 class="display-4">{{ entry.payee.name }}, {{ entry.date | datetime() }}</h1>
     <p class="lead">These are the items bought by {{ entry.payee.name }} on
         {{ entry.date.strftime("%A the %d. of %B, %Y" ) }}</p>
-    {% if current_user == dinner.payee or current_user.admin %}
+    {% if current_user == shopping.payee or current_user.admin %}
         <a href="{{ url_for('shopping_list.edit', shopping_id=entry.id ) }}" class="btn btn-info">Edit</a>
     {% endif %}
     <a href="{{ url_for('shopping_list.delete', shopping_id=entry.id) }}" class="btn btn-danger">Delete</a>

@@ -35,7 +35,7 @@ def index(template):
 @login_required
 def entry(shopping_id):
     entry = Shopping.query.get_or_404(int(shopping_id))
-    return render_template('shopping_list/shopping_entry.html', entry=entry, current_user=current_user)
+    return render_template('shopping_list/shopping_entry.html', entry=entry, current_user=current_user, shopping=Shopping)
 
 
 @shopping_list.route('/new', methods=['GET', 'POST'])

@@ -17,3 +17,4 @@ raven[flask]
 flask-restplus
 flask_migrate
 flask_script
+flask-mobility

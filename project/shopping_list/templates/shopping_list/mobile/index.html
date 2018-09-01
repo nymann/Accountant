@@ -54,66 +54,11 @@
                     </div>
                     <div class="card-body">
                         {% if shopping_list_entries and shopping_list_entries|length > 0 %}
-                            <div class="col-lg-12"> <!-- or w/e size you want -->
-                                <div class="row">
-                                    <div class="col-lg-2">
-                                        <h6>Date</h6>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <h6>Payee</h6>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <h6>Item</h6>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <h6>Amount</h6>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <h6>Price</h6>
-                                    </div>
-                                </div>
-                                {% for shopping_list_entry in shopping_list_entries %}
-                                    {% for item in shopping_list_entry.items %}
-
-                                        <div class="row">
-                                            <div class="col-lg-2">
-                                                <p>
-                                                    {% if loop.first %}
-                                                        {{ shopping_list_entry.date | datetime() }}
-                                                    {% endif %}
-                                                </p>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <p>
-                                                    {% if loop.first %}
-                                                        {{ shopping_list_entry.payee.name }}
-                                                    {% endif %}
-                                                </p>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <p>{{ item.name }}</p>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <p>{{ item.amount }}</p>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <p>{{ item.price }}</p>
-                                            </div>
-
-                                        </div>
-                                    {% endfor %}
-                                {% endfor %}
-                            </div>
-
-
                             <table class="table">
                                 <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Payee</th>
                                     <th>Item</th>
-                                    <th>Amount</th>
-                                    <th>Price</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -124,21 +69,13 @@
                                                 data-href="{{ url_for('shopping_list.entry', shopping_id=shopping_list_entry.id) }}">
                                                 <td>{% if loop.first %}
                                                     {{ shopping_list_entry.date | datetime() }}{% endif %}</td>
-                                                <td>{% if loop.first %}
-                                                    {{ shopping_list_entry.payee.name }}{% endif %}</td>
                                                 <td>{{ item.name }}</td>
-                                                <td>{{ item.amount }}</td>
-                                                <td>{{ item.price * item.amount }} DKK.</td>
                                             </tr>
                                         {% else %}
                                             <tr>
                                                 <td>{% if loop.first %}
                                                     {{ shopping_list_entry.date | datetime() }}{% endif %}</td>
-                                                <td>{% if loop.first %}
-                                                    {{ shopping_list_entry.payee.name }}{% endif %}</td>
                                                 <td>{{ item.name }}</td>
-                                                <td>{{ item.amount }}</td>
-                                                <td>{{ item.price }} DKK.</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}

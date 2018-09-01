@@ -23,9 +23,13 @@ from project.apis import api_blueprint as api
 from project.utils.login import general_logged_in, general_error
 from project.utils.uploadsets import avatars
 
+# Flask Mobility
+from flask_mobility import Mobility
+
 import logging
 
 app = Flask(__name__)
+Mobility(app)
 app.config.from_pyfile('../config.cfg', silent=False)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 

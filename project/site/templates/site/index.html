@@ -55,11 +55,11 @@
                         {% if next_dinner %}
                             {% set g = next_dinner.guests | sum(attribute='number_of_guests') %}
                             <h6 class="card-subtitle text-muted">
-                                {{ next_Dinner.datetime.strftime('%d/%m/%Y') }},
+                                {{ next_dinner.datetime.strftime('%d/%m/%Y') }},
                                 {{ next_dinner.payee.name|truncate(20, True) }}
                             </h6>
                             <p class="card-text">
-                                On {{ next_Dinner.datetime.strftime('%A the %d. of %b') }}, we will have
+                                On {{ next_dinner.datetime.strftime('%A the %d. of %b') }}, we will have
                                 <b>{{ next_dinner.dish_name }}</b> for dinner.
                             </p>
                             <p class="card-text">

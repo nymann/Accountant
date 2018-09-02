@@ -39,9 +39,7 @@
                                                 <td class="text-muted">{{ dinner.dish_name }}</td>
                                             {% endif %}
                                             <td class="text-muted text-right">
-                                                {% if not dinners_future.can_participate %}
-                                                    <p></p>
-                                                {% elif current_user in dinner.participants %}
+                                                {% if current_user in dinner.participants %}
                                                     <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
                                                             dinner_id=dinner.id) }}"
                                                        class="btn btn-danger" name="dinner_id" id="dinner_id">

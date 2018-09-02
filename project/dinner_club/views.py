@@ -104,20 +104,20 @@ def index():
 
     time_limit = datetime.now() + relativedelta(hours=36)
     # Future dinners
-    dinners_future = db.session.query(
-        Dinner.id.label('id'),
-        Dinner.datetime.label('datetime'),
-        User.name.label('payee'),
-        Dinner.dish_name.label('dish_name'),
-        label("can_participate", Dinner.datetime >= time_limit)
-    ).join(
-        User
-    ).filter(
-        Dinner.accounting_id.is_(None),
-        Dinner.datetime >= curDate
-    ).order_by(
-        Dinner.datetime.desc()
-    ).all()
+    # dinners_future = db.session.query(
+    #     Dinner.id.label('id'),
+    #     Dinner.datetime.label('datetime'),
+    #     User.name.label('payee'),
+    #     Dinner.dish_name.label('dish_name'),
+    #     label("can_participate", Dinner.datetime >= time_limit)
+    # ).join(
+    #     User
+    # ).filter(
+    #     Dinner.accounting_id.is_(None),
+    #     Dinner.datetime >= curDate
+    # ).order_by(
+    #     Dinner.datetime.desc()
+    # ).all()
 
     # Past dinners
     dinners_past = Dinner.query.filter(
@@ -133,6 +133,21 @@ def index():
     # ).order_by(
     #     Dinner.datetime.desc()
     # ).all()
+
+    dinners_future = Dinner.query.add_columns(
+        # label("can_participate", 'Test')
+    ).filter(
+        Dinner.accounting_id.is_(None),
+        Dinner.datetime >= curDate
+    ).order_by(
+        Dinner.datetime.desc()
+    ).all()
+
+    # for dinner_future in dinners_future:
+    #     if dinner_future.datetime > time_limit:
+    #         dinner_future.update({'participate': False})
+    #     else:
+    #         dinner_future.update({'participate': True})
 
     return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_past=dinners_past,
                            latest_dinner=latest_dinner, form=form)

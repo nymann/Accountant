@@ -197,7 +197,7 @@ def edit(dinner_id):
 
         if form.guests.data is None or str(form.guests.data).isspace() or str(form.guests.data) is "":
             db.session.commit()
-            flash("It all went according to plan :-))))))", "alert alert-info")
+            flash("Dinner updated successfully", "alert alert-info")
             return redirect(url_for("dinner_club.meal", dinner_id=dinner.id))
         with db.session.no_autoflush:
             for key in g:

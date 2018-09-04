@@ -39,21 +39,27 @@
                                                 <td class="text-muted">{{ dinner.dish_name }}</td>
                                             {% endif %}
                                             <td class="text-muted text-right">
-                                                {% if not dinner.can_participate %}
-                                                    <button class="btn btn-secondary">Contact chef</button>
-                                                {% elif current_user in dinner.participants %}
-                                                    <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
+                                                {# This monster of statements is here because of issue 91 #}
+                                                {% for dinner_p in dinners_future_p %}
+                                                    {% if dinner.id == dinner_p.id %}
+                                                        {% if not dinner.can_participate %}
+                                                            <button class="btn btn-secondary">Contact chef
+                                                            </button>
+                                                        {% elif current_user in dinner_p.participants %}
+                                                            <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
                                                             dinner_id=dinner.id) }}"
-                                                       class="btn btn-danger" name="dinner_id" id="dinner_id">
-                                                        Can't Participate
-                                                    </a>
-                                                {% else %}
-                                                    <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
+                                                               class="btn btn-danger" name="dinner_id" id="dinner_id">
+                                                                Can't Participate
+                                                            </a>
+                                                        {% else %}
+                                                            <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
                                                             dinner_id=dinner.id) }}"
-                                                       class="btn btn-info" name="dinner_id" id="dinner_id">
-                                                        Participate
-                                                    </a>
-                                                {% endif %}
+                                                               class="btn btn-info" name="dinner_id" id="dinner_id">
+                                                                Participate
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
                                             </td>
                                         </tr>
                                     {% else %}

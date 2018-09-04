@@ -127,12 +127,12 @@ def index():
         Dinner.datetime.desc()
     ).all()
 
-    # dinners_future = Dinner.query.filter(
-    #     Dinner.accounting_id.is_(None),
-    #     Dinner.datetime >= curDate
-    # ).order_by(
-    #     Dinner.datetime.desc()
-    # ).all()
+    dinners_future_p = Dinner.query.filter(
+        Dinner.accounting_id.is_(None),
+        Dinner.datetime >= curDate
+    ).order_by(
+        Dinner.datetime.desc()
+    ).all()
 
     # dinners_future = Dinner.query.add_columns(
     #     # label("can_participate", 'Test')
@@ -143,7 +143,7 @@ def index():
     #     Dinner.datetime.desc()
     # ).all()
 
-    return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_past=dinners_past,
+    return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
                            latest_dinner=latest_dinner, form=form)
 
 

@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from datetime import time
 from flask import render_template, request, abort
 from flask_login import login_required
+from sqlalchemy import desc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
 
@@ -99,7 +100,7 @@ def index():
         Dinner.accounting_id.is_(None),
         Dinner.datetime < curDate
     ).order_by(
-        Dinner.datetime.desc()
+        desc(Dinner.datetime)
     ).first()
 
     time_limit = datetime.now() + relativedelta(hours=36)
@@ -116,7 +117,7 @@ def index():
         Dinner.accounting_id.is_(None),
         Dinner.datetime >= curDate
     ).order_by(
-        Dinner.datetime.desc()
+        desc(Dinner.datetime)
     ).all()
 
     # Past dinners
@@ -124,14 +125,14 @@ def index():
         Dinner.accounting_id.is_(None),
         Dinner.datetime < curDate
     ).order_by(
-        Dinner.datetime.desc()
+        desc(Dinner.datetime)
     ).all()
 
     dinners_future_p = Dinner.query.filter(
         Dinner.accounting_id.is_(None),
         Dinner.datetime >= curDate
     ).order_by(
-        Dinner.datetime.desc()
+        desc(Dinner.datetime)
     ).all()
 
     # dinners_future = Dinner.query.add_columns(
@@ -140,7 +141,7 @@ def index():
     #     Dinner.accounting_id.is_(None),
     #     Dinner.datetime >= curDate
     # ).order_by(
-    #     Dinner.datetime.desc()
+    #     desc(Dinner.datetime)
     # ).all()
 
     return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,

@@ -57,19 +57,19 @@
                             <div class="col-lg-12"> <!-- or w/e size you want -->
                                 <div class="row">
                                     <div class="col-lg-2">
-                                        <h6>Date</h6>
+                                        <h5>Date</h5>
                                     </div>
                                     <div class="col-lg-3">
-                                        <h6>Payee</h6>
+                                        <h5>Payee</h5>
                                     </div>
                                     <div class="col-lg-3">
-                                        <h6>Item</h6>
+                                        <h5>Item</h5>
                                     </div>
                                     <div class="col-lg-2">
-                                        <h6>Amount</h6>
+                                        <h5>Amount</h5>
                                     </div>
                                     <div class="col-lg-2">
-                                        <h6>Price</h6>
+                                        <h5>Price</h5>
                                     </div>
                                 </div>
                                 {% for shopping_list_entry in shopping_list_entries %}
@@ -104,47 +104,6 @@
                                     {% endfor %}
                                 {% endfor %}
                             </div>
-
-
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Payee</th>
-                                    <th>Item</th>
-                                    <th>Amount</th>
-                                    <th>Price</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for shopping_list_entry in shopping_list_entries %}
-                                    {% for item in shopping_list_entry.items %}
-                                        {% if current_user.active %}
-                                            <tr class="clickable-row"
-                                                data-href="{{ url_for('shopping_list.entry', shopping_id=shopping_list_entry.id) }}">
-                                                <td>{% if loop.first %}
-                                                    {{ shopping_list_entry.date | datetime() }}{% endif %}</td>
-                                                <td>{% if loop.first %}
-                                                    {{ shopping_list_entry.payee.name }}{% endif %}</td>
-                                                <td>{{ item.name }}</td>
-                                                <td>{{ item.amount }}</td>
-                                                <td>{{ item.price * item.amount }} DKK.</td>
-                                            </tr>
-                                        {% else %}
-                                            <tr>
-                                                <td>{% if loop.first %}
-                                                    {{ shopping_list_entry.date | datetime() }}{% endif %}</td>
-                                                <td>{% if loop.first %}
-                                                    {{ shopping_list_entry.payee.name }}{% endif %}</td>
-                                                <td>{{ item.name }}</td>
-                                                <td>{{ item.amount }}</td>
-                                                <td>{{ item.price }} DKK.</td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endfor %}
-                                </tbody>
-                            </table>
                         {% else %}
                             <p class="card-text">No items bought yet.</p>
                         {% endif %}

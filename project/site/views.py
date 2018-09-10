@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import current_user, login_required
-from sqlalchemy import or_, func, desc
+from sqlalchemy import or_, func, desc, asc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
 from sqlalchemy.sql.operators import is_
@@ -23,14 +23,14 @@ def index():
     next_dinner = Dinner.query.filter(
         Dinner.datetime >= datetime.now()
     ).order_by(
-        Dinner.datetime.asc()
+        asc(Dinner.datetime)
     ).first()
 
     # next meeting
     event = MeetingEvent.query.filter(
         MeetingEvent.completed.is_(False)
     ).order_by(
-        MeetingEvent.id.desc()
+        desc(MeetingEvent.id)
     ).first()
 
     # topics
@@ -42,7 +42,7 @@ def index():
     purchase = Shopping.query.filter(
         Shopping.accounting_id.is_(None)
     ).order_by(
-        Shopping.date.desc()
+        desc(Shopping.date)
     ).first()
 
     report = AccountingReport.query.order_by(AccountingReport.date.desc()).first()

@@ -1,0 +1,165 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Dinner Club Meals, Overview
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">Dinner meals</h1>
+    <p class="lead">List of dinner meals that haven't been accounted yet.</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card bg-white">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title">Future dinners</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if dinners_future %}
+                            <table class="table" id="dinnerTable">
+                                <tbody>
+                                {% for dinner in dinners_future %}
+                                    {% set g = dinner.guests | sum(attribute='number_of_guests') %}
+                                    {% if current_user.active %}
+                                        <tr
+                                                {% if dinner.price == 0.0 %}
+                                                    class="clickable-row"
+                                                {% else %}
+                                                    class="clickable-row"
+                                                {% endif %}
+                                                    data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
+                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y (%a)") }}</td>
+                                            <td class="text-muted text-right">
+                                                {# This monster of statements is here because of issue 91 #}
+                                                {% for dinner_p in dinners_future_p %}
+                                                    {% if dinner.id == dinner_p.id %}
+                                                        {% if not dinner.can_participate %}
+                                                            <button class="btn btn-secondary">Contact chef
+                                                            </button>
+                                                        {% elif current_user in dinner_p.participants %}
+                                                            <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
+                                                            dinner_id=dinner.id) }}"
+                                                               class="btn btn-danger" name="dinner_id" id="dinner_id">
+                                                                Can't Participate
+                                                            </a>
+                                                        {% else %}
+                                                            <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
+                                                            dinner_id=dinner.id) }}"
+                                                               class="btn btn-info" name="dinner_id" id="dinner_id">
+                                                                Participate
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td class="text-muted">{{ Dinner.datetime.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p>There are no dinners registered yet.</p>
+                        {% endif %}
+                    </div>
+                    {% if current_user.active and current_user.subscribed_to_dinner_club %}
+                        <div class="card-footer">
+                            <div class="text-right">
+                                <a href="{{ url_for('dinner_club.new') }}" class="btn btn-info">Add Meal</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card bg-white">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title">Most recent meal</h5>
+                    </div>
+                    {% if latest_dinner %}
+                        <div class="card-body">
+                            {% set g = latest_dinner.guests | sum(attribute='number_of_guests') %}
+                            <h6 class="card-subtitle text-muted">{{ latest_dinner.datetime.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
+                            <p class="card-text">On {{ latest_dinner.datetime.strftime('%A the %d. of %b') }}, we had
+                                <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
+                            <p class="card-text">{{ g + latest_dinner.participants|length }}
+                                attended ({{ g }} guests).</p>
+
+                            <p class="card-text">{{ latest_dinner.price }} kr.
+                                ({{ (latest_dinner.price/(g + latest_dinner.participants|length))|round(2) }}
+                                kr. pr. person)</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ url_for('dinner_club.meal', dinner_id=latest_dinner.id) }}"
+                               class="btn btn-info">View</a>
+                        </div>
+                    {% else %}
+                        <div class="card-body">
+                            <p>There are no dinners registered yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card bg-white">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title">Meals</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if dinners_past %}
+                            <table class="table" id="dinnerTable">
+                                <tbody>
+                                {% for dinner in dinners_past %}
+                                    {% set g = dinner.guests | sum(attribute='number_of_guests') %}
+                                    {% if current_user.active %}
+                                        <tr
+                                                {% if dinner.price == 0.0 %}
+                                                    class="clickable-row"
+                                                {% else %}
+                                                    class="clickable-row"
+                                                {% endif %}
+                                                    data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
+                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.dish_name }}</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.dish_name }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p>There are no dinners registered yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+{% endblock %}

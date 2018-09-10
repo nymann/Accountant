@@ -10,7 +10,6 @@ from project.models import Shopping, User, db, Items, NeededItems
 from project.shopping_list import shopping_list
 from project.utils.helper import *
 
-# from flask.ext.mobility.decorators import mobile_template
 from flask_mobility.decorators import mobile_template
 
 @shopping_list.route('/')

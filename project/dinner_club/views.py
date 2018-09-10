@@ -15,6 +15,7 @@ from project.models import GuestAssociation
 from project.utils.decorators import *
 from project.utils.helper import *
 
+from flask_mobility.decorators import mobile_template
 
 @dinner_club.route('/new', methods=['GET', 'POST'])
 @active
@@ -90,7 +91,8 @@ def new():
 
 @dinner_club.route('/')
 @login_required
-def index():
+@mobile_template('dinner_club/{mobile/}index.html')
+def index(template):
     form = ParticipateForm()
     # Getting the current date.
     curDate = datetime.now()
@@ -144,7 +146,7 @@ def index():
     #     desc(Dinner.datetime)
     # ).all()
 
-    return render_template('dinner_club/index.html', dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
+    return render_template(template, dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
                            latest_dinner=latest_dinner, form=form)
 
 

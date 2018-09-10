@@ -20,18 +20,24 @@ from project.utils.uploadsets import avatars, process_user_avatar
 @login_required
 def index():
     # next meal
-    next_dinner = Dinner.query.filter(
-        Dinner.datetime >= datetime.now()
-    ).order_by(
-        asc(Dinner.datetime)
-    ).first()
+    try:
+        next_dinner = Dinner.query.filter(
+            Dinner.datetime >= datetime.now()
+        ).order_by(
+            asc(Dinner.datetime)
+        ).first()
+    except DBAPIError as e:
+        flash(str(e), "alert alert-danger")
 
     # next meeting
-    event = MeetingEvent.query.filter(
-        MeetingEvent.completed.is_(False)
-    ).order_by(
-        desc(MeetingEvent.id)
-    ).first()
+    try:
+        event = MeetingEvent.query.filter(
+            MeetingEvent.completed.is_(False)
+        ).order_by(
+            desc(MeetingEvent.id)
+        ).first()
+    except DBAPIError as e:
+        flash(str(e), "alert alert-danger")
 
     # topics
     topics = MeetingTopic.query.filter(
@@ -39,11 +45,14 @@ def index():
     ).all()
 
     # most recent purchase
-    purchase = Shopping.query.filter(
-        Shopping.accounting_id.is_(None)
-    ).order_by(
-        desc(Shopping.date)
-    ).first()
+    try:
+        purchase = Shopping.query.filter(
+            Shopping.accounting_id.is_(None)
+        ).order_by(
+            desc(Shopping.date)
+        ).first()
+    except DBAPIError as e:
+        flash(str(e), "alert alert-danger")
 
     report = AccountingReport.query.order_by(AccountingReport.date.desc()).first()
 

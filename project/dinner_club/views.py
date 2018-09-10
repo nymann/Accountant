@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from datetime import time
 from flask import render_template, request, abort
 from flask_login import login_required
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
 
@@ -117,7 +117,7 @@ def index():
         Dinner.accounting_id.is_(None),
         Dinner.datetime >= curDate
     ).order_by(
-        desc(Dinner.datetime)
+        asc(Dinner.datetime)
     ).all()
 
     # Past dinners
@@ -132,7 +132,7 @@ def index():
         Dinner.accounting_id.is_(None),
         Dinner.datetime >= curDate
     ).order_by(
-        desc(Dinner.datetime)
+        asc(Dinner.datetime)
     ).all()
 
     # dinners_future = Dinner.query.add_columns(

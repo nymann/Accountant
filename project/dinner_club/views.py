@@ -102,7 +102,7 @@ def index(template):
         Dinner.accounting_id.is_(None),
         Dinner.datetime < curDate
     ).order_by(
-        desc(Dinner.datetime)
+        Dinner.datetime.desc())
     ).first()
 
     time_limit = datetime.now() + relativedelta(hours=36)

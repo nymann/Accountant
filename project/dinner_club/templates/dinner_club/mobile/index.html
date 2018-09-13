@@ -36,7 +36,10 @@
                                                 {# This monster of statements is here because of issue 91 #}
                                                 {% for dinner_p in dinners_future_p %}
                                                     {% if dinner.id == dinner_p.id %}
-                                                        {% if not dinner.can_participate %}
+                                                        {% if current_user in dinner_p.chefs %}
+                                                            <button class="btn btn-secondary">You're chef
+                                                            </button>
+                                                        {% elif not dinner.can_participate %}
                                                             <button class="btn btn-secondary">Contact chef
                                                             </button>
                                                         {% elif current_user in dinner_p.participants %}

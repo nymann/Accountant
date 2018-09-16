@@ -23,13 +23,13 @@ def generate_calendar():
     dinners = Dinner.query.filter(
         Dinner.accounting_id.is_(None)
     ).all()
-
-    calender = Calendar()
-    for dinner in dinners:
-        event = Event()
-        event.name = "Madklub - " + dinner.dish_name
-        time = arrow.get(dinner.datetime)
-        event.begin = time
+    #
+    # calender = Calendar()
+    # for dinner in dinners:
+    #     event = Event()
+    #     event.name = "Madklub - " + dinner.dish_name
+    #     time = arrow.get(dinner.datetime)
+    #     event.begin = time
         # event.location("55.810817, 12.515183")
 
         # participant_list = ''
@@ -39,11 +39,11 @@ def generate_calendar():
         # event.url('https://kk24.dk/dinner_club/meal/'+str(dinner.id))
         # event.duration({"hours":1})
 
-        calender.events.add(event)
-
-    calender.events
-    with open('project/static/calendar/calendar.ics', 'w') as calender_file:
-        calender_file.writelines(calender)
+        # calender.events.add(event)
+    #
+    # calender.events
+    # with open('project/static/calendar/calendar.ics', 'w') as calender_file:
+    #     calender_file.writelines(calender)
 
 
 class UserHelper:

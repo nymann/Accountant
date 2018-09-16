@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import render_template, redirect, url_for, flash, request, abort
+from flask import render_template, redirect, url_for, flash, request, abort, send_from_directory
 from flask_login import current_user, login_required
 from sqlalchemy import or_, func, desc, asc
 from sqlalchemy.exc import DBAPIError
@@ -12,7 +12,7 @@ from project.models import (
     User, Dinner, MeetingEvent, Shopping, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
     BeverageTypes, UserReport, AccountingReport)
 from project.site import site
-from project.utils.helper import UserHelper
+from project.utils.helper import UserHelper, generate_calendar
 from project.utils.uploadsets import avatars, process_user_avatar
 
 
@@ -304,3 +304,11 @@ def shopping_history(report_id, user_id):
         'site/shopping_history.html', user=user, report=report, shopping_entries=shopping_entries,
         user_helper=user_helper
     )
+
+
+@site.route('/calendar')
+def calender():
+    generate_calendar()
+
+    # return url_for('static/calendar', filename='calendar.ics')
+    return send_from_directory('static/calendar', filename='calendar.ics')

@@ -5,6 +5,8 @@ from sqlalchemy import func, or_
 
 from project.models import db, Shopping, User, Items, Dinner, BeverageBatch, BeverageUser
 
+from ics import Calendar, Event
+
 
 def is_admin():
     return current_user.is_authenticated and current_user.admin
@@ -12,6 +14,28 @@ def is_admin():
 
 def is_active():
     return current_user.is_authenticated and current_user.active
+
+
+def generate_calendar():
+    # Getting Dinners
+    dinners = Dinner.query.filter(
+        Dinner.accounting_id.is_(None)
+    ).all()
+
+    calender = Calendar()
+    for dinner in dinners:
+        event = Event()
+        if dinner.dish_name is None:
+            event.name = "Madklub"
+        else:
+            event.name = "Madklub - " + dinner.dish_name
+        event.begin = dinner.datetime
+
+        calender.events.add(event)
+
+    calender.events
+    with open('project/static/calendar/calendar.ics', 'w') as calender_file:
+        calender_file.writelines(calender)
 
 
 class UserHelper:

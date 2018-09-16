@@ -7,6 +7,8 @@ from project.models import db, Shopping, User, Items, Dinner, BeverageBatch, Bev
 
 from ics import Calendar, Event
 
+import arrow
+
 
 def is_admin():
     return current_user.is_authenticated and current_user.admin
@@ -25,18 +27,23 @@ def generate_calendar():
     calender = Calendar()
     for dinner in dinners:
         event = Event()
-        if dinner.dish_name is None:
-            event.name = "Madklub"
-        else:
-            event.name = "Madklub - " + dinner.dish_name
-        event.begin = dinner.datetime
+        event.name = "Madklub - " + dinner.dish_name
+        time = arrow.get(dinner.datetime)
+        event.begin = time
+        # event.location("55.810817, 12.515183")
+
+        # participant_list = ''
+        # for participant in dinner.participants:
+        #     participant_list+= participant + '\n'
+        # event.description(participant_list)
+        # event.url('https://kk24.dk/dinner_club/meal/'+str(dinner.id))
+        # event.duration({"hours":1})
 
         calender.events.add(event)
 
     calender.events
     with open('project/static/calendar/calendar.ics', 'w') as calender_file:
         calender_file.writelines(calender)
-    print("Works")
 
 
 class UserHelper:

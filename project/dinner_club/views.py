@@ -58,6 +58,8 @@ def new():
             if form.guests.data is None or str(form.guests.data).isspace() or str(form.guests.data) is "":
                 db.session.add(d)
                 db.session.commit()
+                # A chance have been made, calendar should be updated
+                generate_calendar()
                 flash("Success", "alert alert-info")
                 return redirect(url_for('dinner_club.index'))
             with db.session.no_autoflush:
@@ -85,6 +87,8 @@ def new():
             return redirect(url_for('dinner_club.index'))
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")
+
+
 
     return render_template('dinner_club/new.html', form=form, users=users)
 
@@ -194,6 +198,8 @@ def edit(dinner_id):
 
         if form.guests.data is None or str(form.guests.data).isspace() or str(form.guests.data) is "":
             db.session.commit()
+            # A chance have been made, calendar should be updated
+            generate_calendar()
             flash("Dinner updated successfully", "alert alert-info")
             return redirect(url_for("dinner_club.meal", dinner_id=dinner.id))
         with db.session.no_autoflush:
@@ -243,6 +249,9 @@ def delete(dinner_id):
         project.sentry.captureMessage(str(e))
         flash(str(e), "alert alert-danger")
         return redirect(url_for('dinner_club.meal', dinner_id=dinner_id))
+
+    # A chance have been made, calendar should be updated
+    generate_calendar()
     return redirect(url_for('dinner_club.index'))
 
 

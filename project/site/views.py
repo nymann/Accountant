@@ -308,7 +308,5 @@ def shopping_history(report_id, user_id):
 
 @site.route('/calendar')
 def calender():
-    generate_calendar()
-
     # return url_for('static/calendar', filename='calendar.ics')
     return send_from_directory('static/calendar', filename='calendar.ics')

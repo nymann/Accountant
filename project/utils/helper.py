@@ -42,8 +42,8 @@ def generate_calendar():
         # calender.events.add(event)
 
     calender.events
-    with open('project/static/calendar/calendar.ics', 'w') as calender_file:
-        calender_file.writelines(calender)
+    # with open('project/static/calendar/calendar.ics', 'w') as calender_file:
+    #     calender_file.writelines(calender)
 
 
 class UserHelper:

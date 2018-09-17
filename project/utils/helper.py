@@ -42,7 +42,7 @@ def generate_calendar():
         calender.events.add(event)
 
     calender.events
-    with open('/home/nymann/Accountant/project/static/calendar/calendar.ics', 'w') as calender_file:
+    with open('project/static/calendar/calendar.ics', 'w') as calender_file:
         calender_file.writelines(calender)
 
 

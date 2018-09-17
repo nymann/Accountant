@@ -17,6 +17,7 @@ from project.utils.helper import *
 
 from flask_mobility.decorators import mobile_template
 
+
 @dinner_club.route('/new', methods=['GET', 'POST'])
 @active
 def new():
@@ -45,12 +46,12 @@ def new():
         participants = list()
         for user_id in request.form.getlist('participants'):
             participants.append(User.query.get(int(user_id)))
-            
+
         chefs = list()
         for user_id in request.form.getlist('chefs'):
             chefs.append(User.query.get(int(user_id)))
 
-        d = Dinner(payee_id=payee_id, price=price, madtid=start, participants=participants, chefs=chefs,
+        d = Dinner(payee_id=payee_id, price=price, datetime=start, participants=participants, chefs=chefs,
                    dish_name=dish_name)
 
         try:
@@ -88,8 +89,6 @@ def new():
         except DBAPIError as e:
             flash(str(e), "alert alert-danger")
 
-
-
     return render_template('dinner_club/new.html', form=form, users=users)
 
 
@@ -104,53 +103,54 @@ def index(template):
     # Latest dinner
     latest_dinner = Dinner.query.filter(
         Dinner.accounting_id.is_(None),
-        Dinner.madtid < curDate
+        Dinner.datetime < curDate
     ).order_by(
-        Dinner.madtid.desc()
+        Dinner.datetime.desc()
     ).first()
 
     time_limit = datetime.now() + relativedelta(hours=36)
     # Future dinners
     dinners_future = db.session.query(
         Dinner.id.label('id'),
-        Dinner.madtid.label('madtid'),
+        Dinner.datetime.label('datetime'),
         User.name.label('payee'),
         Dinner.dish_name.label('dish_name'),
-        label("can_participate", Dinner.madtid >= time_limit)
+        label("can_participate", Dinner.datetime >= time_limit)
     ).join(
         User
     ).filter(
         Dinner.accounting_id.is_(None),
-        Dinner.madtid >= curDate
+        Dinner.datetime >= curDate
     ).order_by(
-        asc(Dinner.madtid)
+        asc(Dinner.datetime)
     ).all()
 
     # Past dinners
     dinners_past = Dinner.query.filter(
         Dinner.accounting_id.is_(None),
-        Dinner.madtid < curDate
+        Dinner.datetime < curDate
     ).order_by(
-        desc(Dinner.madtid)
+        desc(Dinner.datetime)
     ).all()
 
     dinners_future_p = Dinner.query.filter(
         Dinner.accounting_id.is_(None),
-        Dinner.madtid >= curDate
+        Dinner.datetime >= curDate
     ).order_by(
-        asc(Dinner.madtid)
+        asc(Dinner.datetime)
     ).all()
 
     # dinners_future = Dinner.query.add_columns(
     #     # label("can_participate", 'Test')
     # ).filter(
     #     Dinner.accounting_id.is_(None),
-    #     Dinner.madtid >= curDate
+    #     Dinner.datetime >= curDate
     # ).order_by(
-    #     desc(Dinner.madtid)
+    #     desc(Dinner.datetime)
     # ).all()
 
-    return render_template(template, dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
+    return render_template(template, dinners_future=dinners_future, dinners_future_p=dinners_future_p,
+                           dinners_past=dinners_past,
                            latest_dinner=latest_dinner, form=form)
 
 
@@ -176,7 +176,7 @@ def edit(dinner_id):
             return redirect(url_for('dinner_club.new'))
         dinner.price = price
         dinner.dish_name = form.dish_name.data
-        Dinner.madtid = datetime.strptime(form.date.data, "%d/%m/%Y")
+        Dinner.datetime = datetime.strptime(form.date.data, "%d/%m/%Y")
         dinner.payee_id = form.payee.data if current_user.admin else dinner.payee_id
 
         # Participants
@@ -259,7 +259,7 @@ def delete(dinner_id):
 def participate(user_id, dinner_id):
     dinner = Dinner.query.get_or_404(dinner_id)
 
-    if Dinner.madtid < (datetime.now() + relativedelta(hours=36)):
+    if dinner.datetime < (datetime.now() + relativedelta(hours=36)):
         return abort(502)
 
     dinner = Dinner.query.get(dinner_id)
@@ -279,4 +279,3 @@ def participate(user_id, dinner_id):
 
     generate_calendar()
     return index()
-

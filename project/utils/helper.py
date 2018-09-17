@@ -28,7 +28,7 @@ def generate_calendar():
     for dinner in dinners:
         event = Event()
         event.name = "Madklub - " + dinner.dish_name
-        time = arrow.get(dinner.datetime)
+        time = arrow.get(dinner.datetime, 'Europe/Copenhagen')
         event.begin = time
         # event.location("55.810817, 12.515183")
 

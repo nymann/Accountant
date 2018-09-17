@@ -277,5 +277,6 @@ def participate(user_id, dinner_id):
         project.sentry.captureMessage(str(e))
         flash(str(e), "alert alert-danger")
 
+    generate_calendar()
     return index()
 

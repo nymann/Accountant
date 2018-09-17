@@ -39,11 +39,11 @@ def generate_calendar():
         # event.url('https://kk24.dk/dinner_club/meal/'+str(dinner.id))
         # event.duration({"hours":1})
 
-        # calender.events.add(event)
+        calender.events.add(event)
 
     calender.events
-    # with open('project/static/calendar/calendar.ics', 'w') as calender_file:
-    #     calender_file.writelines(calender)
+    with open('project/static/calendar/calendar.ics', 'w') as calender_file:
+        calender_file.writelines(calender)
 
 
 class UserHelper:

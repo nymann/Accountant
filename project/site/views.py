@@ -22,9 +22,9 @@ def index():
     # next meal
     try:
         next_dinner = Dinner.query.filter(
-            Dinner.datetime >= datetime.now()
+            Dinner.madtid >= datetime.now()
         ).order_by(
-            asc(Dinner.datetime)
+            asc(Dinner.madtid)
         ).first()
     except DBAPIError as e:
         flash(str(e), "alert alert-danger")
@@ -220,7 +220,7 @@ def do_accounting():
     # Dinner
     dinners = Dinner.query.filter(
         Dinner.accounting_id.is_(None),
-        Dinner.datetime < datetime.now()
+        Dinner.madtid < datetime.now()
     ).all()
     for dinner in dinners:
         dinner.accounting_id = accounting_report.id

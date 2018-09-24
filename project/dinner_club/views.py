@@ -176,7 +176,7 @@ def edit(dinner_id):
             return redirect(url_for('dinner_club.new'))
         dinner.price = price
         dinner.dish_name = form.dish_name.data
-        Dinner.madtid = datetime.strptime(form.date.data, "%d/%m/%Y")
+        dinner.madtid = datetime.strptime(form.date.data, "%d/%m/%Y")
         dinner.payee_id = form.payee.data if current_user.admin else dinner.payee_id
 
         # Participants

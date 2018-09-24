@@ -31,7 +31,7 @@
                                                     class="clickable-row"
                                                 {% endif %}
                                                     data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
-                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y (%a)") }}</td>
+                                            <td class="text-muted">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</td>
                                             <td class="text-muted text-right">
                                                 {# This monster of statements is here because of issue 91 #}
                                                 {% for dinner_p in dinners_future_p %}
@@ -61,7 +61,7 @@
                                         </tr>
                                     {% else %}
                                         <tr>
-                                            <td class="text-muted">{{ Dinner.datetime.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.madtid.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
                                         </tr>
                                     {% endif %}
@@ -94,8 +94,8 @@
                     {% if latest_dinner %}
                         <div class="card-body">
                             {% set g = latest_dinner.guests | sum(attribute='number_of_guests') %}
-                            <h6 class="card-subtitle text-muted">{{ latest_dinner.datetime.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
-                            <p class="card-text">On {{ latest_dinner.datetime.strftime('%A the %d. of %b') }}, we had
+                            <h6 class="card-subtitle text-muted">{{ latest_dinner.madtid.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
+                            <p class="card-text">On {{ latest_dinner.madtid.strftime('%A the %d. of %b') }}, we had
                                 <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
                             <p class="card-text">{{ g + latest_dinner.participants|length }}
                                 attended ({{ g }} guests).</p>
@@ -134,12 +134,12 @@
                                                     class="clickable-row"
                                                 {% endif %}
                                                     data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
-                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.madtid.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.dish_name }}</td>
                                         </tr>
                                     {% else %}
                                         <tr>
-                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.madtid.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.dish_name }}</td>
                                         </tr>
                                     {% endif %}

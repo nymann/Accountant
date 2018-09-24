@@ -259,7 +259,7 @@ def delete(dinner_id):
 def participate(user_id, dinner_id):
     dinner = Dinner.query.get_or_404(dinner_id)
 
-    if Dinner.madtid < (datetime.now() + relativedelta(hours=36)):
+    if dinner.madtid < (datetime.now() + relativedelta(hours=36)):
         return abort(502)
 
     dinner = Dinner.query.get(dinner_id)

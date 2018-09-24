@@ -28,7 +28,7 @@ def generate_calendar():
     for dinner in dinners:
         event = Event()
         event.name = "Madklub - " + dinner.dish_name
-        time = arrow.get(dinner.datetime, '+02:00')
+        time = arrow.get(dinner.madtid, '+02:00')
         event.begin = time
         # event.location("55.810817, 12.515183")
 
@@ -41,7 +41,7 @@ def generate_calendar():
 
         calender.events.add(event)
 
-    calender.events
+    #calender.events
     # with open('project/static/calendar/calendar.ics', 'w') as calender_file:
     #     calender_file.writelines(calender)
 
@@ -89,14 +89,14 @@ class UserHelper:
         ).filter(
             Dinner.payee_id.is_(self.user.id),
             Dinner.accounting_id.is_(accounting_id),
-            Dinner.datetime < datetime.now()
+            Dinner.madtid < datetime.now()
         ).scalar()
         return dinner_income if dinner_income else 0.0
 
     def dinner_expenses(self, accounting_id=None):
         dinners = Dinner.query.filter(
             Dinner.accounting_id.is_(accounting_id),
-            Dinner.datetime < datetime.now()
+            Dinner.madtid < datetime.now()
         ).all()
         dinner_expenses = 0.0
         if self.user.active:

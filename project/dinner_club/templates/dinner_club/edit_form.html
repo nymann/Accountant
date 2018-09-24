@@ -20,7 +20,7 @@
         <label for="date" class="col-lg-3 col-form-label">Date</label>
         <div class="col-lg-9">
             <input type="text" name="date" placeholder="date" class="form-control" id="date"
-                   value="{{ dinner.datetime.strftime("%d/%m/%Y") }}">
+                   value="{{ dinner.madtid.strftime("%d/%m/%Y") }}">
             <span id="dateHelpBlock" class="form-text text-muted">The date that the dinner took place.</span>
         </div>
     </div>
@@ -29,7 +29,7 @@
         <label for="time" class="col-lg-3 col-form-label">Time</label>
         <div class="col-lg-9">
             <input type="text" name="time" placeholder="HH:MM" class="form-control" id="time"
-                   value="{{ dinner.datetime.strftime("%H:%M") }}" required="required">
+                   value="{{ dinner.madtid.strftime("%H:%M") }}" required="required">
             <span id="dateHelpBlock" class="form-text text-muted">At what time did the dinner take place?</span>
         </div>
     </div>

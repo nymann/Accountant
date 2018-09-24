@@ -112,7 +112,7 @@ def index(template):
     # Future dinners
     dinners_future = db.session.query(
         Dinner.id.label('id'),
-        Dinner.madtid.label('datetime'),
+        Dinner.madtid.label('madtid'),
         User.name.label('payee'),
         Dinner.dish_name.label('dish_name'),
         label("can_participate", Dinner.madtid >= time_limit)
@@ -149,9 +149,10 @@ def index(template):
     #     desc(Dinner.madtid)
     # ).all()
 
-    return render_template(template, dinners_future=dinners_future, dinners_future_p=dinners_future_p,
-                           dinners_past=dinners_past,
-                           latest_dinner=latest_dinner, form=form)
+    return render_template(
+        template, dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
+        latest_dinner=latest_dinner, form=form
+    )
 
 
 @dinner_club.route('/meal/<int:dinner_id>')

@@ -31,7 +31,7 @@
                                                     class="clickable-row"
                                                 {% endif %}
                                                     data-href="{{ url_for('dinner_club.meal', dinner_id=dinner.id) }}">
-                                            <td class="text-muted">{{ dinner.datetime.strftime("%d/%m/%Y (%a)") }}</td>
+                                            <td class="text-muted">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</td>
                                             <td class="text-muted">{{ dinner.payee.name }}</td>
                                             {% if dinner.dish_name|length < 1 %}
                                                 <td class="text-muted">No name yet.</td>
@@ -67,7 +67,7 @@
                                         </tr>
                                     {% else %}
                                         <tr>
-                                            <td class="text-muted">{{ Dinner.madtid.strftime("%d/%m/%Y") }}</td>
+                                            <td class="text-muted">{{ dinner.madtid.strftime("%d/%m/%Y") }}</td>
                                             <td class="text-muted">{{ dinner.payee.name|truncate(15, True) }}</td>
                                             <td class="text-muted">{{ g + dinner.participants|length }}
                                                 attended

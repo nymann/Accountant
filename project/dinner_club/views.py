@@ -51,7 +51,7 @@ def new():
         for user_id in request.form.getlist('chefs'):
             chefs.append(User.query.get(int(user_id)))
 
-        d = Dinner(payee_id=payee_id, price=price, datetime=start, participants=participants, chefs=chefs,
+        d = Dinner(payee_id=payee_id, price=price, madtid=start, datetime=start, participants=participants, chefs=chefs,
                    dish_name=dish_name)
 
         try:

@@ -1,10 +1,12 @@
 <div class="col-lg-12 mb-2">
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        {#
         <ol class="carousel-indicators">
             <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
         </ol>
+        #}
 
         <div class="carousel-inner">
             {% for dinner in dinners_future_nochef %}
@@ -20,9 +22,9 @@
                                             <h6 class="card-title">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</h6>
                                         </div>
                                         <div class="card-body">
-                                            <button class="btn">Become chef</button>
-                                            <br>
-                                            <button class="btn">Can't participate</button>
+                                            <button class="btn btn-info col-lg-12">Become chef</button>
+{#                                            <br>#}
+{#                                            <button class="btn">Can't participate</button>#}
                                         </div>
                                     </div>
                                 </div>
@@ -43,9 +45,9 @@
                                             <h6 class="card-title">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</h6>
                                         </div>
                                         <div class="card-body">
-                                            <button class="btn">Become chef</button>
-                                            <br>
-                                            <button class="btn">Can't participate</button>
+                                            <button class="btn btn-info col-lg-12">Become chef</button>
+{#                                            <br>#}
+{#                                            <button class="btn">Can't participate</button>#}
                                         </div>
                                     </div>
                                 </div>
@@ -57,7 +59,7 @@
                 {% endif %}
             {% endfor %}
         </div>
-        {#        {% if dinners_future_nochef|length > 10 %}#}
+      <!--  {#        {% if dinners_future_nochef|length > 10 %}#}
         <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="sr-only">Previous</span>
@@ -66,6 +68,6 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="sr-only">Next</span>
         </a>
-        {#        {% endif %}#}
+        {#        {% endif %}#}-->
     </div>
 </div>

@@ -30,14 +30,16 @@
                                         </div>
                                     </div>
                                 </div>
-                    {% if loop.index0 == 3 or loop.last %}
+                    {% if loop.last %}
                             </div>
                         </div>
                     {% endif %}
 
                 {% else %}
 
-                    {% if loop.index0 == 4 %} {# This is the start of the ten elements #}
+                    {% if loop.index0 % 4 == 0 %}
+                               </div>
+                        </div>
                         <div class="carousel-item">
                             <div class="row">
                     {% endif %}
@@ -55,7 +57,7 @@
                                         </div>
                                     </div>
                                 </div>
-                    {% if loop.index0 == 5 or loop.last %} {# This is the end of the ten elements #}
+                    {% if loop.last %}
                             </div>
                         </div>
                     {% endif %}

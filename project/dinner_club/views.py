@@ -125,13 +125,9 @@ def index(template):
         asc(Dinner.madtid)
     ).all()
 
-    dinners_future_1 = Dinner.query.filter(
+    dinners_future_nochef = Dinner.query.filter(
         Dinner.payee_id.is_(0)
     ).all()
-    for d in dinners_future_1:
-        print(d.id)
-
-    dinners_future_1.join(dinners_future, dinners_future.id==dinners_future_1.id).all()
 
     # Past dinners
     dinners_past = Dinner.query.filter(
@@ -159,7 +155,7 @@ def index(template):
 
     return render_template(
         template, dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
-        latest_dinner=latest_dinner, form=form
+        latest_dinner=latest_dinner, form=form, dinners_future_nochef=dinners_future_nochef
     )
 
 

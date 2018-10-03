@@ -15,6 +15,9 @@
 {% block content %}
     <div class="container">
         <div class="row">
+            {% if dinners_future_nochef %}
+                {% include 'dinner_club/no_chef_dinners.html' %}
+            {% endif %}
             <div class="col-lg-12 mb-2">
                 <div class="card bg-white">
                     <div class="card-header bg-white">
@@ -115,7 +118,7 @@
                                 attended ({{ g }} guests).</p>
 
                             <p class="card-text">{{ latest_dinner.price }} kr.
-{#                                ({{ (latest_dinner.price/(g + latest_dinner.participants|length))|round(2) }}#}
+                                {#                                ({{ (latest_dinner.price/(g + latest_dinner.participants|length))|round(2) }}#}
                                 kr. pr. person)</p>
                         </div>
                         <div class="card-footer">

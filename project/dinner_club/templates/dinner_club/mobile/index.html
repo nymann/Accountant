@@ -12,6 +12,23 @@
 {% block content %}
     <div class="container">
         <div class="row">
+            {% if dinners_future_nochef %}
+                <div class="col-lg-12 mb-2">
+                    <div class="card bg-white">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title">Dinners who need chefs
+                            {% if dinners_future_nochef|length > 1 %}
+                                <a class="btn btn-info float-sm-right" href="#carouselExampleIndicators" role="button" data-slide="next">Next</a>
+                                <a class="btn btn-info float-sm-right mr-2" href="#carouselExampleIndicators" role="button" data-slide="prev">Prev</a>
+                            {% endif %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% include 'dinner_club/mobile/no_chef_dinners.html' %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             <div class="col-lg-12 mb-2">
                 <div class="card bg-white">
                     <div class="card-header bg-white">

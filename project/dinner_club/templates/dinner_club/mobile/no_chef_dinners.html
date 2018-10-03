@@ -1,0 +1,43 @@
+<div class="col-lg-12 mb-2">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
+        {#
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        #}
+
+        <div class="carousel-inner">
+            {% for dinner in dinners_future_nochef %}
+                {% if loop.first %}
+
+                        <div class="carousel-item active">
+                            <div class="row">
+                            {% include 'dinner_club/mobile/no_chef_dinners_card.html' %}
+                            </div>
+                        </div>
+
+                {% else %}
+
+                        <div class="carousel-item">
+                            <div class="row">
+                            {% include 'dinner_club/mobile/no_chef_dinners_card.html' %}
+                            </div>
+                        </div>
+
+                {% endif %}
+            {% endfor %}
+        </div>
+      <!--  {#        {% if dinners_future_nochef|length > 10 %}#}
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+        {#        {% endif %}#}-->
+    </div>
+</div>

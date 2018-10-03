@@ -40,6 +40,11 @@ class DinnerForm(FlaskForm):
     time = StringField('time')
 
 
+class DinnerEntriesForm(FlaskForm):
+    dates = StringField('dates')
+    time = StringField('time')
+
+
 class MeetingTopicForm(FlaskForm):
     topic = StringField('topic')
     description = StringField('description')

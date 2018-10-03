@@ -10,7 +10,7 @@ from sqlalchemy.sql import label
 
 import project
 from project.dinner_club import dinner_club
-from project.forms import DinnerForm, ParticipateForm
+from project.forms import DinnerForm, ParticipateForm, DinnerEntriesForm
 from project.models import GuestAssociation
 from project.utils.decorators import *
 from project.utils.helper import *
@@ -124,6 +124,14 @@ def index(template):
     ).order_by(
         asc(Dinner.madtid)
     ).all()
+
+    dinners_future_1 = Dinner.query.filter(
+        Dinner.payee_id.is_(0)
+    ).all()
+    for d in dinners_future_1:
+        print(d.id)
+
+    dinners_future_1.join(dinners_future, dinners_future.id==dinners_future_1.id).all()
 
     # Past dinners
     dinners_past = Dinner.query.filter(
@@ -280,3 +288,43 @@ def participate(user_id, dinner_id):
 
     generate_calendar()
     return index()
+
+
+@admin
+@dinner_club.route('/admin_panel', methods=['GET', 'POST'])
+def new_entries():
+    form = DinnerEntriesForm()
+
+    if form.validate_on_submit():
+        # Take dates from form and split them
+        dates = form.dates.data.split(',')
+        time = form.time.data
+        price = 0;
+        payee_id = 0  # Not null constrains in db
+        dish_name = ''
+
+        participants = User.query.filter(
+            User.subscribed_to_dinner_club.is_(True)
+        ).all()
+
+        # Create dinner for every date
+        for date in dates:
+            start = datetime.strptime("%s %s" % (date, time), "%d/%m/%Y %H:%M")
+            db.session.add(
+                Dinner(payee_id=payee_id, price=price, madtid=start, datetime=start, participants=participants,
+                       dish_name=dish_name)
+            )
+
+        # Add to database
+        try:
+            db.session.commit()
+            flash("Dinner entries have been added succesfully!", "alert alert-info")
+        except DBAPIError as e:
+            db.session.rollback()
+            project.sentry.captureMessage(str(e))
+            flash(str(e), "alert alert-danger")
+
+        # d = Dinner(payee_id=payee_id, price=price, madtid=start, datetime=start, participants=participants, chefs=chefs,
+        # dish_name=dish_name)
+
+    return render_template("dinner_club/admin_panel.html", form=form)

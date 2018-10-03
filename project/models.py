@@ -47,10 +47,10 @@ class OAuth(OAuthConsumerMixin, db.Model):
 class Dinner(db.Model):
     __tablename__ = 'dinner'
     id = db.Column(db.Integer, primary_key=True)
-    payee_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    payee_id = db.Column(db.Integer, db.ForeignKey(User.id))
     price = db.Column(db.Float, default=0.0)
     madtid = db.Column(db.DateTime, nullable=False)
-    datetime = db.Column(db.DateTime, nullable=False)
+    datetime = db.Column(db.DateTime)
     participants = db.relationship("User", secondary=participants, backref=db.backref("dinners", lazy="dynamic"))
     guests = db.relationship("GuestAssociation", back_populates="dinner")
     chefs = db.relationship("User", secondary=chefs, backref=db.backref("dinners_where_cooked", lazy="dynamic"))

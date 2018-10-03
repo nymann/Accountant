@@ -1,0 +1,64 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Dinner
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">Dinner</h1>
+    <p class="lead">Here you can add a dinner club meal entries.</p>
+    <a href="{{ url_for('dinner_club.index') }}" class="btn btn-secondary">Back</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <form action="{{ url_for('dinner_club.new_entries') }}" method="post">
+            {# CSRF token #}
+            <div class="form-group">
+                {{ form.hidden_tag() }}
+            </div>
+
+            {# Time #}
+            <div class="form-group">
+                <label for="time" class="col-lg-3 col-form-label">Time</label>
+                <div class="col-lg-12">
+                    <input type="text" name="time" placeholder="HH:MM" class="form-control" id="time"
+                           value="19:00" required="required">
+                    <span id="dateHelpBlock" class="form-text text-muted">What start time will the dinner have?</span>
+                </div>
+            </div>
+
+            {# Days #}
+            <div class="form-group">
+                <label for="dates" class="col-lg-3 col-form-label">Dates</label>
+                <div class="col-lg-12">
+                    <input type="text" name="dates" placeholder="dates" class="form-control" id="dates"
+                           value="" required="required" autocomplete="off">
+                    <span id="dateHelpBlock" class="form-text text-muted">Select the dates for dinner entries to be created.</span>
+                </div>
+            </div>
+
+            {# Submit #}
+            <div class="form-group">
+                <div class="col-lg-12">
+                    <button class="btn btn-lg btn-block btn-info" type="submit">Create dinner entries</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $('#dates').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: "dd/mm/yyyy",
+            todayBtn: "linked",
+            language: "da",
+            calendarWeeks: true,
+            multidate: true
+        });
+    </script>
+{% endblock %}

@@ -320,7 +320,28 @@ def new_entries():
             project.sentry.captureMessage(str(e))
             flash(str(e), "alert alert-danger")
 
-        # d = Dinner(payee_id=payee_id, price=price, madtid=start, datetime=start, participants=participants, chefs=chefs,
-        # dish_name=dish_name)
-
     return render_template("dinner_club/admin_panel.html", form=form)
+
+
+@dinner_club.route('/become_payee/<int:user_id>/<int:dinner_id>', methods=['GET', 'POST'])
+def become_payee(user_id, dinner_id):
+    # dinner = Dinner.query.get_or_404(dinner_id)
+
+    # if dinner.madtid < (datetime.now() + relativedelta(hours=36)):
+    #     return abort(502)
+
+    dinner = Dinner.query.get(dinner_id)
+
+    dinner.payee_id = User.query.get(user_id).id
+    # dinner.payee_id = 2
+    msg = "You are now a chef!"
+
+    try:
+        db.session.commit()
+        flash(msg, "alert alert-info")
+    except DBAPIError as e:
+        db.session.rollback()
+        project.sentry.captureMessage(str(e))
+        flash(str(e), "alert alert-danger")
+
+    return index()

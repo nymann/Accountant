@@ -6,49 +6,53 @@
             <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
         </ol>
 
-
         <div class="carousel-inner">
             {% for dinner in dinners_future_nochef %}
-                {% if loop.index0 < 2 %}
+                {% if loop.index0 < 4 %}
 
                     {% if loop.index0 == 0 %}
                         <div class="carousel-item active">
-{#                    {% endif %}#}
-                        <div class="col-lg-3">
-                            <div class="card bg-white">
-                                <div class="card-header bg-white">
-                                    <h6 class="card-title">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</h6>
-                                    <button class="btn">Become chef 1</button>
-                                    <br>
-                                    <button class="btn">Can't participate</button>
+                            <div class="row">
+                    {% endif %}
+                                <div class="col-lg-3">
+                                    <div class="card bg-white">
+                                        <div class="card-header bg-white">
+                                            <h6 class="card-title">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <button class="btn">Become chef</button>
+                                            <br>
+                                            <button class="btn">Can't participate</button>
+                                        </div>
+                                    </div>
                                 </div>
+                    {% if loop.index0 == 3 %}
                             </div>
-                        </div>
-
-{#                    {% if loop.index0 == 2 %}#}
                         </div>
                     {% endif %}
 
                 {% else %}
 
-                    {% if loop.index0 % 10 == 1 %} {# This is the end of the ten elements #}
-                        </div>
+                    {% if loop.index0 == 4 %} {# This is the start of the ten elements #}
+                        <div class="carousel-item">
+                            <div class="row">
                     {% endif %}
-{#                    {% if loop.index0 % 10 == 0 %} {# This is the start of the ten elements #}
-                    <div class="carousel-item">
-{#                    {% endif %}#}
-                        <div class="col-lg-3">
-                            <div class="card bg-white">
-                                <div class="card-header bg-white">
-                                    <h6 class="card-title">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</h6>
-                                    <button class="btn">Become chef</button>
-                                    <br>
-                                    <button class="btn">Can't participate</button>
+                                <div class="col-lg-3">
+                                    <div class="card bg-white">
+                                        <div class="card-header bg-white">
+                                            <h6 class="card-title">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <button class="btn">Become chef</button>
+                                            <br>
+                                            <button class="btn">Can't participate</button>
+                                        </div>
+                                    </div>
                                 </div>
+                    {% if loop.index0 == 5 %} {# This is the end of the ten elements #}
                             </div>
                         </div>
-                    </div>
-
+                    {% endif %}
 
                 {% endif %}
             {% endfor %}

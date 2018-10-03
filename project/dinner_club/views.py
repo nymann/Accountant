@@ -125,6 +125,14 @@ def index(template):
         asc(Dinner.madtid)
     ).all()
 
+    dinners_future_p = Dinner.query.filter(
+        Dinner.accounting_id.is_(None),
+        Dinner.madtid >= curDate
+    ).order_by(
+        asc(Dinner.madtid)
+    ).all()
+
+    # Dinners without a chef
     dinners_future_nochef = Dinner.query.filter(
         Dinner.payee_id.is_(0)
     ).all()
@@ -137,12 +145,6 @@ def index(template):
         desc(Dinner.madtid)
     ).all()
 
-    dinners_future_p = Dinner.query.filter(
-        Dinner.accounting_id.is_(None),
-        Dinner.madtid >= curDate
-    ).order_by(
-        asc(Dinner.madtid)
-    ).all()
 
     # dinners_future = Dinner.query.add_columns(
     #     # label("can_participate", 'Test')

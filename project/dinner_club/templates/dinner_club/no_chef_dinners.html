@@ -16,20 +16,7 @@
                         <div class="carousel-item active">
                             <div class="row">
                     {% endif %}
-                                <div class="col-lg-3">
-                                    <div class="card bg-white">
-                                        <div class="card-header bg-white">
-                                            <h6 class="card-title">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <a href="{{ url_for('dinner_club.become_payee', user_id=current_user.id,
-                                                    dinner_id=dinner.id) }}" class="btn btn-info col-lg-12"
-                                                    name="dinner_id" id="dinner_id"> Become chef </a>
-{#                                            <br>#}
-{#                                            <button class="btn">Can't participate</button>#}
-                                        </div>
-                                    </div>
-                                </div>
+                            {% include 'dinner_club/no_chef_dinners_card.html' %}
                     {% if loop.last %}
                             </div>
                         </div>
@@ -43,20 +30,7 @@
                         <div class="carousel-item">
                             <div class="row">
                     {% endif %}
-                                <div class="col-lg-3">
-                                    <div class="card bg-white">
-                                        <div class="card-header bg-white">
-                                            <h6 class="card-title">{{ dinner.madtid.strftime("%d/%m/%Y (%a)") }}</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <a href="{{ url_for('dinner_club.become_payee', user_id=current_user.id,
-                                                    dinner_id=dinner.id) }}" class="btn btn-info col-lg-12"
-                                                    name="dinner_id" id="dinner_id"> Become chef </a>
-{#                                            <br>#}
-{#                                            <button class="btn">Can't participate</button>#}
-                                        </div>
-                                    </div>
-                                </div>
+                            {% include 'dinner_club/no_chef_dinners_card.html' %}
                     {% if loop.last %}
                             </div>
                         </div>

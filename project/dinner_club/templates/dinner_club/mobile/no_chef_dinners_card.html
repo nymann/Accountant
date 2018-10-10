@@ -24,6 +24,9 @@
                             Participate
                         </a>
                     {% endif %}
+                     {% if current_user.admin %}
+                        <a href="{{ url_for('dinner_club.delete', dinner_id=dinner.id) }}" class="btn btn-danger col-lg-12">Delete: {{ dinner.id }}</a>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </div>

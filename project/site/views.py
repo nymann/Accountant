@@ -45,10 +45,14 @@ def index():
         desc(Shopping.date)
     ).first()
 
+    dinners_paid = get_dinners_paid(None)
+
+    beverage_stats = get_beverage_stats(None)
+
     report = AccountingReport.query.order_by(AccountingReport.date.desc()).first()
 
     return render_template('site/index.html', next_dinner=next_dinner, event=event, topics=topics,
-                           purchase=purchase, report=report)
+                           purchase=purchase, report=report, dinners_paid=dinners_paid, beverage_stats=beverage_stats)
 
 
 @site.route('/login')
@@ -153,22 +157,10 @@ def report(report_id):
         return abort(404)
 
     # Beverages consumed pr. inhabitant.
-    beverage_stats = db.session.query(
-        label("consumed", func.count(BeverageUser.user_id)),
-        label("user_name", User.name),
-        label("user_id", User.id)
-    ).join(User).filter(
-        BeverageUser.accounting_id.is_(report_id)
-    ).group_by(BeverageUser.user_id).order_by(desc("consumed")).all()
+    beverage_stats = get_beverage_stats(report_id)
 
     # Times paid for dinner_club
-    dinners_paid = db.session.query(
-        label("paid", func.count(Dinner.payee_id)),
-        label("user_name", User.name),
-        label("user_id", User.id)
-    ).join(User).filter(
-        Dinner.accounting_id.is_(report_id),
-    ).group_by(Dinner.payee_id).order_by(desc("paid")).all()
+    dinners_paid = get_dinners_paid(report_id)
 
     return render_template(
         'site/report.html', report=accounting_report, beverage_stats=beverage_stats, dinners_paid=dinners_paid
@@ -301,3 +293,24 @@ def shopping_history(report_id, user_id):
 def calender():
     # return url_for('static/calendar', filename='calendar.ics')
     return send_from_directory('static/calendar', filename='calendar.ics')
+
+
+# Helper methods to report and index
+def get_beverage_stats(report_id):
+    return db.session.query(
+        label("consumed", func.count(BeverageUser.user_id)),
+        label("user_name", User.name),
+        label("user_id", User.id)
+    ).join(User).filter(
+        BeverageUser.accounting_id.is_(report_id)
+    ).group_by(BeverageUser.user_id).order_by(desc("consumed")).all()
+
+
+def get_dinners_paid(report_id):
+    return db.session.query(
+        label("paid", func.count(Dinner.payee_id)),
+        label("user_name", User.name),
+        label("user_id", User.id)
+    ).join(User).filter(
+        Dinner.accounting_id.is_(report_id),
+    ).group_by(Dinner.payee_id).order_by(desc("paid")).all()

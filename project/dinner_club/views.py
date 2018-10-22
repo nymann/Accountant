@@ -145,16 +145,6 @@ def index(template):
         desc(Dinner.madtid)
     ).all()
 
-
-    # dinners_future = Dinner.query.add_columns(
-    #     # label("can_participate", 'Test')
-    # ).filter(
-    #     Dinner.accounting_id.is_(None),
-    #     Dinner.madtid >= curDate
-    # ).order_by(
-    #     desc(Dinner.madtid)
-    # ).all()
-
     return render_template(
         template, dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
         latest_dinner=latest_dinner, form=form, dinners_future_nochef=dinners_future_nochef

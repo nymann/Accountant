@@ -131,21 +131,21 @@
                     <div class="card-header bg-white">
                         <h5 class="card-title">Most recent meal</h5>
                     </div>
-                    {% if latest_dinner %}
+                    {% if dinners_past %}
                         <div class="card-body">
-                            {% set g = latest_dinner.guests | sum(attribute='number_of_guests') %}
-                            <h6 class="card-subtitle text-muted">{{ latest_dinner.madtid.strftime('%d/%m/%Y') }}, {{ latest_dinner.payee.name|truncate(20, True) }}</h6>
-                            <p class="card-text">On {{ latest_dinner.madtid.strftime('%A the %d. of %b') }}, we had
-                                <b>{{ latest_dinner.dish_name }}</b> for dinner.</p>
-                            <p class="card-text">{{ g + latest_dinner.participants|length }}
+                            {% set g = (dinners_past|first).guests | sum(attribute='number_of_guests') %}
+                            <h6 class="card-subtitle text-muted">{{ (dinners_past|first).madtid.strftime('%d/%m/%Y') }}, {{ (dinners_past|first).payee.name|truncate(20, True) }}</h6>
+                            <p class="card-text">On {{ (dinners_past|first).madtid.strftime('%A the %d. of %b') }}, we had
+                                <b>{{ (dinners_past|first).dish_name }}</b> for dinner.</p>
+                            <p class="card-text">{{ g + (dinners_past|first).participants|length }}
                                 attended ({{ g }} guests).</p>
 
-                            <p class="card-text">{{ latest_dinner.price }} kr.
-                                ({{ (latest_dinner.price/(g + latest_dinner.participants|length))|round(2) }}
+                            <p class="card-text">{{ (dinners_past|first).price }} kr.
+                                ({{ ((dinners_past|first).price/(g + (dinners_past|first).participants|length))|round(2) }}
                                 kr. pr. person)</p>
                         </div>
                         <div class="card-footer">
-                            <a href="{{ url_for('dinner_club.meal', dinner_id=latest_dinner.id) }}"
+                            <a href="{{ url_for('dinner_club.meal', dinner_id=(dinners_past|first).id) }}"
                                class="btn btn-info">View</a>
                         </div>
                     {% else %}

@@ -98,15 +98,7 @@ def new():
 def index(template):
     form = ParticipateForm()
     # Getting the current date.
-    curDate = datetime.now()
-
-    # Latest dinner
-    latest_dinner = Dinner.query.filter(
-        Dinner.accounting_id.is_(None),
-        Dinner.madtid < curDate
-    ).order_by(
-        Dinner.madtid.desc()
-    ).first()
+    cur_date = datetime.now()
 
     time_limit = datetime.now() + relativedelta(hours=36)
     # Future dinners
@@ -120,14 +112,15 @@ def index(template):
         User
     ).filter(
         Dinner.accounting_id.is_(None),
-        Dinner.madtid >= curDate
+        Dinner.madtid >= cur_date
     ).order_by(
         asc(Dinner.madtid)
     ).all()
 
+    # Participate list to future dinners.
     dinners_future_p = Dinner.query.filter(
         Dinner.accounting_id.is_(None),
-        Dinner.madtid >= curDate
+        Dinner.madtid >= cur_date
     ).order_by(
         asc(Dinner.madtid)
     ).all()
@@ -140,14 +133,14 @@ def index(template):
     # Past dinners
     dinners_past = Dinner.query.filter(
         Dinner.accounting_id.is_(None),
-        Dinner.madtid < curDate
+        Dinner.madtid < cur_date
     ).order_by(
         desc(Dinner.madtid)
     ).all()
 
     return render_template(
         template, dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
-        latest_dinner=latest_dinner, form=form, dinners_future_nochef=dinners_future_nochef
+        form=form, dinners_future_nochef=dinners_future_nochef, curDate = cur_date
     )
 
 

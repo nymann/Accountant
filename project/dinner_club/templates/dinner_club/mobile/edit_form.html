@@ -39,17 +39,21 @@
         <label for="participants" class="col-lg-3 col-form-label">Participants</label>
         <div class="col-lg-9">
             <div class="form-group">
-{#                <select multiple class="form-control" id="participants" name="participants">#}
                     {% for user in users %}
                         <div class="col-lg-12 mb-2">
                         {% if user in dinner.participants %}
-                            <input type="checkbox" value="{{ user.id }}" checked data-toggle="toggle" data-on="<i class='far fa-check-square'></i> {{ user.name }}" data-off="<i class='far fa-square'></i> {{ user.name }}" data-onstyle="success" data-offstyle="danger" data-width="100%">
+                            <input type="checkbox" value="{{ user.id }}" name="participants" checked data-toggle="toggle"
+                                   data-on="<i class='far fa-check-square'></i> {{ user.name }}"
+                                   data-off="<i class='far fa-square'></i> {{ user.name }}" data-onstyle="success"
+                                   data-offstyle="danger" data-width="100%">
                         {% else %}
-                            <input type="checkbox" value="{{ user.id }}" data-toggle="toggle" data-on="<i class='far fa-check-square'></i>{{ user.name }}" data-off="<i class='far fa-square'></i> {{ user.name }}" data-onstyle="success" data-offstyle="danger" data-width="100%">
+                            <input type="checkbox" value="{{ user.id }}" name="participants" data-toggle="toggle"
+                                   data-on="<i class='far fa-check-square'></i>{{ user.name }}"
+                                   data-off="<i class='far fa-square'></i> {{ user.name }}" data-onstyle="success"
+                                   data-offstyle="danger" data-width="100%">
                         {% endif %}
                         </div>
                     {% endfor %}
-{#                </select>#}
             </div>
         </div>
     </div>

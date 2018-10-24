@@ -117,9 +117,6 @@ def index(template):
         asc(Dinner.madtid)
     ).all()
 
-    for din in dinners_future:
-        print(din.madtid)
-
     # Participate list to future dinners.
     dinners_future_p = Dinner.query.filter(
         Dinner.accounting_id.is_(None),

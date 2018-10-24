@@ -117,6 +117,9 @@ def index(template):
         asc(Dinner.madtid)
     ).all()
 
+    for din in dinners_future:
+        print(din.madtid)
+
     # Participate list to future dinners.
     dinners_future_p = Dinner.query.filter(
         Dinner.accounting_id.is_(None),
@@ -166,7 +169,7 @@ def edit(dinner_id):
             return redirect(url_for('dinner_club.new'))
         dinner.price = price
         dinner.dish_name = form.dish_name.data
-        dinner.madtid = datetime.strptime(form.date.data, "%d/%m/%Y")
+        dinner.madtid = datetime.strptime("%s %s" % (form.date.data, form.time.data), "%d/%m/%Y %H:%M")
         dinner.payee_id = form.payee.data if current_user.admin else dinner.payee_id
 
         # Participants

@@ -20,7 +20,7 @@
                     {% else %}
                         <a href="{{ url_for('dinner_club.participate', user_id=current_user.id,
                                                     dinner_id=dinner.id) }}"
-                           class="btn btn-info col-lg-12" name="dinner_id" id="dinner_id">
+                           class="btn btn-info col-lg-12 mb-2" name="dinner_id" id="dinner_id">
                             Participate
                         </a>
                     {% endif %}

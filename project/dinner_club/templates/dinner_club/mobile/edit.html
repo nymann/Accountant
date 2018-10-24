@@ -1,0 +1,16 @@
+{% extends 'site/base.html' %}
+
+{% block title %}
+    Editing Dinner
+{% endblock %}
+
+{% block jumbocontent %}
+    <h1 class="display-4">{{ dinner.dish_name }}</h1>
+    <p class="lead">{{ dinner.madtid.strftime("%A the %d. of %b %Y") }}</p>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% include 'dinner_club/mobile/edit_form.html' %}
+    </div>
+{% endblock %}

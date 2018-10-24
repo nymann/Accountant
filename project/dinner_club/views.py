@@ -153,7 +153,8 @@ def meal(dinner_id):
 
 @dinner_club.route('/meal/edit/<int:dinner_id>', methods=['GET', 'POST'])
 @login_required
-def edit(dinner_id):
+@mobile_template('dinner_club/{mobile/}edit.html')
+def edit(dinner_id, template):
     form = DinnerForm()
     dinner = Dinner.query.get(dinner_id)
     if dinner.payee_id is not current_user.id and not is_admin():
@@ -218,7 +219,7 @@ def edit(dinner_id):
         User.active
     ).all()
 
-    return render_template("dinner_club/edit.html", users=users, dinner=dinner, form=form)
+    return render_template(template, users=users, dinner=dinner, form=form)
 
 
 @dinner_club.route('/meal/delete/<dinner_id>')

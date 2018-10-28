@@ -140,7 +140,7 @@ def index(template):
 
     return render_template(
         template, dinners_future=dinners_future, dinners_future_p=dinners_future_p, dinners_past=dinners_past,
-        form=form, dinners_future_nochef=dinners_future_nochef, curDate = cur_date
+        form=form, dinners_future_nochef=dinners_future_nochef, curDate=cur_date
     )
 
 
@@ -311,20 +311,19 @@ def new_entries():
 
 @dinner_club.route('/become_payee/<int:user_id>/<int:dinner_id>', methods=['GET', 'POST'])
 def become_payee(user_id, dinner_id):
-    # dinner = Dinner.query.get_or_404(dinner_id)
+    dinner = Dinner.query.get_or_404(dinner_id)
+    user = User.query.get(user_id)
 
     # if dinner.madtid < (datetime.now() + relativedelta(hours=36)):
     #     return abort(502)
 
-    dinner = Dinner.query.get(dinner_id)
-
-    dinner.payee_id = User.query.get(user_id).id
-    # dinner.payee_id = 2
-    msg = "You are now a chef!"
+    dinner.payee_id = user.id
+    dinner.chefs = []
+    dinner.chefs.append(user)
 
     try:
         db.session.commit()
-        flash(msg, "alert alert-info")
+        flash("You are now a chef!", "alert alert-info")
     except DBAPIError as e:
         db.session.rollback()
         project.sentry.captureMessage(str(e))

@@ -100,61 +100,64 @@
             </div>
         </div>
     </div>
-{#    <hr>#}
-{#    <div class="container">#}
-{#        <div class="row">#}
-{#            <div class="col-lg-12">#}
-{#                <h3>Leaderboards</h3>#}
-{#                {% if beverage_stats|length == 0 %}#}
-{#                    <p>There is no beverage stats to show... Go drink some beer, will you?</p>#}
-{#                {% else %}#}
-{#                    <table class="table table-hover table-bordered">#}
-{#                        <thead>#}
-{#                        <tr>#}
-{#                            <th>Name</th>#}
-{#                            <th>Beverages Consumed</th>#}
-{#                        </tr>#}
-{#                        </thead>#}
-{#                        <tbody>#}
-{#                        {% for stat in beverage_stats %}#}
-{#                            <tr>#}
-{#                                <td>#}
-{#                                    <a href="{{ url_for('site.profile', user_id=stat.user_id) }}">#}
-{#                                        {% if loop.first %}#}
-{#                                            <i class="fas fa-trophy"></i>#}
-{#                                        {% endif %}{{ stat.user_name }}#}
-{#                                    </a>#}
-{#                                </td>#}
-{#                                <td>{{ stat.consumed }}</td>#}
-{#                            </tr>#}
-{#                        {% endfor %}#}
-{#                        </tbody>#}
-{#                    </table>#}
-{#                {% endif %}#}
-{#                <table class="table table-hover table-bordered">#}
-{#                    <thead>#}
-{#                    <tr>#}
-{#                        <th>Name</th>#}
-{#                        <th>Dinners paid</th>#}
-{#                    </tr>#}
-{#                    </thead>#}
-{#                    <tbody>#}
-{#                    {% for dinner in dinners_paid %}#}
-{#                        <tr>#}
-{#                            <td>#}
-{#                                <a href="{{ url_for('site.profile', user_id=dinner.user_id) }}">#}
-{#                                    {% if loop.first %}#}
-{#                                        <i class="fas fa-trophy"></i>#}
-{#                                    {% endif %}{{ dinner.user_name }}#}
-{#                                </a>#}
-{#                            </td>#}
-{#                            <td>{{ dinner.paid }}</td>#}
-{#                        </tr>#}
-{#                    {% endfor %}#}
-{##}
-{#                    </tbody>#}
-{#                </table>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Leaderboards</h3>
+                {% if dinners_paid|length == 0 %}
+                    <p>There is no beverage stats to show... Go drink some beer, will you?</p>
+                {% else %}
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Dinners paid</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dinner in dinners_paid %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('site.profile', user_id=dinner.user_id) }}">
+                                    {% if loop.first %}
+                                        <i class="fas fa-trophy"></i>
+                                    {% endif %}{{ dinner.user_name }}
+                                </a>
+                            </td>
+                            <td>{{ dinner.paid }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+                {% if beverage_stats|length == 0 %}
+                    <p>There is no beverage stats to show... Go drink some beer, will you?</p>
+                {% else %}
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Beverages Consumed</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for stat in beverage_stats %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('site.profile', user_id=stat.user_id) }}">
+                                        {% if loop.first %}
+                                            <i class="fas fa-trophy"></i>
+                                        {% endif %}{{ stat.user_name }}
+                                    </a>
+                                </td>
+                                <td>{{ stat.consumed }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

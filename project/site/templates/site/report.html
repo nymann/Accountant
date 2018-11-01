@@ -4,11 +4,29 @@
 
 {% block jumbocontent %}
     <h1 class="display-4">Report filed on {{ report.date|datetime() }}</h1>
-    <p class="lead">If you wanna check what you paid for, then click on the Dinner Balance - or Shopping Balance amount
+    <p class="lead">If you want to check what you paid for, then click on the Dinner Balance - or Shopping Balance amount
         next to your name.</p>
 {% endblock %}
 
 {% block content %}
+    <div class="container">
+    <div class="row">
+        <div class="col-lg-12 mb-2">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">What to do now...</h5>
+                </div>
+                <div class="card-body">
+                    <p>Below you can see the report, what you should pay or receive for each category and for the total.
+                        <br>Hint: You can click on each number, to see details about the category.</p>
+                    <p>If you are in the red, i.e. you owe money: Pay your share to Kristian Nymann via MobilePay on
+                        this number: <a href="tel:+4522805326">+45 2280 5326</a>.</p>
+                    <p>If you are in the green, i.e. we owe you money: You should receive your share in the following days.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
     <div class="container">
         <table class="table table-hover">
             <thead>

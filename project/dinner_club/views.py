@@ -251,7 +251,12 @@ def participate(user_id, dinner_id):
     dinner = Dinner.query.get_or_404(dinner_id)
 
     if dinner.madtid < (datetime.now() + relativedelta(hours=36)):
-        return abort(502)
+        user = User.query.get(int(user_id)).name
+        dinner = datetime.strftime(Dinner.query.get(int(dinner_id)).madtid, "%d/%m/%Y")
+        message = 'Error: Removal of \u0027{}\u0027 from the following dinner club' \
+                  ', \u0027{}\u0027, is not permitted.'.format(user, dinner)
+        flash(message, "alert alert-danger")
+        return index()
 
     dinner = Dinner.query.get(dinner_id)
     if current_user in dinner.participants:

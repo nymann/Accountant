@@ -115,7 +115,6 @@ def send_accounting_mail(account_id):
 
         from send_email import send_an_email
         send_an_email([user_email], msg, 'Accountant | kk24.dk')
-        send_an_email([user_email], 'Hej, forrig mail var blot en test! -Thyge :D', 'Test | kk24.dk')
 
 
 class UserHelper:

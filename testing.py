@@ -9,7 +9,6 @@ def send_an_email():
                   recipients=["thyge.steffensen@hotmail.com"])
     mail = Mail()
 
-    app.config['SECRET_KEY'] = 'a really really really really long secret key'
     app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True

@@ -13,6 +13,18 @@
             <div class="col-lg-4">
                 <div class="card">
                     <div class="card-header bg-white">
+                        <h5 class="card-title">Send an email</h5>
+                    </div>
+                    <div class="card-body bg-white">
+                        <a href="{{ url_for('site.send_email') }}" class="btn btn-info">Send email!</a>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-white">
                         <h5 class="card-title">API token for {{ username }}</h5>
                     </div>
                     <div class="card-body bg-white">
@@ -20,7 +32,8 @@
                                readonly class="form-control-plaintext">
                     </div>
                     <div class="card-footer">
-                        <button id="copyButton" onclick="copyText()" class="btn btn-info" type="button" data-toggle="tooltip"
+                        <button id="copyButton" onclick="copyText()" class="btn btn-info" type="button"
+                                data-toggle="tooltip"
                                 data-placement="bottom" title="Copy API token">
                             <i class="far fa-copy"></i>
                         </button>

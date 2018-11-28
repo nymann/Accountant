@@ -19,3 +19,4 @@ flask_migrate
 flask_script
 flask-mobility
 ics
+Flask-Mail

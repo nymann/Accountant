@@ -5,6 +5,7 @@ from flask_dance.contrib.facebook import make_facebook_blueprint
 from flask_dance.contrib.github import make_github_blueprint
 from flask_dance.contrib.twitter import make_twitter_blueprint
 from flask_login import LoginManager, current_user, login_required, logout_user
+from flask_mail import Mail
 from flask_uploads import configure_uploads
 from werkzeug.contrib.fixers import ProxyFix
 from raven.contrib.flask import Sentry
@@ -32,6 +33,7 @@ app = Flask(__name__)
 Mobility(app)
 app.config.from_pyfile('../config.cfg', silent=False)
 app.wsgi_app = ProxyFix(app.wsgi_app)
+mail = Mail(app)
 
 
 facebook_blueprint = make_facebook_blueprint(

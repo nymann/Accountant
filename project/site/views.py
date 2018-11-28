@@ -5,7 +5,6 @@ from flask_login import current_user, login_required
 from sqlalchemy import or_, func, desc, asc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
-from sqlalchemy.sql.operators import is_
 
 from project.forms import UserForm
 from project.models import (
@@ -14,6 +13,7 @@ from project.models import (
 from project.site import site
 from project.utils.helper import UserHelper, generate_calendar
 from project.utils.uploadsets import avatars, process_user_avatar
+from flask_mail import Message
 
 
 @site.route('/')
@@ -314,3 +314,17 @@ def get_dinners_paid(report_id):
     ).join(User).filter(
         Dinner.accounting_id.is_(report_id),
     ).group_by(Dinner.payee_id).order_by(desc("paid")).all()
+
+
+
+
+@site.route('/developer/send_email')
+def send_email():
+    flash("Sending email", "alert alert-info")
+    msg = Message("Hello",
+                  sender="from@example.com",
+                  recipients=["thyge.steffensen@hotmail.com"])
+
+    mail.send(msg)
+
+    return render_template('site/developer.html')

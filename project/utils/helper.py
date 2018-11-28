@@ -64,54 +64,65 @@ def send_accounting_mail(account_id):
             UserReport.user_id.is_(user.id)
         ).first()
         name = user.name
+        user_email = user.email
         dinner = round(user_report.dinner_balance, 2)
         shopping = round(user_report.shopping_balance, 2)
         beverage = round(user_report.beverage_balance, 2)
         total = round(user_report.total_balance, 2)
-        user_email = user.email
 
         msg = """
-                    <!DOCTYPE html>
-                    <html>
+                   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
-                    <head>
-                        <meta charset="UTF-8">
-                    </head>
+<head>
+    <title>KK24.dk</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=250px, initial-scale=1.0 " />
+    <meta charset="UTF-8">
 
-                    <body>
-                        <center>
-                            <p>Hi {}</p>
-                            <p>The accounts have been made,\n
-                            you can now pay your share!</p>
-                            <table>
-                                <tr>
-                                    <td>Dinnerclub balance</td>
-                                    <td>{}</td>
-                                </tr>
-                                <tr>
-                                    <td>Shopping balance</td>
-                                    <td>{}</td>
-                                </tr>
-                                <tr>
-                                    <td>Beverage balance</td>
-                                    <td>{}</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>Total</td>
-                                    <td>{}</td>
-                                </tr>
-                            </table>
-                            <p>For more information, visit <a href="https://kk24.dk/reports">kk24.dk</a></p>
-                            <p>Best regards Accountant</p>
-                        </center>
-                    </body>
+</head>
 
-                    </html>
-                        """.format(name, dinner, shopping, beverage, total)
+
+<body>
+    <center>
+        <h1>Hi {}</h1>
+        <h3>The accounts have been made, you can now pay your share!</h3>
+        <h3>Below you can see an overview of your share.<br> More information can be viewed on the web page.<br><a href="https://kk24.dk/reports">kk24.dk</a></h3></h3>
+        <br>
+        <br>
+        <table>
+            <tr>
+                <td>Dinner club balance:</td>
+                <td>{}</td>
+            </tr>
+            <tr>
+                <td>Shopping balance:</td>
+                <td>{}</td>
+            </tr>
+            <tr>
+                <td>Beverage balance:</td>
+                <td>{}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Total:</td>
+                <td>{}</td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <br>        
+        <h3>Best regards Accountant</h3>
+    </center>
+</body>
+
+</html>
+                        
+        """.format(name, dinner, shopping, beverage, total)
 
         from send_email import send_an_email
         send_an_email([user_email], msg, 'Accountant | kk24.dk')

@@ -5,7 +5,7 @@ from flask_dance.contrib.facebook import make_facebook_blueprint
 from flask_dance.contrib.github import make_github_blueprint
 from flask_dance.contrib.twitter import make_twitter_blueprint
 from flask_login import LoginManager, current_user, login_required, logout_user
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from flask_uploads import configure_uploads
 from werkzeug.contrib.fixers import ProxyFix
 from raven.contrib.flask import Sentry

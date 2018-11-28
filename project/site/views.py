@@ -317,14 +317,14 @@ def get_dinners_paid(report_id):
 
 
 
-
 @site.route('/developer/send_email')
 def send_email():
     flash("Sending email", "alert alert-info")
-    msg = Message("Hello",
-                  sender="from@example.com",
-                  recipients=["thyge.steffensen@hotmail.com"])
-
-    mail.send(msg)
-
+    # msg = Message("Hello",
+    #               sender="from@example.com",
+    #               recipients=["thyge.steffensen@hotmail.com"])
+    #
+    # mail.send(msg)
+    from testing import send_an_email
+    send_an_email()
     return render_template('site/developer.html')

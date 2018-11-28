@@ -11,7 +11,7 @@ from project.models import (
     User, Dinner, MeetingEvent, Shopping, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
     BeverageTypes, UserReport, AccountingReport)
 from project.site import site
-from project.utils.helper import UserHelper, generate_calendar
+from project.utils.helper import UserHelper, generate_calendar, send_accounting_mail
 from project.utils.uploadsets import avatars, process_user_avatar
 from flask_mail import Message
 
@@ -215,6 +215,8 @@ def do_accounting():
         shopping.accounting_id = accounting_report.id
         db.session.commit()
 
+    send_accounting_mail(accounting_report.id)
+
     return redirect(url_for('site.reports'))
 
 
@@ -316,15 +318,77 @@ def get_dinners_paid(report_id):
     ).group_by(Dinner.payee_id).order_by(desc("paid")).all()
 
 
-
 @site.route('/developer/send_email')
 def send_email():
-    flash("Sending email", "alert alert-info")
-    # msg = Message("Hello",
-    #               sender="from@example.com",
-    #               recipients=["thyge.steffensen@hotmail.com"])
-    #
-    # mail.send(msg)
-    from testing import send_an_email
-    send_an_email()
-    return render_template('site/developer.html')
+    account_id = 2
+
+    report_users = UserReport.query.filter(
+        UserReport.accounting_report_id.is_(account_id)
+    ).all()
+
+    users = []
+    for report_user in report_users:
+        user = User.query.filter(User.id.is_(report_user.user_id)).first()
+        if '@' in user.email:
+            users.append(user)
+
+    for user in users:
+
+        user_report = UserReport.query.filter(
+            UserReport.accounting_report_id.is_(account_id),
+            UserReport.user_id.is_(user.id)
+        ).first()
+        name = user.name
+        dinner = round(user_report.dinner_balance, 2)
+        shopping = round(user_report.shopping_balance, 2)
+        beverage = round(user_report.beverage_balance, 2)
+        total = round(user_report.total_balance, 2)
+        user_email = user.email
+
+        msg = """
+                    <!DOCTYPE html>
+                    <html>
+
+                    <head>
+                        <meta charset="UTF-8">
+                    </head>
+
+                    <body>
+                        <center>
+                            <p>Hi {}</p>
+                            <p>The accounts have been made,\n
+                            you can now pay your share!</p>
+                            <table>
+                                <tr>
+                                    <td>Dinnerclub balance</td>
+                                    <td>{}</td>
+                                </tr>
+                                <tr>
+                                    <td>Shopping balance</td>
+                                    <td>{}</td>
+                                </tr>
+                                <tr>
+                                    <td>Beverage balance</td>
+                                    <td>{}</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{}</td>
+                                </tr>
+                            </table>
+                            <p>For more information, visit <a href="https://kk24.dk/reports">kk24.dk</a></p>
+                            <p>Best regards Accountant</p>
+                        </center>
+                    </body>
+
+                    </html>
+                        """.format(name, dinner, shopping, beverage, total)
+
+        from send_email import send_an_email
+        send_an_email([user_email], msg, 'Accountant | kk24.dk')
+
+    return developer()

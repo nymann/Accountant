@@ -3,7 +3,7 @@ from datetime import datetime
 from flask_login import current_user
 from sqlalchemy import func, or_
 
-from project.models import db, Shopping, User, Items, Dinner, BeverageBatch, BeverageUser
+from project.models import db, Shopping, User, Items, Dinner, BeverageBatch, BeverageUser, UserReport
 
 from ics import Calendar, Event
 
@@ -41,9 +41,81 @@ def generate_calendar():
 
         calender.events.add(event)
 
-    #calender.events
+    # calender.events
     # with open('project/static/calendar/calendar.ics', 'w') as calender_file:
     #     calender_file.writelines(calender)
+
+
+def send_accounting_mail(account_id):
+    report_users = UserReport.query.filter(
+        UserReport.accounting_report_id.is_(account_id)
+    ).all()
+
+    users = []
+    for report_user in report_users:
+        user = User.query.filter(User.id.is_(report_user.user_id)).first()
+        if '@' in user.email:
+            users.append(user)
+
+    for user in users:
+
+        user_report = UserReport.query.filter(
+            UserReport.accounting_report_id.is_(account_id),
+            UserReport.user_id.is_(user.id)
+        ).first()
+        name = user.name
+        dinner = round(user_report.dinner_balance, 2)
+        shopping = round(user_report.shopping_balance, 2)
+        beverage = round(user_report.beverage_balance, 2)
+        total = round(user_report.total_balance, 2)
+        user_email = user.email
+
+        msg = """
+                    <!DOCTYPE html>
+                    <html>
+
+                    <head>
+                        <meta charset="UTF-8">
+                    </head>
+
+                    <body>
+                        <center>
+                            <p>Hi {}</p>
+                            <p>The accounts have been made,\n
+                            you can now pay your share!</p>
+                            <table>
+                                <tr>
+                                    <td>Dinnerclub balance</td>
+                                    <td>{}</td>
+                                </tr>
+                                <tr>
+                                    <td>Shopping balance</td>
+                                    <td>{}</td>
+                                </tr>
+                                <tr>
+                                    <td>Beverage balance</td>
+                                    <td>{}</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{}</td>
+                                </tr>
+                            </table>
+                            <p>For more information, visit <a href="https://kk24.dk/reports">kk24.dk</a></p>
+                            <p>Best regards Accountant</p>
+                        </center>
+                    </body>
+
+                    </html>
+                        """.format(name, dinner, shopping, beverage, total)
+
+        from send_email import send_an_email
+        send_an_email([user_email], msg, 'Accountant | kk24.dk')
+        send_an_email([user_email], 'Hej, forrig mail var blot en test! -Thyge :D', 'Test | kk24.dk')
 
 
 class UserHelper:

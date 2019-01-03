@@ -14,9 +14,9 @@ sqlalchemy_utils
 blinker
 python-dateutil
 raven[flask]
-flask-restplus
 flask_migrate
 flask_script
 flask-mobility
 ics
 Flask-Mail
+psycopg2-binary

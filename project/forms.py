@@ -10,10 +10,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField('remember')
 
 
-class RegisterForm(FlaskForm):
-    name = StringField('name')
-    email = StringField('email')
-    password = PasswordField('password')
+class RegisterForm(LoginForm):
     password_again = PasswordField('password_again')
     room_number = StringField('room_number')
 
@@ -29,6 +26,7 @@ class UserForm(FlaskForm):
     picture = FileField('picture')
     move_in_date = StringField('move_in_date')
     move_out_date = StringField('move_out_date')
+
 
 
 class DinnerForm(FlaskForm):

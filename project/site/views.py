@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import render_template, redirect, url_for, flash, request, abort, send_from_directory
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, logout_user
 from sqlalchemy import or_, func, desc, asc
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import label
@@ -11,9 +11,8 @@ from project.models import (
     User, Dinner, MeetingEvent, Shopping, db, MeetingTopic, OAuth, BeverageUser, Beverage, BeverageBatch,
     BeverageTypes, UserReport, AccountingReport)
 from project.site import site
-from project.utils.helper import UserHelper, generate_calendar, send_accounting_mail
+from project.utils.helper import UserHelper, send_accounting_mail
 from project.utils.uploadsets import avatars, process_user_avatar
-from flask_mail import Message
 
 
 @site.route('/')
@@ -333,7 +332,6 @@ def send_email():
             users.append(user)
 
     for user in users:
-
         user_report = UserReport.query.filter(
             UserReport.accounting_report_id.is_(account_id),
             UserReport.user_id.is_(user.id)
@@ -392,3 +390,11 @@ def send_email():
         send_an_email([user_email], msg, 'Accountant | kk24.dk')
 
     return developer()
+
+
+
+@site.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('site.index'))

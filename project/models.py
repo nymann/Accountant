@@ -98,6 +98,7 @@ class NeededItems(db.Model):
 
 
 class MeetingEvent(db.Model):
+    __tablename__ = 'meeting_event'
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
     completed = db.Column(db.Boolean, default=False)
@@ -115,18 +116,21 @@ class MeetingTopic(db.Model):
 
 
 class BeverageTypes(db.Model):
+    __tablename__ = 'beverage_types'
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String, nullable=False)
 
 
 class Beverage(db.Model):
+    __tablename__ = 'beverage'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     contents = db.Column(db.Float, nullable=False)
-    type = db.Column(db.String, db.ForeignKey(BeverageTypes.id))
+    type = db.Column(db.Integer, db.ForeignKey("beverage_types.id"))
 
 
 class BeverageBatch(db.Model):
+    __tablename__ = 'beverage_batch'
     id = db.Column(db.Integer, primary_key=True)
     beverage_id = db.Column(db.Integer, db.ForeignKey(Beverage.id))
     quantity = db.Column(db.Integer, nullable=False)
@@ -135,11 +139,13 @@ class BeverageBatch(db.Model):
 
 
 class BeverageID(db.Model):
+    __tablename__ = 'beverage_id'
     id = db.Column(db.Integer, primary_key=True)
     beverage_id = db.Column(db.Integer, db.ForeignKey(Beverage.id))
 
 
 class BeverageUser(db.Model):
+    __tablename__ = 'beverage_user'
     id = db.Column(db.Integer, primary_key=True)
     beverage_batch_id = db.Column(db.Integer, db.ForeignKey(BeverageBatch.id))
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
@@ -148,6 +154,7 @@ class BeverageUser(db.Model):
 
 
 class UserReport(db.Model):
+    __tablename__ = 'user_report'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
     user = db.relationship(User)
@@ -160,6 +167,7 @@ class UserReport(db.Model):
 
 
 class AccountingReport(db.Model):
+    __tablename__ = 'accounting_report'
     id = db.Column(db.Integer, primary_key=True)
     user_reports = db.relationship("UserReport")
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
@@ -180,6 +188,7 @@ class FeedbackStatus(enum.Enum):
 
 
 class Feedback(db.Model):
+    __tablename__ = 'feedback'
     id = db.Column(db.Integer, primary_key=True)
     header = db.Column(db.String, nullable=False)
     author = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
@@ -189,6 +198,7 @@ class Feedback(db.Model):
 
 
 class FeedbackComment(db.Model):
+    __tablename__ = 'feedback_comment'
     id = db.Column(db.Integer, primary_key=True)
     feedback_id = db.Column(db.Integer, db.ForeignKey(Feedback.id), nullable=False)
     author = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
@@ -197,6 +207,7 @@ class FeedbackComment(db.Model):
 
 
 class FeedbackPicture(db.Model):
+    __tablename__ = 'feedback_picture'
     id = db.Column(db.Integer, primary_key=True)
     feedback_comment_id = db.Column(db.Integer, db.ForeignKey(FeedbackComment.id), nullable=False)
     picture_url = db.Column(db.String)
